@@ -1,0 +1,15 @@
+"endoscopic third ventriculostomy" AND "choroid plexus cauterization"
+"augmented reality" AND "spine surgery" AND navigation
+"machine learning" AND "intracranial aneurysm" AND detection
+"decompressive craniectomy" AND "timing" AND outcomes
+"spinal cord injury" AND "stem cell" AND "clinical trial"
+"transcranial magnetic stimulation" AND "depression" AND "neurosurgery"
+"minimally invasive" AND "meningioma" AND outcomes
+"endoscopic endonasal" AND "craniopharyngioma" AND outcomes
+"ultrasonic aspirator" AND "spinal cord tumor"
+"robot-assisted" AND "deep brain stimulation" AND accuracy
+"intraoperative ultrasound" AND "brain tumor" AND resection
+"exoscope" AND "microsurgery" AND outcomes
+"3D printing" AND "spinal fusion" AND "patient-specific"
+"artificial intelligence" AND "glioma" AND grading
+"ketamine" AND "craniotomy" AND "postoperative pain"

@@ -1,0 +1,725 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>LitGap — Literature Gap Detector</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #0f1117;
+      --surface: #1a1d27;
+      --surface2: #232636;
+      --border: #2e3248;
+      --accent: #6c8fff;
+      --accent-dim: #3d5099;
+      --text: #e2e4f0;
+      --text-dim: #8a8fa8;
+      --gap-strong: #ff6b6b;
+      --gap-weak: #ffa94d;
+      --gap-none: #51cf66;
+      --chip-active: #6c8fff;
+      --chip-active-bg: rgba(108,143,255,0.15);
+      --chip-hover: rgba(108,143,255,0.08);
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      padding: 2rem 1rem;
+    }
+
+    header {
+      max-width: 860px;
+      margin: 0 auto 2rem;
+    }
+
+    header h1 {
+      font-size: 1.6rem;
+      font-weight: 700;
+      letter-spacing: -0.5px;
+    }
+
+    header h1 span { color: var(--accent); }
+
+    header p {
+      color: var(--text-dim);
+      font-size: 0.875rem;
+      margin-top: 0.35rem;
+    }
+
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 1.25rem 1.5rem;
+    }
+
+    .main-panel {
+      max-width: 860px;
+      margin: 0 auto;
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+
+    /* API key row */
+    .api-row {
+      display: flex;
+      gap: 0.75rem;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+
+    .api-row label {
+      font-size: 0.8rem;
+      color: var(--text-dim);
+      white-space: nowrap;
+    }
+
+    .api-row input {
+      flex: 1;
+      min-width: 180px;
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 0.45rem 0.75rem;
+      font-size: 0.85rem;
+      color: var(--text);
+      outline: none;
+      font-family: monospace;
+    }
+
+    .api-row input:focus { border-color: var(--accent-dim); }
+
+    /* Presets */
+    .presets-label {
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: var(--text-dim);
+      margin-bottom: 0.6rem;
+    }
+
+    .chips {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+    }
+
+    .chip {
+      padding: 0.35rem 0.85rem;
+      border-radius: 999px;
+      border: 1px solid var(--border);
+      background: var(--surface2);
+      color: var(--text-dim);
+      font-size: 0.8rem;
+      cursor: pointer;
+      user-select: none;
+      transition: background 0.15s, color 0.15s, border-color 0.15s;
+    }
+
+    .chip:hover { background: var(--chip-hover); color: var(--text); }
+
+    .chip.active {
+      background: var(--chip-active-bg);
+      border-color: var(--chip-active);
+      color: var(--chip-active);
+    }
+
+    /* Textarea */
+    textarea {
+      width: 100%;
+      min-height: 140px;
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 0.75rem 1rem;
+      color: var(--text);
+      font-family: monospace;
+      font-size: 0.82rem;
+      line-height: 1.6;
+      resize: vertical;
+      outline: none;
+    }
+
+    textarea:focus { border-color: var(--accent-dim); }
+    textarea::placeholder { color: var(--text-dim); }
+
+    .textarea-hint {
+      font-size: 0.75rem;
+      color: var(--text-dim);
+      margin-top: 0.4rem;
+    }
+
+    /* Actions row */
+    .actions {
+      display: flex;
+      gap: 0.75rem;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+
+    button {
+      cursor: pointer;
+      border: none;
+      border-radius: 7px;
+      font-size: 0.875rem;
+      font-weight: 600;
+      padding: 0.6rem 1.3rem;
+      transition: opacity 0.15s, background 0.15s;
+    }
+
+    #scanBtn {
+      background: var(--accent);
+      color: #fff;
+    }
+
+    #scanBtn:hover { opacity: 0.88; }
+    #scanBtn:disabled { opacity: 0.4; cursor: not-allowed; }
+
+    #exportBtn {
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      color: var(--text);
+    }
+
+    #exportBtn:hover { border-color: var(--accent-dim); color: var(--accent); }
+    #exportBtn:disabled { opacity: 0.35; cursor: not-allowed; }
+
+    .progress-text {
+      font-size: 0.82rem;
+      color: var(--text-dim);
+      flex: 1;
+    }
+
+    /* Progress bar */
+    .progress-bar-wrap {
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      height: 6px;
+      overflow: hidden;
+      display: none;
+    }
+
+    .progress-bar-fill {
+      height: 100%;
+      background: var(--accent);
+      width: 0%;
+      transition: width 0.3s;
+    }
+
+    /* Results */
+    #results { display: flex; flex-direction: column; gap: 0.75rem; }
+
+    .result-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 1.1rem 1.4rem;
+      border-left: 4px solid var(--border);
+    }
+
+    .result-card.gap-strong { border-left-color: var(--gap-strong); }
+    .result-card.gap-weak   { border-left-color: var(--gap-weak); }
+    .result-card.gap-none   { border-left-color: var(--gap-none); }
+
+    .result-header {
+      display: flex;
+      align-items: flex-start;
+      gap: 0.75rem;
+      flex-wrap: wrap;
+    }
+
+    .result-topic {
+      font-family: monospace;
+      font-size: 0.82rem;
+      color: var(--text);
+      flex: 1;
+      word-break: break-word;
+      line-height: 1.5;
+    }
+
+    .badge {
+      font-size: 0.7rem;
+      font-weight: 700;
+      padding: 0.2rem 0.55rem;
+      border-radius: 4px;
+      white-space: nowrap;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      flex-shrink: 0;
+    }
+
+    .badge-strong { background: rgba(255,107,107,0.15); color: var(--gap-strong); }
+    .badge-weak   { background: rgba(255,169,77,0.15);  color: var(--gap-weak); }
+    .badge-covered{ background: rgba(81,207,102,0.12);  color: var(--gap-none); }
+
+    .result-stats {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem 1.25rem;
+      margin-top: 0.7rem;
+      font-size: 0.78rem;
+      color: var(--text-dim);
+    }
+
+    .result-stats span b { color: var(--text); }
+
+    .result-footer {
+      display: flex;
+      gap: 0.75rem;
+      margin-top: 0.75rem;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+
+    .score-pill {
+      font-size: 0.75rem;
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: 5px;
+      padding: 0.2rem 0.55rem;
+      color: var(--text-dim);
+    }
+
+    .score-pill b { color: var(--text); }
+
+    .prospero-link {
+      font-size: 0.78rem;
+      color: var(--accent);
+      text-decoration: none;
+      padding: 0.22rem 0.6rem;
+      border: 1px solid var(--accent-dim);
+      border-radius: 5px;
+      transition: background 0.15s;
+    }
+
+    .prospero-link:hover { background: var(--chip-active-bg); }
+
+    .pubmed-link {
+      font-size: 0.78rem;
+      color: var(--text-dim);
+      text-decoration: none;
+      padding: 0.22rem 0.6rem;
+      border: 1px solid var(--border);
+      border-radius: 5px;
+      transition: background 0.15s, color 0.15s;
+    }
+
+    .pubmed-link:hover { color: var(--text); background: var(--surface2); }
+
+    /* Summary bar */
+    #summaryBar {
+      display: none;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 0.9rem 1.4rem;
+      font-size: 0.85rem;
+      display: none;
+      align-items: center;
+      gap: 1.25rem;
+      flex-wrap: wrap;
+    }
+
+    #summaryBar span b { margin-right: 0.2rem; }
+
+    .sum-strong { color: var(--gap-strong); }
+    .sum-weak   { color: var(--gap-weak); }
+    .sum-none   { color: var(--gap-none); }
+
+    /* Error */
+    .error-msg {
+      background: rgba(255,107,107,0.08);
+      border: 1px solid rgba(255,107,107,0.3);
+      border-radius: 8px;
+      padding: 0.75rem 1rem;
+      font-size: 0.82rem;
+      color: var(--gap-strong);
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <h1>Lit<span>Gap</span></h1>
+  <p>Scan PubMed for topics with primary evidence but no systematic review — flag opportunities for new SRs.</p>
+</header>
+
+<div class="main-panel">
+
+  <!-- API key (optional) -->
+  <div class="card">
+    <div class="api-row">
+      <label for="ncbiKey">NCBI API key (optional):</label>
+      <input id="ncciKey" type="password" placeholder="Raises rate limit from 3 → 10 req/sec" autocomplete="off" />
+    </div>
+  </div>
+
+  <!-- Presets + textarea -->
+  <div class="card">
+    <div class="presets-label">Preset topics</div>
+    <div class="chips" id="chips"></div>
+
+    <textarea id="topicsArea" placeholder='"awake craniotomy" AND "language mapping"
+"deep brain stimulation" AND "disorders of consciousness"
+"intraoperative MRI" AND glioma AND resection
+# Lines starting with # are ignored'
+      style="margin-top:1rem"></textarea>
+    <div class="textarea-hint">One PubMed query per line. MeSH terms, boolean operators, field tags all work.</div>
+  </div>
+
+  <!-- Action buttons -->
+  <div class="actions">
+    <button id="scanBtn">Scan PubMed</button>
+    <button id="exportBtn" disabled>Export CSV</button>
+    <span class="progress-text" id="progressText"></span>
+  </div>
+
+  <div class="progress-bar-wrap" id="progressWrap">
+    <div class="progress-bar-fill" id="progressFill"></div>
+  </div>
+
+  <!-- Summary -->
+  <div id="summaryBar"></div>
+
+  <!-- Results -->
+  <div id="results"></div>
+
+</div>
+
+<script>
+// ─── Presets ────────────────────────────────────────────────────────────────
+const PRESETS = {
+  "Minimally Invasive": [
+    '"endoscopic surgery"[MeSH] AND "intracerebral hemorrhage"[MeSH]',
+    '"tubular retractor" AND brain AND surgery',
+    '"awake craniotomy" AND "language mapping"',
+    '"colloid cyst" AND "third ventricle" AND management',
+  ],
+  "Spine": [
+    '"short segment fixation" AND "metastatic spine"',
+    '"full-endoscopic" AND "intradural" AND spine',
+    '"minimally invasive" AND "lumbar fusion" AND outcomes',
+  ],
+  "Functional / Tech": [
+    '"deep brain stimulation" AND "disorders of consciousness"',
+    '"brain-computer interface" AND "motor recovery"',
+    '"intraoperative MRI" AND glioma AND resection',
+  ],
+  "Neuro + AI": [
+    '"artificial intelligence" AND "neurosurgery" AND "decision making"',
+    '"large language model" AND "clinical guidelines" AND surgery',
+  ],
+};
+
+const activePresets = new Set();
+
+function buildChips() {
+  const container = document.getElementById("chips");
+  Object.keys(PRESETS).forEach(name => {
+    const chip = document.createElement("button");
+    chip.className = "chip";
+    chip.textContent = name;
+    chip.dataset.preset = name;
+    chip.addEventListener("click", () => togglePreset(name, chip));
+    container.appendChild(chip);
+  });
+}
+
+function getTextareaLines() {
+  const raw = document.getElementById("topicsArea").value;
+  return raw.split("\n").map(l => l.trimEnd());
+}
+
+function setTextareaLines(lines) {
+  document.getElementById("topicsArea").value = lines.join("\n");
+}
+
+function togglePreset(name, chip) {
+  const topics = PRESETS[name];
+  if (activePresets.has(name)) {
+    // Remove topics belonging to this preset
+    activePresets.delete(name);
+    chip.classList.remove("active");
+    const current = getTextareaLines();
+    const topicSet = new Set(topics);
+    const filtered = current.filter(l => !topicSet.has(l.trim()));
+    // Collapse consecutive blank lines left behind
+    const cleaned = filtered.join("\n").replace(/\n{3,}/g, "\n\n").trimEnd();
+    setTextareaLines(cleaned ? cleaned.split("\n") : [""]);
+  } else {
+    // Add topics
+    activePresets.add(name);
+    chip.classList.add("active");
+    const current = getTextareaLines().filter(l => l.trim() !== "" || false);
+    const existing = new Set(current.map(l => l.trim()));
+    const toAdd = topics.filter(t => !existing.has(t));
+    if (toAdd.length) {
+      const base = current.join("\n").trimEnd();
+      const newVal = base ? base + "\n" + toAdd.join("\n") : toAdd.join("\n");
+      setTextareaLines(newVal.split("\n"));
+    }
+  }
+}
+
+buildChips();
+
+// ─── PubMed helpers ──────────────────────────────────────────────────────────
+const BASE_URL = "https://eutils.ncbi.nlm.nih.gov/entrez/eutils";
+
+const FILTERS = {
+  rct:              "Randomized Controlled Trial[pt]",
+  cohort:           "(Observational Study[pt] OR Cohort Studies[mh])",
+  case_series:      "Case Reports[pt]",
+  meta_analysis:    "Meta-Analysis[pt]",
+  systematic_review:"Systematic Review[pt]",
+};
+
+function sleep(ms) { return new Promise(r => setTimeout(r, ms)); }
+
+async function esearchCount(query, apiKey) {
+  const params = new URLSearchParams({ db: "pubmed", term: query, rettype: "count", retmode: "json" });
+  if (apiKey) params.set("api_key", apiKey);
+  const resp = await fetch(`${BASE_URL}/esearch.fcgi?${params}`);
+  if (!resp.ok) throw new Error(`PubMed error ${resp.status}`);
+  const json = await resp.json();
+  return parseInt(json.esearchresult.count, 10);
+}
+
+async function countStudies(topic, apiKey, delay, onStep) {
+  const result = {
+    topic,
+    total: 0, rct: 0, cohort: 0, case_series: 0,
+    meta_analysis: 0, systematic_review: 0,
+    recent_rct: 0, recent_cohort: 0,
+  };
+
+  result.total = await esearchCount(topic, apiKey);
+  await sleep(delay); onStep();
+
+  for (const [key, filter] of Object.entries(FILTERS)) {
+    result[key] = await esearchCount(`(${topic}) AND ${filter}`, apiKey);
+    await sleep(delay); onStep();
+  }
+
+  const recent = 'AND ("2023"[PDAT] : "2026"[PDAT])';
+  result.recent_rct    = await esearchCount(`(${topic}) AND ${FILTERS.rct} ${recent}`, apiKey);
+  await sleep(delay); onStep();
+  result.recent_cohort = await esearchCount(`(${topic}) AND ${FILTERS.cohort} ${recent}`, apiKey);
+  await sleep(delay); onStep();
+
+  return result;
+}
+
+function gapScore(r) {
+  if (r.systematic_review >= 3) return 0;
+  const primary   = r.rct * 3 + r.cohort * 1.5 + r.case_series * 0.3;
+  const penalty   = r.systematic_review * 15 + r.meta_analysis * 15;
+  const recency   = r.recent_rct * 4 + r.recent_cohort * 2;
+  return Math.max(0, primary + recency - penalty);
+}
+
+function hasGap(r)     { return (r.rct + r.cohort) >= 5 && r.systematic_review === 0; }
+function hasWeakGap(r) { return (r.rct + r.cohort) >= 3 && r.systematic_review <= 1 && (r.rct + r.cohort) >= 8; }
+
+// ─── Scan ────────────────────────────────────────────────────────────────────
+let scanResults = [];
+
+document.getElementById("scanBtn").addEventListener("click", runScan);
+
+async function runScan() {
+  const textarea  = document.getElementById("topicsArea");
+  const topics    = textarea.value.split("\n")
+    .map(l => l.trim())
+    .filter(l => l && !l.startsWith("#"));
+
+  if (!topics.length) {
+    alert("Enter at least one topic to scan.");
+    return;
+  }
+
+  const apiKey   = document.getElementById("ncciKey").value.trim() || null;
+  const delay    = apiKey ? 110 : 360;  // ms between requests
+  const STEPS_PER_TOPIC = 9;            // total, count + 5 filters + 2 recent + 1 total
+  const totalSteps = topics.length * STEPS_PER_TOPIC;
+  let   doneSteps  = 0;
+
+  const scanBtn    = document.getElementById("scanBtn");
+  const exportBtn  = document.getElementById("exportBtn");
+  const progressEl = document.getElementById("progressText");
+  const progressWrap = document.getElementById("progressWrap");
+  const progressFill = document.getElementById("progressFill");
+  const resultsEl  = document.getElementById("results");
+  const summaryBar = document.getElementById("summaryBar");
+
+  scanBtn.disabled = true;
+  exportBtn.disabled = true;
+  progressWrap.style.display = "block";
+  resultsEl.innerHTML = "";
+  summaryBar.style.display = "none";
+  scanResults = [];
+
+  function onStep() {
+    doneSteps++;
+    const pct = Math.round((doneSteps / totalSteps) * 100);
+    progressFill.style.width = pct + "%";
+  }
+
+  for (let i = 0; i < topics.length; i++) {
+    const topic = topics[i];
+    progressEl.textContent = `Scanning ${i + 1} / ${topics.length}: ${topic.slice(0, 60)}…`;
+    try {
+      const r = await countStudies(topic, apiKey, delay, onStep);
+      r.score = gapScore(r);
+      scanResults.push(r);
+    } catch (err) {
+      resultsEl.insertAdjacentHTML("beforeend", `
+        <div class="error-msg">Error scanning <code>${escHtml(topic)}</code>: ${escHtml(err.message)}</div>
+      `);
+      doneSteps += STEPS_PER_TOPIC;
+      onStep();
+    }
+  }
+
+  // Sort by score
+  scanResults.sort((a, b) => b.score - a.score);
+
+  progressEl.textContent = `Done — ${scanResults.length} topic${scanResults.length !== 1 ? "s" : ""} scanned.`;
+  progressFill.style.width = "100%";
+
+  renderResults(scanResults);
+  renderSummary(scanResults);
+
+  scanBtn.disabled = false;
+  if (scanResults.length) exportBtn.disabled = false;
+}
+
+// ─── Render ──────────────────────────────────────────────────────────────────
+function escHtml(s) {
+  return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;");
+}
+
+function prosperoUrl(topic) {
+  // Strip PubMed field tags and boolean operators for a cleaner PROSPERO search
+  const cleaned = topic
+    .replace(/\[[\w\s/]+\]/g, "")   // remove [MeSH], [pt], [mh] etc.
+    .replace(/\bAND\b|\bOR\b|\bNOT\b/g, " ")
+    .replace(/[()]/g, " ")
+    .replace(/\s+/g, " ")
+    .trim();
+  return `https://www.crd.york.ac.uk/prospero/search/SearchResults.php?TermText=${encodeURIComponent(cleaned)}`;
+}
+
+function pubmedUrl(topic) {
+  return `https://pubmed.ncbi.nlm.nih.gov/?term=${encodeURIComponent(topic)}`;
+}
+
+function renderResults(results) {
+  const el = document.getElementById("results");
+  el.innerHTML = "";
+
+  results.forEach(r => {
+    const strong = hasGap(r);
+    const weak   = !strong && hasWeakGap(r);
+    const cls    = strong ? "gap-strong" : weak ? "gap-weak" : "gap-none";
+    const badge  = strong
+      ? '<span class="badge badge-strong">Strong Gap</span>'
+      : weak
+        ? '<span class="badge badge-weak">Weak Gap</span>'
+        : '<span class="badge badge-covered">Covered</span>';
+
+    el.insertAdjacentHTML("beforeend", `
+      <div class="result-card ${cls}">
+        <div class="result-header">
+          <span class="result-topic">${escHtml(r.topic)}</span>
+          ${badge}
+        </div>
+        <div class="result-stats">
+          <span><b>${r.total}</b> total</span>
+          <span><b>${r.rct}</b> RCTs</span>
+          <span><b>${r.cohort}</b> cohort</span>
+          <span><b>${r.case_series}</b> case reports</span>
+          <span><b>${r.systematic_review}</b> systematic reviews</span>
+          <span><b>${r.meta_analysis}</b> meta-analyses</span>
+          <span><b>${r.recent_rct + r.recent_cohort}</b> recent primary (3 yr)</span>
+        </div>
+        <div class="result-footer">
+          <span class="score-pill">Gap score: <b>${r.score.toFixed(1)}</b></span>
+          <a class="prospero-link"
+             href="${escHtml(prosperoUrl(r.topic))}"
+             target="_blank" rel="noopener">Check PROSPERO</a>
+          <a class="pubmed-link"
+             href="${escHtml(pubmedUrl(r.topic))}"
+             target="_blank" rel="noopener">View on PubMed</a>
+        </div>
+      </div>
+    `);
+  });
+}
+
+function renderSummary(results) {
+  const strong = results.filter(hasGap).length;
+  const weak   = results.filter(r => !hasGap(r) && hasWeakGap(r)).length;
+  const covered= results.length - strong - weak;
+  const bar    = document.getElementById("summaryBar");
+
+  bar.innerHTML = `
+    <span class="sum-strong"><b>${strong}</b> strong gap${strong !== 1 ? "s" : ""}</span>
+    <span class="sum-weak"><b>${weak}</b> weak gap${weak !== 1 ? "s" : ""}</span>
+    <span class="sum-none"><b>${covered}</b> covered</span>
+    <span style="color:var(--text-dim)">out of <b style="color:var(--text)">${results.length}</b> topic${results.length !== 1 ? "s" : ""}</span>
+  `;
+  bar.style.display = "flex";
+}
+
+// ─── Export CSV ──────────────────────────────────────────────────────────────
+document.getElementById("exportBtn").addEventListener("click", exportCsv);
+
+function exportCsv() {
+  if (!scanResults.length) return;
+
+  const headers = [
+    "Topic", "Gap Status", "Gap Score",
+    "Total", "RCTs", "Cohort", "Case Reports",
+    "Systematic Reviews", "Meta-Analyses",
+    "Recent RCTs (3yr)", "Recent Cohort (3yr)",
+    "PROSPERO Search URL", "PubMed URL",
+  ];
+
+  const rows = scanResults.map(r => [
+    r.topic,
+    hasGap(r) ? "Strong Gap" : hasWeakGap(r) ? "Weak Gap" : "Covered",
+    r.score.toFixed(1),
+    r.total, r.rct, r.cohort, r.case_series,
+    r.systematic_review, r.meta_analysis,
+    r.recent_rct, r.recent_cohort,
+    prosperoUrl(r.topic),
+    pubmedUrl(r.topic),
+  ]);
+
+  const csvContent = [headers, ...rows]
+    .map(row => row.map(cell => {
+      const s = String(cell);
+      // Quote fields containing commas, quotes, or newlines
+      return /[,"\n]/.test(s) ? `"${s.replace(/"/g, '""')}"` : s;
+    }).join(","))
+    .join("\r\n");
+
+  const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
+  const url  = URL.createObjectURL(blob);
+  const a    = document.createElement("a");
+  const ts   = new Date().toISOString().slice(0, 10);
+  a.href     = url;
+  a.download = `litgap-${ts}.csv`;
+  a.click();
+  URL.revokeObjectURL(url);
+}
+</script>
+</body>
+</html>

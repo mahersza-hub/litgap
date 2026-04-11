@@ -1,0 +1,126 @@
+LitGap Report — 2026-04-11 21:58
+Topics scanned: 15
+
+
+=== LITERATURE GAP REPORT ===
+
+Topic: "exoscope" AND "microsurgery" AND outcomes *** STRONG GAP ***
+  Total: 65 | RCTs: 0 | Cohort: 26 | Case reports: 5
+  Systematic Reviews: 0 | Meta-analyses: 0
+  Recent (3yr): 0 RCTs, 17 cohort
+  Gap Score: 74.5
+  Sample titles:
+    - Novel 3D Head-Mounted Display For Microsurgery Combined With an Exoscope Device.
+    - Free flap head and neck microsurgery with VITOM
+
+Topic: "intraoperative ultrasound" AND "brain tumor" AND resection * WEAK GAP *
+  Total: 64 | RCTs: 0 | Cohort: 15 | Case reports: 1
+  Systematic Reviews: 1 | Meta-analyses: 0
+  Recent (3yr): 0 RCTs, 7 cohort
+  Gap Score: 21.8
+
+Topic: "ketamine" AND "craniotomy" AND "postoperative pain"
+  Total: 10 | RCTs: 2 | Cohort: 1 | Case reports: 0
+  Systematic Reviews: 0 | Meta-analyses: 0
+  Recent (3yr): 2 RCTs, 1 cohort
+  Gap Score: 17.5
+  Sample titles:
+    - Comparative Evaluation of analgesic efficacy of ketamine and magnesium sulfate as adjuvants to bupivacaine for scalp block in supratentorial Craniotomy: A Randomized, Double-Blind clinical study.
+    - Effects of intraoperative low-dose esketamine on postoperative pain after vestibular schwannoma resection: A prospective randomized, double-blind, placebo-controlled study.
+
+Topic: "ultrasonic aspirator" AND "spinal cord tumor"
+  Total: 3 | RCTs: 0 | Cohort: 2 | Case reports: 2
+  Systematic Reviews: 0 | Meta-analyses: 0
+  Recent (3yr): 0 RCTs, 0 cohort
+  Gap Score: 3.6
+
+Topic: "3D printing" AND "spinal fusion" AND "patient-specific"
+  Total: 39 | RCTs: 1 | Cohort: 6 | Case reports: 6
+  Systematic Reviews: 1 | Meta-analyses: 0
+  Recent (3yr): 0 RCTs, 1 cohort
+  Gap Score: 0.8
+  Sample titles:
+    - Pedicle screw insertion with patient-specific 3D-printed guides based on low-dose CT scan is more accurate than free-hand technique in spine deformity patients: a prospective, randomized clinical trial.
+
+Topic: "endoscopic third ventriculostomy" AND "choroid plexus cauterization"
+  Total: 150 | RCTs: 4 | Cohort: 69 | Case reports: 9
+  Systematic Reviews: 9 | Meta-analyses: 8
+  Recent (3yr): 1 RCTs, 18 cohort
+  Gap Score: 0.0
+  Sample titles:
+    - Five-year outcomes after surgical treatment of infant postinfectious hydrocephalus in sub-Saharan Africa: results of a randomized trial.
+    - Neurosurgical management of Myelomeningocele in premature infants: a case series.
+    - Preoperative risk and postoperative outcome from subdural fluid collections in African infants with postinfectious hydrocephalus.
+
+Topic: "augmented reality" AND "spine surgery" AND navigation
+  Total: 154 | RCTs: 1 | Cohort: 15 | Case reports: 7
+  Systematic Reviews: 6 | Meta-analyses: 1
+  Recent (3yr): 0 RCTs, 5 cohort
+  Gap Score: 0.0
+  Sample titles:
+    - Minimally Invasive Transforaminal Lumbar Interbody Fusion Using Augmented Reality Surgical Navigation for Percutaneous Pedicle Screw Placement.
+    - Design and Validation of a Spinal Surgical Navigation System Based on Spatial Augmented Reality.
+    - Augmented Reality Surgical Navigation in Spine Surgery to Minimize Staff Radiation Exposure.
+
+Topic: "machine learning" AND "intracranial aneurysm" AND detection
+  Total: 46 | RCTs: 0 | Cohort: 8 | Case reports: 0
+  Systematic Reviews: 4 | Meta-analyses: 2
+  Recent (3yr): 0 RCTs, 5 cohort
+  Gap Score: 0.0
+
+Topic: "decompressive craniectomy" AND "timing" AND outcomes
+  Total: 232 | RCTs: 3 | Cohort: 118 | Case reports: 11
+  Systematic Reviews: 17 | Meta-analyses: 13
+  Recent (3yr): 0 RCTs, 26 cohort
+  Gap Score: 0.0
+  Sample titles:
+    - Management and outcomes of craniectomy and cranioplasty in pediatric intracranial infections: a multicenter cohort study.
+    - Cranioplasty complications in severe traumatic brain injury: implications of timing of surgery, implant material and incidence of vetriculomegaly versus Post-Traumatic hydrocephalus.
+    - Staircase strategy, tier-three therapies, and effects on outcome in traumatic brain injured patients: the Triple-T TBI study.
+
+Topic: "spinal cord injury" AND "stem cell" AND "clinical trial"
+  Total: 141 | RCTs: 6 | Cohort: 13 | Case reports: 9
+  Systematic Reviews: 4 | Meta-analyses: 1
+  Recent (3yr): 3 RCTs, 2 cohort
+  Gap Score: 0.0
+  Sample titles:
+    - Effects of Combined Intrathecal Mesenchymal Stem Cells and Schwann Cells Transplantation on Neuropathic Pain in Complete Spinal Cord Injury: A Phase II Randomized Active-Controlled Trial.
+    - Improvement of Neurogenic Bladder Dysfunction Following Combined Cell Therapy with Mesenchymal Stem Cell and Schwann Cell in Spinal Cord Injury: A Randomized, Open-Label, Phase II Clinical Trial.
+    - Safety and potential efficacy of expanded mesenchymal stromal cells of bone marrow and umbilical cord origins in patients with chronic spinal cord injuries: a phase I/II study.
+
+Topic: "transcranial magnetic stimulation" AND "depression" AND "neurosurgery"
+  Total: 137 | RCTs: 18 | Cohort: 10 | Case reports: 7
+  Systematic Reviews: 13 | Meta-analyses: 5
+  Recent (3yr): 3 RCTs, 4 cohort
+  Gap Score: 0.0
+  Sample titles:
+    - Intermittent theta burst stimulation for non-suicidal self-injury in adolescents with major depressive disorder: a randomized, sham-controlled trial.
+    - Effect of DLPFC rTMS on anhedonia and alpha asymmetry in depressed patients.
+    - Individualized precision targeting of dorsal attention and default mode networks with rTMS in traumatic brain injury-associated depression.
+
+Topic: "minimally invasive" AND "meningioma" AND outcomes
+  Total: 201 | RCTs: 0 | Cohort: 89 | Case reports: 37
+  Systematic Reviews: 11 | Meta-analyses: 7
+  Recent (3yr): 0 RCTs, 18 cohort
+  Gap Score: 0.0
+
+Topic: "endoscopic endonasal" AND "craniopharyngioma" AND outcomes
+  Total: 214 | RCTs: 0 | Cohort: 107 | Case reports: 20
+  Systematic Reviews: 9 | Meta-analyses: 4
+  Recent (3yr): 0 RCTs, 41 cohort
+  Gap Score: 0.0
+  Sample titles:
+    - Challenges, Learning Curve, and Safety of Endoscopic Endonasal Surgery of Sellar-Suprasellar Lesions in a Community Hospital.
+    - Management and outcome of recurrent adult craniopharyngiomas: an analysis of 42 cases with long-term follow-up.
+
+Topic: "robot-assisted" AND "deep brain stimulation" AND accuracy
+  Total: 41 | RCTs: 0 | Cohort: 12 | Case reports: 2
+  Systematic Reviews: 5 | Meta-analyses: 4
+  Recent (3yr): 0 RCTs, 3 cohort
+  Gap Score: 0.0
+
+Topic: "artificial intelligence" AND "glioma" AND grading
+  Total: 262 | RCTs: 0 | Cohort: 46 | Case reports: 1
+  Systematic Reviews: 17 | Meta-analyses: 9
+  Recent (3yr): 0 RCTs, 30 cohort
+  Gap Score: 0.0
