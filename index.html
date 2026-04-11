@@ -472,6 +472,24 @@
     .stat-item { font-size: 0.75rem; color: var(--text-2); }
     .stat-item strong { color: var(--text); font-weight: 600; }
 
+    /* Context-only stats: scoping + narrative reviews don't affect gap score */
+    .stat-item.stat-context { color: var(--text-3); }
+    .stat-item.stat-context strong { color: var(--text-2); font-weight: 500; }
+
+    /* Vertical rule separating primary studies from review counts */
+    .stat-divider {
+      display: block;
+      width: 1px;
+      height: 14px;
+      background: var(--border-2);
+      align-self: center;
+      flex-shrink: 0;
+      margin: 0 0.1rem;
+    }
+
+    /* Context columns in the intervention scanner table */
+    .col-context { color: var(--text-3) !important; }
+
     .card-footer {
       display: flex;
       align-items: center;
@@ -867,6 +885,8 @@
             <th class="col-num">Cohort</th>
             <th class="col-num">SRs</th>
             <th class="col-num">MAs</th>
+            <th class="col-num col-context">Scoping</th>
+            <th class="col-num col-context">Narrative</th>
             <th class="col-num">Score</th>
             <th>Status</th>
             <th>Links</th>
@@ -911,8 +931,12 @@ const STUDY_FILTERS = {
   rct:               "Randomized Controlled Trial[pt]",
   cohort:            "(Observational Study[pt] OR Cohort Studies[mh])",
   case_series:       "Case Reports[pt]",
-  meta_analysis:     "Meta-Analysis[pt]",
-  systematic_review: "Systematic Review[pt]",
+  // Tagged [pt] + keyword [tiab] for broader coverage
+  meta_analysis:     "(Meta-Analysis[pt] OR \"meta-analysis\"[tiab])",
+  systematic_review: "(Systematic Review[pt] OR \"systematic review\"[tiab])",
+  // Keyword-only — no publication type tag exists for these in PubMed
+  scoping_review:    "\"scoping review\"[tiab]",
+  narrative_review:  "\"narrative review\"[tiab]",
 };
 
 const RECENT_DATE_FILTER = '("2023"[PDAT] : "2026"[PDAT])';
@@ -935,10 +959,12 @@ async function esearchCount(query, key) {
   return parseInt((await resp.json()).esearchresult.count, 10);
 }
 
-// Full study count — used by Gap Detector (9 calls: total + 5 filters + 2 recent)
+// Full study count — used by Gap Detector (10 calls: total + 7 filters + 2 recent)
 async function countStudiesFull(topic, key, del, onStep) {
   const r = { topic, total: 0, rct: 0, cohort: 0, case_series: 0,
-               meta_analysis: 0, systematic_review: 0, recent_rct: 0, recent_cohort: 0 };
+               meta_analysis: 0, systematic_review: 0,
+               scoping_review: 0, narrative_review: 0,
+               recent_rct: 0, recent_cohort: 0 };
 
   r.total = await esearchCount(topic, key);
   await sleep(del); onStep();
@@ -961,9 +987,11 @@ async function countStudiesFull(topic, key, del, onStep) {
   return r;
 }
 
-// Light study count — used by Intervention Scanner (5 calls: total + rct + cohort + sr + ma)
+// Light study count — used by Intervention Scanner (7 calls: total + rct + cohort + 4 review types)
 async function countStudiesLight(topic, key, del, onStep) {
-  const r = { topic, total: 0, rct: 0, cohort: 0, meta_analysis: 0, systematic_review: 0 };
+  const r = { topic, total: 0, rct: 0, cohort: 0,
+               meta_analysis: 0, systematic_review: 0,
+               scoping_review: 0, narrative_review: 0 };
 
   r.total            = await esearchCount(topic, key);
   await sleep(del); onStep();
@@ -974,6 +1002,10 @@ async function countStudiesLight(topic, key, del, onStep) {
   r.systematic_review= await esearchCount(`(${topic}) AND ${STUDY_FILTERS.systematic_review}`, key);
   await sleep(del); onStep();
   r.meta_analysis    = await esearchCount(`(${topic}) AND ${STUDY_FILTERS.meta_analysis}`,     key);
+  await sleep(del); onStep();
+  r.scoping_review   = await esearchCount(`(${topic}) AND ${STUDY_FILTERS.scoping_review}`,    key);
+  await sleep(del); onStep();
+  r.narrative_review = await esearchCount(`(${topic}) AND ${STUDY_FILTERS.narrative_review}`,  key);
   await sleep(del); onStep();
 
   return r;
@@ -1111,7 +1143,7 @@ function gdTogglePreset(name, chip) {
 }
 
 let gdResults = [];
-const GD_STEPS_PER_TOPIC = 9;
+const GD_STEPS_PER_TOPIC = 10; // 1 total + 7 filters + 2 recent
 
 document.getElementById("gdScanBtn").addEventListener("click", gdRunScan);
 document.getElementById("gdExportBtn").addEventListener("click", gdExportCsv);
@@ -1157,7 +1189,7 @@ async function gdRunScan() {
       r.score = gapScore(r);
       gdResults.push(r);
     } catch (err) {
-      done += GD_STEPS_PER_TOPIC;
+      done += GD_STEPS_PER_TOPIC; // keep progress moving on error
       resultsEl.insertAdjacentHTML("beforeend",
         `<div class="error-msg">Error scanning <code>${escHtml(topic)}</code>: ${escHtml(err.message)}</div>`
       );
@@ -1195,9 +1227,12 @@ function gdRenderResults(results) {
         <span class="stat-item"><strong>${r.rct}</strong> RCT${r.rct !== 1 ? "s" : ""}</span>
         <span class="stat-item"><strong>${r.cohort}</strong> cohort</span>
         <span class="stat-item"><strong>${r.case_series}</strong> case reports</span>
+        <span class="stat-item"><strong>${r.recent_rct + r.recent_cohort}</strong> recent primary (3 yr)</span>
+        <span class="stat-divider"></span>
         <span class="stat-item"><strong>${r.systematic_review}</strong> systematic review${r.systematic_review !== 1 ? "s" : ""}</span>
         <span class="stat-item"><strong>${r.meta_analysis}</strong> meta-anal${r.meta_analysis !== 1 ? "yses" : "ysis"}</span>
-        <span class="stat-item"><strong>${r.recent_rct + r.recent_cohort}</strong> recent primary (3 yr)</span>
+        <span class="stat-item stat-context"><strong>${r.scoping_review}</strong> scoping review${r.scoping_review !== 1 ? "s" : ""}</span>
+        <span class="stat-item stat-context"><strong>${r.narrative_review}</strong> narrative review${r.narrative_review !== 1 ? "s" : ""}</span>
       </div>
       <div class="card-footer">
         <span class="score-tag">Gap score&thinsp;·&thinsp;<strong>${r.score.toFixed(1)}</strong></span>
@@ -1229,14 +1264,14 @@ function gdExportCsv() {
   downloadCsv(
     `litgap-gaps-${new Date().toISOString().slice(0, 10)}.csv`,
     ["Topic","Gap Status","Gap Score","Total","RCTs","Cohort","Case Reports",
-     "Systematic Reviews","Meta-Analyses","Recent RCTs (3yr)","Recent Cohort (3yr)",
-     "PROSPERO URL","PubMed URL"],
+     "Systematic Reviews","Meta-Analyses","Scoping Reviews","Narrative Reviews",
+     "Recent RCTs (3yr)","Recent Cohort (3yr)","PROSPERO URL","PubMed URL"],
     gdResults.map(r => [
       r.topic,
       hasGap(r) ? "Strong Gap" : hasWeakGap(r) ? "Weak Gap" : "Covered",
       r.score.toFixed(1),
       r.total, r.rct, r.cohort, r.case_series,
-      r.systematic_review, r.meta_analysis,
+      r.systematic_review, r.meta_analysis, r.scoping_review, r.narrative_review,
       r.recent_rct, r.recent_cohort,
       prosperoUrl(r.topic), pubmedUrl(r.topic),
     ])
@@ -1447,7 +1482,7 @@ async function isRunScan() {
     OUTCOME_TERMS.map(outcome => ({ termObj, outcome, query: buildQuery(termObj, outcome) }))
   );
 
-  const IS_STEPS_PER_COMBO = 5;
+  const IS_STEPS_PER_COMBO = 7; // 1 total + 2 primary + 4 review types
   const totalSteps = combinations.length * IS_STEPS_PER_COMBO;
   let   doneSteps  = 0;
 
@@ -1469,7 +1504,7 @@ async function isRunScan() {
       isResults.push(r);
       isAppendRow(r, isResults.length - 1);
     } catch (err) {
-      doneSteps += IS_STEPS_PER_COMBO;
+      doneSteps += IS_STEPS_PER_COMBO; // keep progress moving on error
     }
   }
 
@@ -1513,7 +1548,6 @@ function isRerenderTable(results) {
 }
 
 function isRowHtml(r) {
-  const primary = r.rct + r.cohort;
   return `
     <td class="td-intervention" title="${escHtml(r.topic)}">${escHtml(r.termLabel)}</td>
     <td class="td-outcome">${escHtml(r.outcomeLabel)}</td>
@@ -1522,6 +1556,8 @@ function isRowHtml(r) {
     <td class="col-num ${r.cohort === 0 ? "dim" : ""}">${r.cohort}</td>
     <td class="col-num ${r.systematic_review === 0 ? "dim" : ""}">${r.systematic_review}</td>
     <td class="col-num ${r.meta_analysis === 0 ? "dim" : ""}">${r.meta_analysis}</td>
+    <td class="col-num col-context dim">${r.scoping_review}</td>
+    <td class="col-num col-context dim">${r.narrative_review}</td>
     <td class="col-num"><strong>${r.score.toFixed(1)}</strong></td>
     <td><span class="badge ${badgeClass(r)}">${gapLabel(r)}</span></td>
     <td>
@@ -1554,12 +1590,13 @@ function isExportCsv() {
     `litgap-intervention-${new Date().toISOString().slice(0, 10)}.csv`,
     ["Intervention Term","Outcome","Full Query","Gap Status","Gap Score",
      "Total","RCTs","Cohort","Systematic Reviews","Meta-Analyses",
-     "PROSPERO URL","PubMed URL"],
+     "Scoping Reviews","Narrative Reviews","PROSPERO URL","PubMed URL"],
     isResults.map(r => [
       r.termLabel, r.outcomeLabel, r.topic,
       hasGap(r) ? "Strong Gap" : hasWeakGap(r) ? "Weak Gap" : "Covered",
       r.score.toFixed(1),
       r.total, r.rct, r.cohort, r.systematic_review, r.meta_analysis,
+      r.scoping_review, r.narrative_review,
       prosperoUrl(r.topic), pubmedUrl(r.topic),
     ])
   );
