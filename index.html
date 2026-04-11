@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>LitGap — Literature Gap Detector</title>
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: #f8f8f6; color: #1a1a1a; line-height: 1.5; }
+@media (prefers-color-scheme: dark) {
+  body { background: #1a1a1a; color: #e8e8e6; }
+  .app-header { background: #222; border-color: #333; }
+  .topics-area { background: #222; color: #e8e8e6; border-color: #444; }
+  .result-card { background: #222; border-color: #333; }
+  .stat { background: #2a2a2a; }
+  .preset-chip { background: #2a2a2a; border-color: #444; color: #aaa; }
+  .preset-chip:hover, .preset-chip.active { background: #1a2a4a; color: #85B7EB; border-color: #378ADD; }
+  .scan-btn { background: #534AB7; color: #fff; border-color: #534AB7; }
+  .scan-btn:hover { background: #3C3489; }
+  .badge-strong { background: #085041; color: #9FE1CB; }
+  .badge-weak { background: #633806; color: #FAC775; }
+  .badge-score { background: #3C3489; color: #CECBF6; }
+  .badge-none { background: #2a2a2a; color: #888; }
+  .summary-stat { background: #2a2a2a; }
+  .sr-titles { border-color: #333; }
+  .info-text { color: #aaa; }
+  .progress-bar { background: #333; }
+}
+.app { max-width: 720px; margin: 0 auto; padding: 1rem; }
+.app-header { padding: 1.5rem 0; margin-bottom: 1.5rem; border-bottom: 1px solid #e5e5e3; }
+.app-title { font-size: 22px; font-weight: 600; }
+.app-subtitle { font-size: 14px; color: #666; margin-top: 4px; }
+.presets { margin-bottom: 1rem; }
+.presets-label { font-size: 13px; color: #888; margin-bottom: 6px; }
+.preset-chips { display: flex; flex-wrap: wrap; gap: 6px; }
+.preset-chip { font-size: 12px; padding: 5px 12px; border-radius: 8px; background: #fff; border: 1px solid #e5e5e3; cursor: pointer; color: #666; transition: all 0.15s; }
+.preset-chip:hover { background: #E6F1FB; color: #185FA5; border-color: #85B7EB; }
+.topics-area { width: 100%; min-height: 140px; font-family: 'SF Mono', 'Fira Code', monospace; font-size: 13px; padding: 12px; border-radius: 8px; border: 1px solid #e5e5e3; background: #fff; color: #1a1a1a; resize: vertical; margin-bottom: 12px; }
+.topics-area:focus { outline: none; border-color: #534AB7; }
+.scan-btn { width: 100%; padding: 12px; font-size: 15px; font-weight: 600; cursor: pointer; border-radius: 8px; background: #534AB7; color: #fff; border: none; transition: background 0.15s; }
+.scan-btn:hover { background: #3C3489; }
+.scan-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+.progress { margin: 1rem 0; font-size: 13px; color: #888; }
+.progress-bar { height: 4px; background: #e5e5e3; border-radius: 2px; margin-top: 6px; overflow: hidden; }
+.progress-fill { height: 100%; background: #534AB7; transition: width 0.3s; border-radius: 2px; }
+.results { margin-top: 1.5rem; }
+.result-card { background: #fff; border: 1px solid #e5e5e3; border-radius: 12px; padding: 1rem 1.25rem; margin-bottom: 12px; }
+.result-card.strong-gap { border-color: #1D9E75; border-width: 2px; }
+.result-card.weak-gap { border-color: #BA7517; border-width: 2px; }
+.result-header { display: flex; justify-content: space-between; align-items: flex-start; gap: 8px; margin-bottom: 10px; flex-wrap: wrap; }
+.result-topic { font-size: 14px; font-weight: 500; flex: 1; min-width: 200px; }
+.badges { display: flex; gap: 6px; }
+.badge { font-size: 11px; padding: 3px 8px; border-radius: 6px; font-weight: 600; white-space: nowrap; }
+.badge-strong { background: #E1F5EE; color: #085041; }
+.badge-weak { background: #FAEEDA; color: #633806; }
+.badge-none { background: #f0f0ee; color: #999; }
+.badge-score { background: #EEEDFE; color: #3C3489; }
+.stats-grid { display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 8px; margin-bottom: 10px; }
+@media (max-width: 500px) { .stats-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+.stat { background: #f8f8f6; border-radius: 8px; padding: 8px 6px; text-align: center; }
+.stat-val { font-size: 18px; font-weight: 600; }
+.stat-label { font-size: 10px; color: #888; margin-top: 2px; text-transform: uppercase; letter-spacing: 0.5px; }
+.sr-titles { margin-top: 8px; padding-top: 8px; border-top: 1px solid #e5e5e3; }
+.sr-titles-label { font-size: 12px; color: #888; margin-bottom: 4px; font-weight: 600; }
+.sr-title { font-size: 12px; color: #888; padding: 2px 0; }
+.summary-bar { display: flex; gap: 12px; margin-bottom: 1rem; flex-wrap: wrap; }
+.summary-stat { background: #fff; border-radius: 8px; padding: 8px 14px; font-size: 13px; border: 1px solid #e5e5e3; }
+.summary-stat strong { font-weight: 600; }
+.error-msg { color: #E24B4A; font-size: 13px; margin: 8px 0; }
+.info-text { font-size: 13px; color: #888; margin-top: 8px; }
+.footer { margin-top: 3rem; padding-top: 1rem; border-top: 1px solid #e5e5e3; font-size: 12px; color: #aaa; text-align: center; }
+</style>
+</head>
+<body>
+<div class="app">
+  <div class="app-header">
+    <div class="app-title">LitGap</div>
+    <div class="app-subtitle">Scan PubMed for systematic review opportunities. Finds topics where primary evidence exists but no review has been published.</div>
+  </div>
+
+  <div class="presets">
+    <div class="presets-label">Quick-add topic presets</div>
+    <div class="preset-chips">
+      <div class="preset-chip" onclick="addPreset('neurosurgery')">Neurosurgery</div>
+      <div class="preset-chip" onclick="addPreset('spine')">Spine surgery</div>
+      <div class="preset-chip" onclick="addPreset('neuroai')">Neuro + AI</div>
+      <div class="preset-chip" onclick="addPreset('functional')">Functional</div>
+      <div class="preset-chip" onclick="addPreset('onco')">Neuro-oncology</div>
+      <div class="preset-chip" onclick="addPreset('ophthalmology')">Ophthalmology</div>
+    </div>
+  </div>
+
+  <textarea class="topics-area" id="topics" placeholder='Enter PubMed search queries, one per line&#10;&#10;Example:&#10;"3D printing" AND "cranioplasty"&#10;"exoscope" AND neurosurgery AND outcomes'></textarea>
+
+  <button class="scan-btn" id="scanBtn" onclick="startScan()">Scan for gaps</button>
+  <div class="info-text">Uses PubMed E-utilities. Rate limited to ~3 requests/sec. Each topic takes ~5 seconds.</div>
+
+  <div class="progress" id="progress" style="display:none;">
+    <span id="progressText">Scanning...</span>
+    <div class="progress-bar"><div class="progress-fill" id="progressFill" style="width:0%"></div></div>
+  </div>
+
+  <div class="error-msg" id="error" style="display:none;"></div>
+  <div id="summary" style="display:none;" class="summary-bar"></div>
+  <div class="results" id="results"></div>
+
+  <div class="footer">LitGap — Built by Maher. Powered by PubMed E-utilities.</div>
+</div>
+
+<script>
+const BASE = "https://eutils.ncbi.nlm.nih.gov/entrez/eutils";
+const PRESETS = {
+  neurosurgery: [
+    '"decompressive craniectomy" AND timing AND outcomes',
+    '"3D printing" AND "cranioplasty"',
+    '"endoscopic third ventriculostomy" AND complications',
+    '"tubular retractor" AND "brain tumor"',
+    '"ketamine" AND craniotomy AND "postoperative pain"',
+  ],
+  spine: [
+    '"robot-assisted" AND "spine surgery" AND outcomes',
+    '"augmented reality" AND "spine surgery" AND navigation',
+    '"3D printing" AND "spinal fusion" AND "patient-specific"',
+    '"minimally invasive" AND "cervical disc" AND arthroplasty',
+    '"ultrasonic aspirator" AND "spinal cord tumor"',
+  ],
+  neuroai: [
+    '"artificial intelligence" AND "glioma" AND grading',
+    '"machine learning" AND "intracranial aneurysm" AND detection',
+    '"large language model" AND "clinical guidelines" AND surgery',
+    '"deep learning" AND "spine imaging" AND diagnosis',
+    '"natural language processing" AND "neurosurgery"',
+  ],
+  functional: [
+    '"robot-assisted" AND "deep brain stimulation" AND accuracy',
+    '"focused ultrasound" AND "essential tremor"',
+    '"stereoelectroencephalography" AND complications',
+    '"spinal cord stimulation" AND "failed back surgery"',
+    '"responsive neurostimulation" AND epilepsy AND outcomes',
+  ],
+  onco: [
+    '"fluorescence guided surgery" AND glioma',
+    '"awake craniotomy" AND "insular glioma"',
+    '"intraoperative ultrasound" AND "brain tumor" AND resection',
+    '"laser interstitial thermal therapy" AND "brain metastases"',
+    '"immunotherapy" AND glioblastoma AND "clinical trial"',
+  ],
+  ophthalmology: [
+    '"intravitreal injection" AND "endophthalmitis" AND prevention',
+    '"femtosecond laser" AND cataract AND outcomes',
+    '"gene therapy" AND "retinal dystrophy"',
+    '"artificial intelligence" AND "diabetic retinopathy" AND screening',
+    '"minimally invasive glaucoma surgery" AND "long-term"',
+  ]
+};
+
+function addPreset(key) {
+  const ta = document.getElementById('topics');
+  const existing = ta.value.trim();
+  const newTopics = PRESETS[key].join('\n');
+  ta.value = existing ? existing + '\n' + newTopics : newTopics;
+}
+
+async function esearchCount(query) {
+  const params = new URLSearchParams({ db: 'pubmed', term: query, rettype: 'count', retmode: 'json' });
+  const r = await fetch(BASE + "/esearch.fcgi?" + params);
+  const d = await r.json();
+  return parseInt(d.esearchresult.count);
+}
+
+async function esearchIds(query, retmax) {
+  retmax = retmax || 5;
+  const params = new URLSearchParams({ db: 'pubmed', term: query, retmax: retmax, retmode: 'json', sort: 'date' });
+  const r = await fetch(BASE + "/esearch.fcgi?" + params);
+  const d = await r.json();
+  return d.esearchresult.idlist || [];
+}
+
+async function efetchTitles(pmids) {
+  if (!pmids.length) return [];
+  const params = new URLSearchParams({ db: 'pubmed', id: pmids.join(','), retmode: 'xml' });
+  const r = await fetch(BASE + "/efetch.fcgi?" + params);
+  const txt = await r.text();
+  var parser = new DOMParser();
+  var doc = parser.parseFromString(txt, 'text/xml');
+  var nodes = doc.querySelectorAll('ArticleTitle');
+  var titles = [];
+  for (var i = 0; i < nodes.length; i++) {
+    if (nodes[i].textContent) titles.push(nodes[i].textContent);
+  }
+  return titles;
+}
+
+function delay(ms) { return new Promise(function(r) { setTimeout(r, ms); }); }
+
+async function countStudies(topic) {
+  var filters = {
+    rct: 'Randomized Controlled Trial[pt]',
+    cohort: '(Observational Study[pt] OR Cohort Studies[mh])',
+    case_series: 'Case Reports[pt]',
+    meta_analysis: 'Meta-Analysis[pt]',
+    systematic_review: 'Systematic Review[pt]'
+  };
+
+  var c = { topic: topic, total: 0, rct: 0, cohort: 0, case_series: 0, meta_analysis: 0, systematic_review: 0, sr_keyword_count: 0, recent_rct: 0, recent_cohort: 0, sample_titles: [], sr_keyword_titles: [] };
+
+  c.total = await esearchCount(topic); await delay(350);
+
+  var keys = Object.keys(filters);
+  for (var i = 0; i < keys.length; i++) {
+    c[keys[i]] = await esearchCount("(" + topic + ") AND " + filters[keys[i]]);
+    await delay(350);
+  }
+
+  var recent = 'AND ("2023"[PDAT] : "2026"[PDAT])';
+  c.recent_rct = await esearchCount("(" + topic + ") AND " + filters.rct + " " + recent); await delay(350);
+  c.recent_cohort = await esearchCount("(" + topic + ") AND " + filters.cohort + " " + recent); await delay(350);
+
+  var srKwQuery = '(' + topic + ') AND ("systematic review"[tiab] OR "meta-analysis"[tiab] OR "meta analysis"[tiab])';
+  c.sr_keyword_count = await esearchCount(srKwQuery); await delay(350);
+
+  if (c.sr_keyword_count > 0) {
+    var srIds = await esearchIds(srKwQuery, 5); await delay(350);
+    c.sr_keyword_titles = await efetchTitles(srIds); await delay(350);
+  }
+
+  var primaryIds = await esearchIds("(" + topic + ") AND (Randomized Controlled Trial[pt] OR Observational Study[pt])", 5); await delay(350);
+  c.sample_titles = await efetchTitles(primaryIds);
+
+  c.primary_evidence = c.rct + c.cohort;
+  c.total_reviews = Math.max(c.systematic_review + c.meta_analysis, c.sr_keyword_count);
+
+  var primary = c.rct * 3 + c.cohort * 1.5 + c.case_series * 0.3;
+  var reviewPenalty = c.total_reviews * 15;
+  var recencyBonus = c.recent_rct * 4 + c.recent_cohort * 2;
+  c.gap_score = Math.max(0, Math.round((primary + recencyBonus - reviewPenalty) * 10) / 10);
+
+  c.has_gap = c.primary_evidence >= 5 && c.total_reviews === 0;
+  c.has_weak_gap = c.primary_evidence >= 3 && c.total_reviews <= 1 && c.primary_evidence >= 8 && !c.has_gap;
+
+  return c;
+}
+
+function renderResult(c) {
+  var cls = '';
+  var badge = '<span class="badge badge-none">No gap</span>';
+  if (c.has_gap) { cls = 'strong-gap'; badge = '<span class="badge badge-strong">Strong gap</span>'; }
+  else if (c.has_weak_gap) { cls = 'weak-gap'; badge = '<span class="badge badge-weak">Weak gap</span>'; }
+
+  var srSection = '';
+  if (c.sr_keyword_titles.length) {
+    srSection = '<div class="sr-titles"><div class="sr-titles-label">Existing reviews found:</div>';
+    for (var i = 0; i < c.sr_keyword_titles.length; i++) {
+      srSection += '<div class="sr-title">- ' + c.sr_keyword_titles[i] + '</div>';
+    }
+    srSection += '</div>';
+  }
+
+  var sampleSection = '';
+  if (c.sample_titles.length && (c.has_gap || c.has_weak_gap)) {
+    sampleSection = '<div class="sr-titles"><div class="sr-titles-label">Sample primary studies:</div>';
+    for (var j = 0; j < Math.min(c.sample_titles.length, 3); j++) {
+      sampleSection += '<div class="sr-title">- ' + c.sample_titles[j] + '</div>';
+    }
+    sampleSection += '</div>';
+  }
+
+  return '<div class="result-card ' + cls + '">' +
+    '<div class="result-header">' +
+      '<div class="result-topic">' + c.topic + '</div>' +
+      '<div class="badges"><span class="badge badge-score">' + c.gap_score + '</span>' + badge + '</div>' +
+    '</div>' +
+    '<div class="stats-grid">' +
+      '<div class="stat"><div class="stat-val">' + c.total + '</div><div class="stat-label">Total</div></div>' +
+      '<div class="stat"><div class="stat-val">' + c.rct + '</div><div class="stat-label">RCTs</div></div>' +
+      '<div class="stat"><div class="stat-val">' + c.cohort + '</div><div class="stat-label">Cohort</div></div>' +
+      '<div class="stat"><div class="stat-val">' + c.case_series + '</div><div class="stat-label">Case reports</div></div>' +
+      '<div class="stat"><div class="stat-val">' + c.total_reviews + '</div><div class="stat-label">Reviews</div></div>' +
+      '<div class="stat"><div class="stat-val">' + (c.recent_rct + c.recent_cohort) + '</div><div class="stat-label">Recent 3yr</div></div>' +
+    '</div>' +
+    srSection + sampleSection +
+  '</div>';
+}
+
+async function startScan() {
+  var ta = document.getElementById('topics');
+  var lines = ta.value.split('\n');
+  var topics = [];
+  for (var i = 0; i < lines.length; i++) {
+    var t = lines[i].trim();
+    if (t && t.charAt(0) !== '#') topics.push(t);
+  }
+  if (!topics.length) {
+    document.getElementById('error').style.display = 'block';
+    document.getElementById('error').textContent = 'Enter at least one topic.';
+    return;
+  }
+
+  document.getElementById('error').style.display = 'none';
+  document.getElementById('scanBtn').disabled = true;
+  document.getElementById('scanBtn').textContent = 'Scanning...';
+  document.getElementById('progress').style.display = 'block';
+  document.getElementById('results').innerHTML = '';
+  document.getElementById('summary').style.display = 'none';
+
+  var allResults = [];
+
+  for (var i = 0; i < topics.length; i++) {
+    document.getElementById('progressText').textContent = 'Scanning ' + (i + 1) + '/' + topics.length + ': ' + topics[i].substring(0, 50) + '...';
+    document.getElementById('progressFill').style.width = ((i) / topics.length * 100) + '%';
+
+    try {
+      var result = await countStudies(topics[i]);
+      allResults.push(result);
+      allResults.sort(function(a, b) { return b.gap_score - a.gap_score; });
+      document.getElementById('results').innerHTML = allResults.map(renderResult).join('');
+    } catch (e) {
+      document.getElementById('results').innerHTML += '<div class="result-card"><div class="result-topic">' + topics[i] + '</div><div style="font-size:13px;color:#E24B4A;">Error: ' + e.message + '</div></div>';
+    }
+  }
+
+  document.getElementById('progressFill').style.width = '100%';
+  document.getElementById('progressText').textContent = 'Scan complete.';
+  document.getElementById('scanBtn').disabled = false;
+  document.getElementById('scanBtn').textContent = 'Scan for gaps';
+
+  var strong = 0, weak = 0;
+  for (var j = 0; j < allResults.length; j++) {
+    if (allResults[j].has_gap) strong++;
+    if (allResults[j].has_weak_gap) weak++;
+  }
+  document.getElementById('summary').innerHTML = '<div class="summary-stat"><strong>' + strong + '</strong> strong gaps</div><div class="summary-stat"><strong>' + weak + '</strong> weak gaps</div><div class="summary-stat"><strong>' + allResults.length + '</strong> scanned</div>';
+  document.getElementById('summary').style.display = 'flex';
+}
+</script>
+</body>
+</html>
