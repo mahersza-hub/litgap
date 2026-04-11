@@ -745,6 +745,136 @@
       margin-top: 0.25rem;
     }
 
+    /* ── Suggest angles button ──────────────────────────────────── */
+    /* Reset button defaults so card-link styles apply cleanly */
+    button.card-link {
+      font-family: inherit;
+      cursor: pointer;
+      background: none;
+    }
+
+    .card-link-angles {
+      color: var(--text-2);
+      border-color: var(--border-2);
+    }
+
+    .card-link-angles:hover { color: var(--text); background: var(--surface-3); }
+
+    .card-link-angles.active {
+      color: var(--accent);
+      background: var(--accent-muted);
+      border-color: rgba(79,125,248,0.25);
+    }
+
+    /* ── AI angles section ───────────────────────────────────────── */
+    .angles-section {
+      border-top: 1px solid var(--border);
+      margin-top: 0.9rem;
+      padding-top: 0.9rem;
+      display: none;
+    }
+
+    .angles-section.visible { display: block; }
+
+    .angle-loading {
+      display: flex;
+      align-items: center;
+      gap: 0.65rem;
+      font-size: 0.78rem;
+      color: var(--text-2);
+      padding: 0.25rem 0;
+    }
+
+    .angle-spinner {
+      width: 13px;
+      height: 13px;
+      border: 2px solid var(--border-2);
+      border-top-color: var(--accent);
+      border-radius: 50%;
+      flex-shrink: 0;
+      animation: spin 0.75s linear infinite;
+    }
+
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    .angle-error {
+      font-size: 0.78rem;
+      color: var(--strong);
+      padding: 0.25rem 0;
+    }
+
+    .angles-list {
+      display: flex;
+      flex-direction: column;
+      gap: 0.6rem;
+    }
+
+    .angle-item {
+      background: var(--surface-2);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 0.9rem 1rem;
+      opacity: 0;
+      animation: fadeSlideUp 0.28s ease forwards;
+    }
+
+    .angle-num {
+      font-size: 0.67rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--text-3);
+      margin-bottom: 0.4rem;
+    }
+
+    .angle-title {
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: var(--text);
+      line-height: 1.4;
+      margin-bottom: 0.55rem;
+    }
+
+    .angle-pico {
+      font-size: 0.76rem;
+      color: var(--text-2);
+      line-height: 1.65;
+      margin-bottom: 0.6rem;
+      white-space: pre-line;
+    }
+
+    .angle-meta {
+      display: flex;
+      align-items: flex-start;
+      gap: 0.55rem;
+      flex-wrap: wrap;
+    }
+
+    .feasibility-tag {
+      font-size: 0.67rem;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      padding: 0.22rem 0.5rem;
+      border-radius: var(--radius-sm);
+      border: 1px solid transparent;
+      white-space: nowrap;
+      flex-shrink: 0;
+      margin-top: 0.1rem;
+    }
+
+    .feasibility-high     { background: var(--covered-bg);  border-color: var(--covered-border); color: var(--covered); }
+    .feasibility-moderate { background: var(--weak-bg);     border-color: var(--weak-border);    color: var(--weak); }
+    .feasibility-low      { background: var(--strong-bg);   border-color: var(--strong-border);  color: var(--strong); }
+
+    .angle-novelty {
+      font-size: 0.75rem;
+      color: var(--text-2);
+      line-height: 1.55;
+      flex: 1;
+      min-width: 0;
+    }
+
     /* ── Responsive ─────────────────────────────────────────────── */
     @media (max-width: 600px) {
       .hero { padding: 3.5rem 1.25rem 3rem; }
@@ -775,6 +905,11 @@
       <label for="ncbiKey">NCBI API key</label>
       <input id="ncbiKey" class="field-input" type="password"
         placeholder="Optional — raises rate limit from 3 to 10 req/sec" autocomplete="off" />
+    </div>
+    <div class="api-row" style="margin-top:0.75rem">
+      <label for="anthropicKeyInput">Anthropic API key</label>
+      <input id="anthropicKeyInput" class="field-input" type="password"
+        placeholder="Optional — enables AI angle suggestions on gap cards" autocomplete="off" />
     </div>
   </div>
 
@@ -1214,7 +1349,8 @@ function gdRenderResults(results) {
   container.innerHTML = "";
 
   results.forEach((r, i) => {
-    const card = document.createElement("div");
+    const isGap = hasGap(r) || hasWeakGap(r);
+    const card  = document.createElement("div");
     card.className = `result-card ${gapClass(r)}`;
     card.style.animationDelay = `${i * 55}ms`;
     card.innerHTML = `
@@ -1238,7 +1374,13 @@ function gdRenderResults(results) {
         <span class="score-tag">Gap score&thinsp;·&thinsp;<strong>${r.score.toFixed(1)}</strong></span>
         <a class="card-link card-link-prospero" href="${escHtml(prosperoUrl(r.topic))}" target="_blank" rel="noopener">Check PROSPERO</a>
         <a class="card-link card-link-pubmed"   href="${escHtml(pubmedUrl(r.topic))}"   target="_blank" rel="noopener">View on PubMed</a>
-      </div>`;
+        ${isGap ? '<button class="card-link card-link-angles angles-btn">Suggest angles</button>' : ''}
+      </div>
+      ${isGap ? '<div class="angles-section"></div>' : ''}`;
+
+    if (isGap) {
+      card.querySelector(".angles-btn").addEventListener("click", () => suggestAngles(r, card));
+    }
     container.appendChild(card);
   });
 }
@@ -1276,6 +1418,206 @@ function gdExportCsv() {
       prosperoUrl(r.topic), pubmedUrl(r.topic),
     ])
   );
+}
+
+
+// ═══════════════════════════════════════════════════════════════════════════════
+// AI ANGLE SUGGESTIONS
+// ═══════════════════════════════════════════════════════════════════════════════
+
+const ANTHROPIC_API_URL = "https://api.anthropic.com/v1/messages";
+const ANTHROPIC_MODEL   = "claude-sonnet-4-20250514";
+
+/**
+ * Lazily fetch the titles of up to 5 recent primary studies for a topic.
+ * Called on demand (when "Suggest angles" is clicked), not during the main scan.
+ */
+async function fetchSampleTitles(topic, key, del) {
+  const searchParams = new URLSearchParams({
+    db: "pubmed",
+    term: `(${topic}) AND (Randomized Controlled Trial[pt] OR Observational Study[pt])`,
+    retmax: 5,
+    sort: "date",
+    retmode: "json",
+  });
+  if (key) searchParams.set("api_key", key);
+
+  const searchResp = await fetch(`${PUBMED_BASE}/esearch.fcgi?${searchParams}`);
+  if (!searchResp.ok) return [];
+  const ids = (await searchResp.json()).esearchresult.idlist ?? [];
+  if (!ids.length) return [];
+
+  await sleep(del);
+
+  const summaryParams = new URLSearchParams({ db: "pubmed", id: ids.join(","), retmode: "json" });
+  if (key) summaryParams.set("api_key", key);
+
+  const summaryResp = await fetch(`${PUBMED_BASE}/esummary.fcgi?${summaryParams}`);
+  if (!summaryResp.ok) return [];
+  const data = await summaryResp.json();
+
+  return ids.map(id => data.result?.[id]?.title).filter(Boolean);
+}
+
+/**
+ * Call the Anthropic API with the gap data and return parsed angle suggestions.
+ * Requires the anthropic-dangerous-direct-browser-access header for CORS.
+ */
+async function callAnthropicAngles(r, anthropicKeyVal) {
+  const titles     = r.sampleTitles ?? [];
+  const titlesText = titles.length
+    ? `\nSample recent study titles:\n${titles.map(t => `  • ${t}`).join("\n")}`
+    : "";
+
+  const prompt = `You are assisting a medical researcher identifying opportunities for new systematic reviews.
+
+Evidence gap data for the query: "${r.topic}"
+
+Primary evidence:
+- RCTs: ${r.rct}
+- Cohort studies: ${r.cohort}
+- Case reports: ${r.case_series}
+- Recent primary studies (last 3 years): ${(r.recent_rct ?? 0) + (r.recent_cohort ?? 0)}
+
+Existing review literature:
+- Systematic reviews: ${r.systematic_review}
+- Meta-analyses: ${r.meta_analysis}
+- Scoping reviews: ${r.scoping_review}
+- Narrative reviews: ${r.narrative_review}
+${titlesText}
+
+Suggest 3–5 specific, publishable angles for a new systematic review on this topic. Each angle must be meaningfully different from the others and distinct from any existing reviews.
+
+Respond with a valid JSON array only — no markdown, no preamble, no trailing text. Each element must have exactly these four string keys:
+- "title": A specific, publishable systematic review title
+- "pico": PICO-structured question using this exact format: "P: [population] | I: [intervention] | C: [comparison] | O: [outcome]"
+- "feasibility": One of "High", "Moderate", or "Low" followed by " — " and a one-sentence rationale based on the study count above
+- "novelty": One sentence explaining what makes this angle distinct from the existing review literature`;
+
+  const resp = await fetch(ANTHROPIC_API_URL, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      "x-api-key": anthropicKeyVal,
+      "anthropic-version": "2023-06-01",
+      "anthropic-dangerous-direct-browser-access": "true",
+    },
+    body: JSON.stringify({
+      model: ANTHROPIC_MODEL,
+      max_tokens: 1000,
+      messages: [{ role: "user", content: prompt }],
+    }),
+  });
+
+  if (!resp.ok) {
+    const err = await resp.json().catch(() => ({}));
+    throw new Error(err.error?.message ?? `Anthropic API error ${resp.status}`);
+  }
+
+  const data = await resp.json();
+  const text = data.content?.[0]?.text ?? "";
+
+  // Parse JSON — strip any accidental markdown fences first
+  const cleaned = text.replace(/^```(?:json)?\s*/i, "").replace(/\s*```$/, "").trim();
+  try {
+    return JSON.parse(cleaned);
+  } catch {
+    const match = cleaned.match(/\[[\s\S]*\]/);
+    if (match) return JSON.parse(match[0]);
+    throw new Error("Could not parse response as JSON. Try again.");
+  }
+}
+
+/** Render parsed angle suggestions into a container element. */
+function renderAngles(container, angles) {
+  if (!Array.isArray(angles) || !angles.length) {
+    container.innerHTML = `<div class="angle-error">No suggestions returned — try again.</div>`;
+    return;
+  }
+
+  const feasibilityClass = text => {
+    const level = (text ?? "").toLowerCase();
+    if (level.startsWith("high"))     return "feasibility-high";
+    if (level.startsWith("moderate")) return "feasibility-moderate";
+    return "feasibility-low";
+  };
+
+  // Split "High — rationale..." into label + rationale for separate display
+  const feasibilityParts = text => {
+    const parts = (text ?? "").split(/\s*—\s*/);
+    return { label: parts[0]?.trim() ?? "Moderate", rationale: parts.slice(1).join(" — ").trim() };
+  };
+
+  container.innerHTML = `<div class="angles-list">${
+    angles.map((a, i) => {
+      const { label, rationale } = feasibilityParts(a.feasibility);
+      return `
+        <div class="angle-item" style="animation-delay:${i * 65}ms">
+          <div class="angle-num">Angle ${i + 1} of ${angles.length}</div>
+          <div class="angle-title">${escHtml(a.title ?? "")}</div>
+          <div class="angle-pico">${escHtml(a.pico ?? "")}</div>
+          <div class="angle-meta">
+            <span class="feasibility-tag ${feasibilityClass(a.feasibility)}">${escHtml(label)}</span>
+            <span class="angle-novelty">${escHtml(rationale ? `${rationale} · ` : "")}${escHtml(a.novelty ?? "")}</span>
+          </div>
+        </div>`;
+    }).join("")
+  }</div>`;
+}
+
+/**
+ * Handle "Suggest angles" button click on a gap result card.
+ * - First click: fetches titles + calls Anthropic API + renders suggestions
+ * - Subsequent clicks: toggle visibility (no re-fetch)
+ * - On error: resets to idle so the user can retry
+ */
+async function suggestAngles(r, card) {
+  const section = card.querySelector(".angles-section");
+  const btn     = card.querySelector(".angles-btn");
+
+  // Toggle if already loaded
+  if (r.anglesState === "loaded") {
+    const nowVisible = !section.classList.contains("visible");
+    section.classList.toggle("visible", nowVisible);
+    btn.classList.toggle("active", nowVisible);
+    btn.textContent = nowVisible ? "Hide suggestions" : "Suggest angles";
+    return;
+  }
+
+  if (r.anglesState === "loading") return; // debounce
+
+  const anthropicKeyVal = document.getElementById("anthropicKeyInput").value.trim();
+  if (!anthropicKeyVal) {
+    alert("Enter your Anthropic API key in the Configuration panel to enable AI suggestions.");
+    return;
+  }
+
+  r.anglesState = "loading";
+  btn.disabled  = true;
+  section.classList.add("visible");
+  section.innerHTML = `
+    <div class="angle-loading">
+      <div class="angle-spinner"></div>
+      Fetching titles and generating suggestions…
+    </div>`;
+
+  try {
+    // Lazily fetch sample titles (cached on r after first call)
+    if (!r.sampleTitles) {
+      r.sampleTitles = await fetchSampleTitles(r.topic, apiKey(), delay());
+    }
+
+    const angles  = await callAnthropicAngles(r, anthropicKeyVal);
+    r.anglesState = "loaded";
+    btn.disabled  = false;
+    btn.classList.add("active");
+    btn.textContent = "Hide suggestions";
+    renderAngles(section, angles);
+  } catch (err) {
+    r.anglesState = "idle"; // allow retry
+    btn.disabled  = false;
+    section.innerHTML = `<div class="angle-error">Error: ${escHtml(err.message)}</div>`;
+  }
 }
 
 
