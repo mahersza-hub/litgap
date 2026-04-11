@@ -4,403 +4,1052 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>LitGap — Literature Gap Detector</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
   <style>
+    /* ── Reset & tokens ──────────────────────────────────────────── */
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
     :root {
-      --bg: #0f1117;
-      --surface: #1a1d27;
-      --surface2: #232636;
-      --border: #2e3248;
-      --accent: #6c8fff;
-      --accent-dim: #3d5099;
-      --text: #e2e4f0;
-      --text-dim: #8a8fa8;
-      --gap-strong: #ff6b6b;
-      --gap-weak: #ffa94d;
-      --gap-none: #51cf66;
-      --chip-active: #6c8fff;
-      --chip-active-bg: rgba(108,143,255,0.15);
-      --chip-hover: rgba(108,143,255,0.08);
+      --bg:            #070810;
+      --surface:       #0d0f1a;
+      --surface-2:     #111422;
+      --surface-3:     #161929;
+      --border:        #1c1f32;
+      --border-2:      #232640;
+      --accent:        #4f7df8;
+      --accent-muted:  rgba(79, 125, 248, 0.12);
+      --text:          #dde0f0;
+      --text-2:        #7a80a0;
+      --text-3:        #474d68;
+      --strong:        #df5f5f;
+      --strong-bg:     rgba(223, 95, 95, 0.09);
+      --strong-border: rgba(223, 95, 95, 0.22);
+      --weak:          #c98830;
+      --weak-bg:       rgba(201, 136, 48, 0.09);
+      --weak-border:   rgba(201, 136, 48, 0.22);
+      --covered:       #3aaa72;
+      --covered-bg:    rgba(58, 170, 114, 0.08);
+      --covered-border:rgba(58, 170, 114, 0.2);
+      --radius-sm:     4px;
+      --radius:        6px;
+      --radius-md:     8px;
+      --radius-lg:     10px;
+      --shadow-card:   0 1px 3px rgba(0,0,0,0.4), 0 4px 16px rgba(0,0,0,0.3);
+      --shadow-hover:  0 2px 8px rgba(0,0,0,0.5), 0 8px 28px rgba(0,0,0,0.4);
+      --t:             0.18s ease;
     }
 
+    html { font-size: 16px; -webkit-font-smoothing: antialiased; }
+
     body {
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      font-family: "Inter", -apple-system, BlinkMacSystemFont, sans-serif;
       background: var(--bg);
       color: var(--text);
       min-height: 100vh;
-      padding: 2rem 1rem;
+      display: flex;
+      flex-direction: column;
     }
 
-    header {
-      max-width: 860px;
-      margin: 0 auto 2rem;
+    /* ── Hero ───────────────────────────────────────────────────── */
+    .hero {
+      position: relative;
+      overflow: hidden;
+      padding: 5rem 2rem 4rem;
+      border-bottom: 1px solid var(--border);
+      background:
+        radial-gradient(ellipse 70% 55% at 50% -5%,  rgba(79,125,248,0.13) 0%, transparent 70%),
+        radial-gradient(ellipse 40% 35% at 80%  20%, rgba(120,80,220,0.07) 0%, transparent 60%),
+        var(--bg);
     }
 
-    header h1 {
-      font-size: 1.6rem;
-      font-weight: 700;
-      letter-spacing: -0.5px;
+    .hero::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background-image:
+        linear-gradient(var(--border) 1px, transparent 1px),
+        linear-gradient(90deg, var(--border) 1px, transparent 1px);
+      background-size: 48px 48px;
+      opacity: 0.35;
+      mask-image: radial-gradient(ellipse 80% 60% at 50% 0%, black, transparent);
     }
 
-    header h1 span { color: var(--accent); }
-
-    header p {
-      color: var(--text-dim);
-      font-size: 0.875rem;
-      margin-top: 0.35rem;
-    }
-
-    .card {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: 10px;
-      padding: 1.25rem 1.5rem;
-    }
-
-    .main-panel {
+    .hero-inner {
+      position: relative;
       max-width: 860px;
       margin: 0 auto;
+    }
+
+    .hero-eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-size: 0.72rem;
+      font-weight: 600;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--accent);
+      background: var(--accent-muted);
+      border: 1px solid rgba(79,125,248,0.2);
+      border-radius: var(--radius-sm);
+      padding: 0.3rem 0.65rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .hero-eyebrow::before {
+      content: "";
+      width: 6px; height: 6px;
+      border-radius: 50%;
+      background: var(--accent);
+      flex-shrink: 0;
+    }
+
+    .hero h1 {
+      font-size: clamp(2.4rem, 5vw, 3.6rem);
+      font-weight: 800;
+      letter-spacing: -0.04em;
+      line-height: 1.1;
+      background: linear-gradient(135deg, #e8ecff 30%, #8ba4f8 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      margin-bottom: 1rem;
+    }
+
+    .hero p {
+      font-size: 1rem;
+      color: var(--text-2);
+      line-height: 1.65;
+      max-width: 480px;
+    }
+
+    /* ── App shell ──────────────────────────────────────────────── */
+    .app {
+      flex: 1;
+      max-width: 860px;
+      width: 100%;
+      margin: 0 auto;
+      padding: 2rem 1.5rem 4rem;
       display: flex;
       flex-direction: column;
       gap: 1rem;
     }
 
-    /* API key row */
+    /* ── Shared panel ───────────────────────────────────────────── */
+    .panel {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 1.25rem 1.5rem;
+    }
+
+    .section-label {
+      font-size: 0.68rem;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--text-3);
+      margin-bottom: 0.8rem;
+    }
+
+    /* ── API key ────────────────────────────────────────────────── */
     .api-row {
       display: flex;
-      gap: 0.75rem;
       align-items: center;
+      gap: 0.75rem;
       flex-wrap: wrap;
     }
 
     .api-row label {
       font-size: 0.8rem;
-      color: var(--text-dim);
+      font-weight: 500;
+      color: var(--text-2);
       white-space: nowrap;
     }
 
-    .api-row input {
+    .field-input {
       flex: 1;
-      min-width: 180px;
-      background: var(--surface2);
-      border: 1px solid var(--border);
-      border-radius: 6px;
-      padding: 0.45rem 0.75rem;
-      font-size: 0.85rem;
+      min-width: 200px;
+      background: var(--surface-3);
+      border: 1px solid var(--border-2);
+      border-radius: var(--radius);
+      padding: 0.5rem 0.85rem;
+      font-size: 0.82rem;
+      font-family: "JetBrains Mono", monospace;
       color: var(--text);
       outline: none;
-      font-family: monospace;
+      transition: border-color var(--t);
     }
 
-    .api-row input:focus { border-color: var(--accent-dim); }
+    .field-input:focus { border-color: rgba(79,125,248,0.5); }
+    .field-input::placeholder { color: var(--text-3); }
 
-    /* Presets */
-    .presets-label {
-      font-size: 0.75rem;
-      text-transform: uppercase;
-      letter-spacing: 0.06em;
-      color: var(--text-dim);
-      margin-bottom: 0.6rem;
+    /* ── Tab bar ────────────────────────────────────────────────── */
+    .tab-bar {
+      display: flex;
+      border-bottom: 1px solid var(--border);
+      gap: 0;
     }
 
-    .chips {
+    .tab {
+      padding: 0.7rem 1.1rem;
+      font-family: inherit;
+      font-size: 0.85rem;
+      font-weight: 500;
+      color: var(--text-2);
+      background: none;
+      border: none;
+      border-bottom: 2px solid transparent;
+      margin-bottom: -1px;
+      cursor: pointer;
+      transition: color var(--t), border-color var(--t);
+    }
+
+    .tab:hover { color: var(--text); }
+
+    .tab.active {
+      color: var(--text);
+      border-bottom-color: var(--accent);
+    }
+
+    /* ── Tab panels ─────────────────────────────────────────────── */
+    .tab-panel { display: none; flex-direction: column; gap: 1rem; }
+    .tab-panel.active { display: flex; }
+
+    /* ── Preset chips ───────────────────────────────────────────── */
+    .chip-group {
       display: flex;
       flex-wrap: wrap;
-      gap: 0.5rem;
+      gap: 0.45rem;
     }
 
     .chip {
-      padding: 0.35rem 0.85rem;
-      border-radius: 999px;
-      border: 1px solid var(--border);
-      background: var(--surface2);
-      color: var(--text-dim);
-      font-size: 0.8rem;
+      padding: 0.35rem 0.75rem;
+      border-radius: var(--radius-sm);
+      border: 1px solid var(--border-2);
+      background: var(--surface-2);
+      color: var(--text-2);
+      font-family: inherit;
+      font-size: 0.775rem;
+      font-weight: 500;
       cursor: pointer;
       user-select: none;
-      transition: background 0.15s, color 0.15s, border-color 0.15s;
+      transition: background var(--t), color var(--t), border-color var(--t);
+      line-height: 1;
     }
 
-    .chip:hover { background: var(--chip-hover); color: var(--text); }
+    .chip:hover { background: var(--surface-3); color: var(--text); }
 
     .chip.active {
-      background: var(--chip-active-bg);
-      border-color: var(--chip-active);
-      color: var(--chip-active);
+      background: var(--accent-muted);
+      border-color: rgba(79,125,248,0.4);
+      color: var(--accent);
     }
 
-    /* Textarea */
-    textarea {
+    /* ── Textarea ───────────────────────────────────────────────── */
+    .topics-textarea {
       width: 100%;
-      min-height: 140px;
-      background: var(--surface2);
-      border: 1px solid var(--border);
-      border-radius: 8px;
-      padding: 0.75rem 1rem;
+      min-height: 148px;
+      background: var(--surface-3);
+      border: 1px solid var(--border-2);
+      border-radius: var(--radius-md);
+      padding: 0.85rem 1rem;
       color: var(--text);
-      font-family: monospace;
-      font-size: 0.82rem;
-      line-height: 1.6;
+      font-family: "JetBrains Mono", monospace;
+      font-size: 0.8rem;
+      line-height: 1.7;
       resize: vertical;
       outline: none;
+      transition: border-color var(--t);
+      margin-top: 1rem;
     }
 
-    textarea:focus { border-color: var(--accent-dim); }
-    textarea::placeholder { color: var(--text-dim); }
+    .topics-textarea:focus { border-color: rgba(79,125,248,0.4); }
+    .topics-textarea::placeholder { color: var(--text-3); }
 
-    .textarea-hint {
-      font-size: 0.75rem;
-      color: var(--text-dim);
-      margin-top: 0.4rem;
+    .field-hint {
+      font-size: 0.72rem;
+      color: var(--text-3);
+      margin-top: 0.5rem;
+      line-height: 1.5;
     }
 
-    /* Actions row */
-    .actions {
+    /* ── Buttons ────────────────────────────────────────────────── */
+    .actions-row {
       display: flex;
-      gap: 0.75rem;
       align-items: center;
+      gap: 0.65rem;
       flex-wrap: wrap;
     }
 
-    button {
-      cursor: pointer;
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.45rem;
       border: none;
-      border-radius: 7px;
-      font-size: 0.875rem;
+      border-radius: var(--radius);
+      font-family: inherit;
+      font-size: 0.85rem;
       font-weight: 600;
-      padding: 0.6rem 1.3rem;
-      transition: opacity 0.15s, background 0.15s;
+      padding: 0.6rem 1.2rem;
+      cursor: pointer;
+      transition: opacity var(--t), background var(--t), box-shadow var(--t);
+      white-space: nowrap;
     }
 
-    #scanBtn {
+    .btn:disabled { opacity: 0.35; cursor: not-allowed; }
+
+    .btn-primary {
       background: var(--accent);
       color: #fff;
+      box-shadow: 0 1px 2px rgba(0,0,0,0.3), 0 0 0 1px rgba(79,125,248,0.4) inset;
     }
 
-    #scanBtn:hover { opacity: 0.88; }
-    #scanBtn:disabled { opacity: 0.4; cursor: not-allowed; }
+    .btn-primary:not(:disabled):hover {
+      opacity: 0.88;
+      box-shadow: 0 2px 6px rgba(79,125,248,0.35), 0 0 0 1px rgba(79,125,248,0.4) inset;
+    }
 
-    #exportBtn {
-      background: var(--surface2);
-      border: 1px solid var(--border);
+    .btn-secondary {
+      background: var(--surface-2);
+      color: var(--text-2);
+      border: 1px solid var(--border-2);
+    }
+
+    .btn-secondary:not(:disabled):hover {
       color: var(--text);
+      background: var(--surface-3);
     }
 
-    #exportBtn:hover { border-color: var(--accent-dim); color: var(--accent); }
-    #exportBtn:disabled { opacity: 0.35; cursor: not-allowed; }
-
-    .progress-text {
-      font-size: 0.82rem;
-      color: var(--text-dim);
+    .progress-label {
+      font-size: 0.78rem;
+      color: var(--text-2);
       flex: 1;
-    }
-
-    /* Progress bar */
-    .progress-bar-wrap {
-      background: var(--surface2);
-      border: 1px solid var(--border);
-      border-radius: 6px;
-      height: 6px;
+      min-width: 0;
       overflow: hidden;
-      display: none;
+      text-overflow: ellipsis;
+      white-space: nowrap;
     }
 
-    .progress-bar-fill {
+    /* ── Progress bar ───────────────────────────────────────────── */
+    .progress-track {
+      height: 3px;
+      background: var(--surface-3);
+      border-radius: 2px;
+      overflow: hidden;
+      opacity: 0;
+      transition: opacity 0.2s ease;
+    }
+
+    .progress-track.visible { opacity: 1; }
+
+    .progress-fill {
       height: 100%;
-      background: var(--accent);
       width: 0%;
-      transition: width 0.3s;
+      background: linear-gradient(90deg, var(--accent), #9a7ff5, var(--accent));
+      background-size: 200% 100%;
+      border-radius: 2px;
+      transition: width 0.3s ease;
     }
 
-    /* Results */
-    #results { display: flex; flex-direction: column; gap: 0.75rem; }
+    .progress-fill.running { animation: shimmer 1.8s linear infinite; }
+
+    @keyframes shimmer {
+      0%   { background-position:  200% center; }
+      100% { background-position: -200% center; }
+    }
+
+    /* ── Summary bar ────────────────────────────────────────────── */
+    .summary-bar {
+      display: none;
+      align-items: center;
+      gap: 1.5rem;
+      padding: 0.9rem 1.25rem;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      flex-wrap: wrap;
+      animation: fadeSlideUp 0.3s ease both;
+    }
+
+    .summary-stat {
+      display: flex;
+      align-items: baseline;
+      gap: 0.35rem;
+      font-size: 0.82rem;
+      color: var(--text-2);
+    }
+
+    .summary-stat strong { font-size: 1rem; font-weight: 700; }
+    .summary-stat.s-strong  strong { color: var(--strong); }
+    .summary-stat.s-weak    strong { color: var(--weak); }
+    .summary-stat.s-covered strong { color: var(--covered); }
+    .summary-stat.s-total   strong { color: var(--text); }
+
+    .summary-divider {
+      width: 1px;
+      height: 16px;
+      background: var(--border-2);
+      flex-shrink: 0;
+    }
+
+    /* ── Result cards (Gap Detector) ────────────────────────────── */
+    .results-list {
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+    }
 
     .result-card {
       background: var(--surface);
       border: 1px solid var(--border);
-      border-radius: 10px;
-      padding: 1.1rem 1.4rem;
-      border-left: 4px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 1.25rem 1.4rem;
+      box-shadow: var(--shadow-card);
+      transition: transform var(--t), box-shadow var(--t), border-color var(--t);
+      opacity: 0;
+      transform: translateY(10px);
+      animation: fadeSlideUp 0.32s ease forwards;
     }
 
-    .result-card.gap-strong { border-left-color: var(--gap-strong); }
-    .result-card.gap-weak   { border-left-color: var(--gap-weak); }
-    .result-card.gap-none   { border-left-color: var(--gap-none); }
+    .result-card:hover {
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-hover);
+      border-color: var(--border-2);
+    }
 
-    .result-header {
+    .result-card.gap-strong { border-left: 3px solid var(--strong); padding-left: calc(1.4rem - 2px); }
+    .result-card.gap-weak   { border-left: 3px solid var(--weak);   padding-left: calc(1.4rem - 2px); }
+    .result-card.gap-covered{ border-left: 3px solid var(--covered); padding-left: calc(1.4rem - 2px); }
+
+    @keyframes fadeSlideUp {
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .card-header {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 0.75rem;
+    }
+
+    .card-topic {
+      font-family: "JetBrains Mono", monospace;
+      font-size: 0.79rem;
+      line-height: 1.6;
+      color: var(--text);
+      flex: 1;
+      word-break: break-word;
+    }
+
+    .badge {
+      flex-shrink: 0;
+      font-size: 0.67rem;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      padding: 0.25rem 0.55rem;
+      border-radius: var(--radius-sm);
+      border: 1px solid transparent;
+      white-space: nowrap;
+    }
+
+    .badge-strong { background: var(--strong-bg);  border-color: var(--strong-border);  color: var(--strong); }
+    .badge-weak   { background: var(--weak-bg);    border-color: var(--weak-border);    color: var(--weak); }
+    .badge-covered{ background: var(--covered-bg); border-color: var(--covered-border); color: var(--covered); }
+
+    .card-stats {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.35rem 1.25rem;
+      margin-top: 0.9rem;
+      padding-top: 0.9rem;
+      border-top: 1px solid var(--border);
+    }
+
+    .stat-item { font-size: 0.75rem; color: var(--text-2); }
+    .stat-item strong { color: var(--text); font-weight: 600; }
+
+    .card-footer {
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+      margin-top: 0.9rem;
+      flex-wrap: wrap;
+    }
+
+    .score-tag {
+      font-size: 0.73rem;
+      color: var(--text-2);
+      background: var(--surface-3);
+      border: 1px solid var(--border-2);
+      border-radius: var(--radius-sm);
+      padding: 0.22rem 0.6rem;
+    }
+
+    .score-tag strong { color: var(--text); font-weight: 600; }
+
+    .card-link {
+      font-size: 0.75rem;
+      font-weight: 500;
+      text-decoration: none;
+      padding: 0.25rem 0.65rem;
+      border-radius: var(--radius-sm);
+      border: 1px solid transparent;
+      transition: background var(--t), border-color var(--t), color var(--t);
+    }
+
+    .card-link-prospero {
+      color: var(--accent);
+      border-color: rgba(79,125,248,0.25);
+      background: var(--accent-muted);
+    }
+
+    .card-link-prospero:hover {
+      background: rgba(79,125,248,0.18);
+      border-color: rgba(79,125,248,0.4);
+    }
+
+    .card-link-pubmed {
+      color: var(--text-2);
+      border-color: var(--border-2);
+    }
+
+    .card-link-pubmed:hover { color: var(--text); background: var(--surface-3); }
+
+    /* ── Terms preview (Intervention Scanner) ───────────────────── */
+    .terms-preview {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 1rem 1.25rem;
+      display: none;
+      flex-direction: column;
+      gap: 0.75rem;
+      animation: fadeSlideUp 0.25s ease both;
+    }
+
+    .terms-preview.visible { display: flex; }
+
+    .terms-row {
       display: flex;
       align-items: flex-start;
       gap: 0.75rem;
       flex-wrap: wrap;
     }
 
-    .result-topic {
-      font-family: monospace;
-      font-size: 0.82rem;
-      color: var(--text);
-      flex: 1;
-      word-break: break-word;
-      line-height: 1.5;
-    }
-
-    .badge {
-      font-size: 0.7rem;
+    .terms-row-label {
+      font-size: 0.68rem;
       font-weight: 700;
-      padding: 0.2rem 0.55rem;
-      border-radius: 4px;
-      white-space: nowrap;
+      letter-spacing: 0.08em;
       text-transform: uppercase;
-      letter-spacing: 0.04em;
-      flex-shrink: 0;
+      color: var(--text-3);
+      white-space: nowrap;
+      padding-top: 0.15rem;
+      min-width: 80px;
     }
 
-    .badge-strong { background: rgba(255,107,107,0.15); color: var(--gap-strong); }
-    .badge-weak   { background: rgba(255,169,77,0.15);  color: var(--gap-weak); }
-    .badge-covered{ background: rgba(81,207,102,0.12);  color: var(--gap-none); }
-
-    .result-stats {
+    .term-tags {
       display: flex;
       flex-wrap: wrap;
-      gap: 0.5rem 1.25rem;
-      margin-top: 0.7rem;
-      font-size: 0.78rem;
-      color: var(--text-dim);
+      gap: 0.35rem;
+      flex: 1;
     }
 
-    .result-stats span b { color: var(--text); }
-
-    .result-footer {
-      display: flex;
-      gap: 0.75rem;
-      margin-top: 0.75rem;
-      align-items: center;
-      flex-wrap: wrap;
+    .term-tag {
+      font-size: 0.72rem;
+      font-family: "JetBrains Mono", monospace;
+      color: var(--text-2);
+      background: var(--surface-2);
+      border: 1px solid var(--border-2);
+      border-radius: var(--radius-sm);
+      padding: 0.2rem 0.5rem;
     }
 
-    .score-pill {
-      font-size: 0.75rem;
-      background: var(--surface2);
-      border: 1px solid var(--border);
-      border-radius: 5px;
-      padding: 0.2rem 0.55rem;
-      color: var(--text-dim);
-    }
-
-    .score-pill b { color: var(--text); }
-
-    .prospero-link {
-      font-size: 0.78rem;
+    .term-tag.mesh {
       color: var(--accent);
-      text-decoration: none;
-      padding: 0.22rem 0.6rem;
-      border: 1px solid var(--accent-dim);
-      border-radius: 5px;
-      transition: background 0.15s;
+      background: var(--accent-muted);
+      border-color: rgba(79,125,248,0.25);
     }
 
-    .prospero-link:hover { background: var(--chip-active-bg); }
-
-    .pubmed-link {
-      font-size: 0.78rem;
-      color: var(--text-dim);
-      text-decoration: none;
-      padding: 0.22rem 0.6rem;
+    /* ── Results table (Intervention Scanner) ───────────────────── */
+    .table-wrap {
+      overflow-x: auto;
       border: 1px solid var(--border);
-      border-radius: 5px;
-      transition: background 0.15s, color 0.15s;
-    }
-
-    .pubmed-link:hover { color: var(--text); background: var(--surface2); }
-
-    /* Summary bar */
-    #summaryBar {
-      display: none;
+      border-radius: var(--radius-lg);
       background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: 10px;
-      padding: 0.9rem 1.4rem;
+    }
+
+    .results-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.8rem;
+    }
+
+    .results-table thead tr {
+      background: var(--surface-2);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .results-table th {
+      padding: 0.65rem 1rem;
+      font-size: 0.66rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--text-3);
+      text-align: left;
+      white-space: nowrap;
+    }
+
+    .results-table th.col-num { text-align: right; }
+
+    .results-table tbody tr {
+      border-bottom: 1px solid var(--border);
+      opacity: 0;
+      transform: translateX(-4px);
+      animation: rowIn 0.22s ease forwards;
+      transition: background var(--t);
+    }
+
+    .results-table tbody tr:last-child { border-bottom: none; }
+    .results-table tbody tr:hover { background: var(--surface-2); }
+
+    @keyframes rowIn {
+      to { opacity: 1; transform: translateX(0); }
+    }
+
+    .results-table td {
+      padding: 0.7rem 1rem;
+      vertical-align: middle;
+    }
+
+    .results-table td.col-num {
+      text-align: right;
+      font-family: "JetBrains Mono", monospace;
+      font-size: 0.78rem;
+      color: var(--text);
+      font-weight: 500;
+    }
+
+    .results-table td.col-num.dim { color: var(--text-2); }
+
+    .td-intervention {
+      font-weight: 500;
+      color: var(--text);
+      font-size: 0.8rem;
+      font-family: "JetBrains Mono", monospace;
+      max-width: 200px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .td-outcome {
+      font-size: 0.78rem;
+      color: var(--text-2);
+    }
+
+    .td-links {
+      display: flex;
+      gap: 0.4rem;
+      white-space: nowrap;
+    }
+
+    /* ── Error ──────────────────────────────────────────────────── */
+    .error-msg {
+      background: var(--strong-bg);
+      border: 1px solid var(--strong-border);
+      border-radius: var(--radius-md);
+      padding: 0.75rem 1rem;
+      font-size: 0.8rem;
+      color: var(--strong);
+    }
+
+    .error-msg code {
+      font-family: "JetBrains Mono", monospace;
+      font-size: 0.78rem;
+    }
+
+    /* ── Empty state ────────────────────────────────────────────── */
+    .empty-state {
+      text-align: center;
+      padding: 3rem 1rem;
+      color: var(--text-3);
       font-size: 0.85rem;
+      border: 1px dashed var(--border-2);
+      border-radius: var(--radius-lg);
       display: none;
+    }
+
+    .empty-state.visible { display: block; }
+
+    /* ── Footer ─────────────────────────────────────────────────── */
+    footer {
+      border-top: 1px solid var(--border);
+      padding: 2rem 1.5rem;
+    }
+
+    .footer-inner {
+      max-width: 860px;
+      margin: 0 auto;
+      display: flex;
       align-items: center;
-      gap: 1.25rem;
+      justify-content: space-between;
+      gap: 1rem;
       flex-wrap: wrap;
     }
 
-    #summaryBar span b { margin-right: 0.2rem; }
-
-    .sum-strong { color: var(--gap-strong); }
-    .sum-weak   { color: var(--gap-weak); }
-    .sum-none   { color: var(--gap-none); }
-
-    /* Error */
-    .error-msg {
-      background: rgba(255,107,107,0.08);
-      border: 1px solid rgba(255,107,107,0.3);
-      border-radius: 8px;
-      padding: 0.75rem 1rem;
+    .footer-brand {
       font-size: 0.82rem;
-      color: var(--gap-strong);
+      font-weight: 700;
+      color: var(--text-3);
+      letter-spacing: -0.02em;
+    }
+
+    .footer-links { display: flex; gap: 1.25rem; flex-wrap: wrap; }
+
+    .footer-link {
+      font-size: 0.78rem;
+      color: var(--text-3);
+      text-decoration: none;
+      transition: color var(--t);
+    }
+
+    .footer-link:hover { color: var(--text-2); }
+
+    .footer-note {
+      width: 100%;
+      font-size: 0.72rem;
+      color: var(--text-3);
+      margin-top: 0.25rem;
+    }
+
+    /* ── Responsive ─────────────────────────────────────────────── */
+    @media (max-width: 600px) {
+      .hero { padding: 3.5rem 1.25rem 3rem; }
+      .app  { padding: 1.5rem 1rem 3rem; }
+      .panel { padding: 1rem 1.1rem; }
+      .card-header { flex-direction: column; align-items: flex-start; }
     }
   </style>
 </head>
 <body>
 
-<header>
-  <h1>Lit<span>Gap</span></h1>
-  <p>Scan PubMed for topics with primary evidence but no systematic review — flag opportunities for new SRs.</p>
+<!-- ── Hero ──────────────────────────────────────────────────────── -->
+<header class="hero">
+  <div class="hero-inner">
+    <div class="hero-eyebrow">Evidence Mapping Tool</div>
+    <h1>LitGap</h1>
+    <p>Identify research gaps in the literature — topics with primary evidence but no systematic review. Built for researchers and clinicians.</p>
+  </div>
 </header>
 
-<div class="main-panel">
+<!-- ── App ───────────────────────────────────────────────────────── -->
+<main class="app">
 
-  <!-- API key (optional) -->
-  <div class="card">
+  <!-- Shared config (visible on both tabs) -->
+  <div class="panel">
+    <div class="section-label">Configuration</div>
     <div class="api-row">
-      <label for="ncbiKey">NCBI API key (optional):</label>
-      <input id="ncciKey" type="password" placeholder="Raises rate limit from 3 → 10 req/sec" autocomplete="off" />
+      <label for="ncbiKey">NCBI API key</label>
+      <input id="ncbiKey" class="field-input" type="password"
+        placeholder="Optional — raises rate limit from 3 to 10 req/sec" autocomplete="off" />
     </div>
   </div>
 
-  <!-- Presets + textarea -->
-  <div class="card">
-    <div class="presets-label">Preset topics</div>
-    <div class="chips" id="chips"></div>
+  <!-- Tab bar -->
+  <div class="tab-bar">
+    <button class="tab active" data-tab="gap-detector">Gap Detector</button>
+    <button class="tab" data-tab="intervention-scanner">Intervention Scanner</button>
+  </div>
 
-    <textarea id="topicsArea" placeholder='"awake craniotomy" AND "language mapping"
+  <!-- ── Tab: Gap Detector ───────────────────────────────────────── -->
+  <div id="tab-gap-detector" class="tab-panel active">
+
+    <div class="panel">
+      <div class="section-label">Preset topics</div>
+      <div class="chip-group" id="gdChipGroup"></div>
+      <textarea id="gdTopicsArea" class="topics-textarea"
+        placeholder='"tubular retractor" AND brain AND surgery
 "deep brain stimulation" AND "disorders of consciousness"
 "intraoperative MRI" AND glioma AND resection
-# Lines starting with # are ignored'
-      style="margin-top:1rem"></textarea>
-    <div class="textarea-hint">One PubMed query per line. MeSH terms, boolean operators, field tags all work.</div>
+# Lines starting with # are ignored'></textarea>
+      <p class="field-hint">One PubMed query per line. MeSH terms, boolean operators, and field tags are all supported.</p>
+    </div>
+
+    <div class="actions-row">
+      <button id="gdScanBtn" class="btn btn-primary">
+        <svg width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+          <circle cx="7" cy="7" r="5.5" stroke="currentColor" stroke-width="1.5"/>
+          <path d="M11 11L14.5 14.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+        </svg>
+        Scan PubMed
+      </button>
+      <button id="gdExportBtn" class="btn btn-secondary" disabled>
+        <svg width="13" height="13" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+          <path d="M8 2v8M8 10l-3-3M8 10l3-3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+          <path d="M2 12h12" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+        </svg>
+        Export CSV
+      </button>
+      <span id="gdProgressLabel" class="progress-label"></span>
+    </div>
+
+    <div id="gdProgressTrack" class="progress-track">
+      <div id="gdProgressFill" class="progress-fill"></div>
+    </div>
+
+    <div id="gdSummaryBar" class="summary-bar"></div>
+    <div id="gdResults" class="results-list"></div>
+
+  </div><!-- /gap-detector -->
+
+  <!-- ── Tab: Intervention Scanner ──────────────────────────────── -->
+  <div id="tab-intervention-scanner" class="tab-panel">
+
+    <div class="panel">
+      <div class="section-label">Clinical Intervention</div>
+      <div class="api-row">
+        <input id="isInterventionInput" class="field-input" type="text"
+          placeholder='e.g. deep brain stimulation, spinal cord stimulation, intravitreal injection'
+          style="font-family: inherit;" />
+      </div>
+      <p class="field-hint">LitGap will look up related MeSH descriptors and synonyms, then test every combination against common clinical outcome types to find uncovered angles.</p>
+    </div>
+
+    <div class="actions-row">
+      <button id="isScanBtn" class="btn btn-primary">
+        <svg width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+          <circle cx="7" cy="7" r="5.5" stroke="currentColor" stroke-width="1.5"/>
+          <path d="M11 11L14.5 14.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+        </svg>
+        Scan Intervention
+      </button>
+      <button id="isExportBtn" class="btn btn-secondary" disabled>
+        <svg width="13" height="13" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+          <path d="M8 2v8M8 10l-3-3M8 10l3-3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+          <path d="M2 12h12" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+        </svg>
+        Export CSV
+      </button>
+      <span id="isProgressLabel" class="progress-label"></span>
+    </div>
+
+    <div id="isProgressTrack" class="progress-track">
+      <div id="isProgressFill" class="progress-fill"></div>
+    </div>
+
+    <!-- Terms preview -->
+    <div id="isTermsPreview" class="terms-preview">
+      <div class="terms-row">
+        <span class="terms-row-label">Search terms</span>
+        <div id="isTermsList" class="term-tags"></div>
+      </div>
+      <div class="terms-row">
+        <span class="terms-row-label">Outcomes</span>
+        <div id="isOutcomesList" class="term-tags"></div>
+      </div>
+    </div>
+
+    <div id="isSummaryBar" class="summary-bar"></div>
+
+    <div id="isTableWrap" class="table-wrap" style="display:none">
+      <table class="results-table">
+        <thead>
+          <tr>
+            <th>Intervention term</th>
+            <th>Outcome</th>
+            <th class="col-num">Total</th>
+            <th class="col-num">RCTs</th>
+            <th class="col-num">Cohort</th>
+            <th class="col-num">SRs</th>
+            <th class="col-num">MAs</th>
+            <th class="col-num">Score</th>
+            <th>Status</th>
+            <th>Links</th>
+          </tr>
+        </thead>
+        <tbody id="isTableBody"></tbody>
+      </table>
+    </div>
+
+    <div id="isEmptyState" class="empty-state">
+      No combinations returned results. Try a different intervention term.
+    </div>
+
+  </div><!-- /intervention-scanner -->
+
+</main>
+
+<!-- ── Footer ────────────────────────────────────────────────────── -->
+<footer>
+  <div class="footer-inner">
+    <span class="footer-brand">LitGap</span>
+    <nav class="footer-links">
+      <a class="footer-link" href="https://pubmed.ncbi.nlm.nih.gov/" target="_blank" rel="noopener">PubMed</a>
+      <a class="footer-link" href="https://www.crd.york.ac.uk/prospero/" target="_blank" rel="noopener">PROSPERO</a>
+      <a class="footer-link" href="https://www.ncbi.nlm.nih.gov/account/settings/" target="_blank" rel="noopener">NCBI API Key</a>
+      <a class="footer-link" href="https://github.com/mahersza-hub/litgap" target="_blank" rel="noopener">GitHub</a>
+    </nav>
+    <p class="footer-note">Data retrieved from NCBI E-utilities. This tool does not store or transmit any data. Gap scores are heuristic indicators only.</p>
   </div>
-
-  <!-- Action buttons -->
-  <div class="actions">
-    <button id="scanBtn">Scan PubMed</button>
-    <button id="exportBtn" disabled>Export CSV</button>
-    <span class="progress-text" id="progressText"></span>
-  </div>
-
-  <div class="progress-bar-wrap" id="progressWrap">
-    <div class="progress-bar-fill" id="progressFill"></div>
-  </div>
-
-  <!-- Summary -->
-  <div id="summaryBar"></div>
-
-  <!-- Results -->
-  <div id="results"></div>
-
-</div>
+</footer>
 
 <script>
-// ─── Presets ────────────────────────────────────────────────────────────────
+"use strict";
+
+// ═══════════════════════════════════════════════════════════════════════════════
+// SHARED UTILITIES
+// ═══════════════════════════════════════════════════════════════════════════════
+
+const PUBMED_BASE = "https://eutils.ncbi.nlm.nih.gov/entrez/eutils";
+
+const STUDY_FILTERS = {
+  rct:               "Randomized Controlled Trial[pt]",
+  cohort:            "(Observational Study[pt] OR Cohort Studies[mh])",
+  case_series:       "Case Reports[pt]",
+  meta_analysis:     "Meta-Analysis[pt]",
+  systematic_review: "Systematic Review[pt]",
+};
+
+const RECENT_DATE_FILTER = '("2023"[PDAT] : "2026"[PDAT])';
+
+const sleep  = ms  => new Promise(r => setTimeout(r, ms));
+const apiKey = ()  => document.getElementById("ncbiKey").value.trim() || null;
+const delay  = ()  => apiKey() ? 110 : 360;
+
+function escHtml(str) {
+  return String(str)
+    .replace(/&/g, "&amp;").replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;").replace(/"/g, "&quot;");
+}
+
+async function esearchCount(query, key) {
+  const params = new URLSearchParams({ db: "pubmed", term: query, rettype: "count", retmode: "json" });
+  if (key) params.set("api_key", key);
+  const resp = await fetch(`${PUBMED_BASE}/esearch.fcgi?${params}`);
+  if (!resp.ok) throw new Error(`PubMed ${resp.status}`);
+  return parseInt((await resp.json()).esearchresult.count, 10);
+}
+
+// Full study count — used by Gap Detector (9 calls: total + 5 filters + 2 recent)
+async function countStudiesFull(topic, key, del, onStep) {
+  const r = { topic, total: 0, rct: 0, cohort: 0, case_series: 0,
+               meta_analysis: 0, systematic_review: 0, recent_rct: 0, recent_cohort: 0 };
+
+  r.total = await esearchCount(topic, key);
+  await sleep(del); onStep();
+
+  for (const [field, filter] of Object.entries(STUDY_FILTERS)) {
+    r[field] = await esearchCount(`(${topic}) AND ${filter}`, key);
+    await sleep(del); onStep();
+  }
+
+  r.recent_rct = await esearchCount(
+    `(${topic}) AND ${STUDY_FILTERS.rct} AND ${RECENT_DATE_FILTER}`, key
+  );
+  await sleep(del); onStep();
+
+  r.recent_cohort = await esearchCount(
+    `(${topic}) AND ${STUDY_FILTERS.cohort} AND ${RECENT_DATE_FILTER}`, key
+  );
+  await sleep(del); onStep();
+
+  return r;
+}
+
+// Light study count — used by Intervention Scanner (5 calls: total + rct + cohort + sr + ma)
+async function countStudiesLight(topic, key, del, onStep) {
+  const r = { topic, total: 0, rct: 0, cohort: 0, meta_analysis: 0, systematic_review: 0 };
+
+  r.total            = await esearchCount(topic, key);
+  await sleep(del); onStep();
+  r.rct              = await esearchCount(`(${topic}) AND ${STUDY_FILTERS.rct}`,               key);
+  await sleep(del); onStep();
+  r.cohort           = await esearchCount(`(${topic}) AND ${STUDY_FILTERS.cohort}`,            key);
+  await sleep(del); onStep();
+  r.systematic_review= await esearchCount(`(${topic}) AND ${STUDY_FILTERS.systematic_review}`, key);
+  await sleep(del); onStep();
+  r.meta_analysis    = await esearchCount(`(${topic}) AND ${STUDY_FILTERS.meta_analysis}`,     key);
+  await sleep(del); onStep();
+
+  return r;
+}
+
+// Gap scoring — recent_rct / recent_cohort default to 0 when absent
+function gapScore(r) {
+  if (r.systematic_review >= 3) return 0;
+  const primary = r.rct * 3 + r.cohort * 1.5 + (r.case_series ?? 0) * 0.3;
+  const penalty = (r.systematic_review + r.meta_analysis) * 15;
+  const recency = ((r.recent_rct ?? 0) * 4) + ((r.recent_cohort ?? 0) * 2);
+  return Math.max(0, primary + recency - penalty);
+}
+
+function hasGap(r)      { return (r.rct + r.cohort) >= 5 && r.systematic_review === 0; }
+function hasWeakGap(r)  { return (r.rct + r.cohort) >= 3 && r.systematic_review <= 1 && (r.rct + r.cohort) >= 8; }
+function gapClass(r)    { return hasGap(r) ? "gap-strong"   : hasWeakGap(r) ? "gap-weak"   : "gap-covered"; }
+function gapLabel(r)    { return hasGap(r) ? "Strong Gap"   : hasWeakGap(r) ? "Weak Gap"   : "Covered"; }
+function badgeClass(r)  { return hasGap(r) ? "badge-strong" : hasWeakGap(r) ? "badge-weak" : "badge-covered"; }
+
+function prosperoUrl(topic) {
+  const cleaned = topic
+    .replace(/\[[\w\s/]+\]/g, "")
+    .replace(/\bAND\b|\bOR\b|\bNOT\b/g, " ")
+    .replace(/[()]/g, " ")
+    .replace(/\s+/g, " ")
+    .trim();
+  return `https://www.crd.york.ac.uk/prospero/search/SearchResults.php?TermText=${encodeURIComponent(cleaned)}`;
+}
+
+function pubmedUrl(topic) {
+  return `https://pubmed.ncbi.nlm.nih.gov/?term=${encodeURIComponent(topic)}`;
+}
+
+function downloadCsv(filename, headers, rows) {
+  const csvContent = [headers, ...rows]
+    .map(row => row.map(cell => {
+      const s = String(cell);
+      return /[,"\n]/.test(s) ? `"${s.replace(/"/g, '""')}"` : s;
+    }).join(","))
+    .join("\r\n");
+  const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
+  const url  = URL.createObjectURL(blob);
+  const a    = document.createElement("a");
+  a.href = url;
+  a.download = filename;
+  a.click();
+  URL.revokeObjectURL(url);
+}
+
+
+// ═══════════════════════════════════════════════════════════════════════════════
+// TAB NAVIGATION
+// ═══════════════════════════════════════════════════════════════════════════════
+
+function switchTab(tabId) {
+  document.querySelectorAll(".tab").forEach(t =>
+    t.classList.toggle("active", t.dataset.tab === tabId)
+  );
+  document.querySelectorAll(".tab-panel").forEach(p =>
+    p.classList.toggle("active", p.id === `tab-${tabId}`)
+  );
+}
+
+document.querySelectorAll(".tab").forEach(tab =>
+  tab.addEventListener("click", () => switchTab(tab.dataset.tab))
+);
+
+
+// ═══════════════════════════════════════════════════════════════════════════════
+// GAP DETECTOR
+// ═══════════════════════════════════════════════════════════════════════════════
+
 const PRESETS = {
   "Minimally Invasive": [
-    '"endoscopic surgery"[MeSH] AND "intracerebral hemorrhage"[MeSH]',
     '"tubular retractor" AND brain AND surgery',
-    '"awake craniotomy" AND "language mapping"',
-    '"colloid cyst" AND "third ventricle" AND management',
   ],
   "Spine": [
     '"short segment fixation" AND "metastatic spine"',
@@ -418,307 +1067,502 @@ const PRESETS = {
   ],
 };
 
-const activePresets = new Set();
+const gdActivePresets = new Set();
 
-function buildChips() {
-  const container = document.getElementById("chips");
+(function buildChips() {
+  const container = document.getElementById("gdChipGroup");
   Object.keys(PRESETS).forEach(name => {
     const chip = document.createElement("button");
     chip.className = "chip";
     chip.textContent = name;
     chip.dataset.preset = name;
-    chip.addEventListener("click", () => togglePreset(name, chip));
+    chip.addEventListener("click", () => gdTogglePreset(name, chip));
     container.appendChild(chip);
   });
+})();
+
+function gdGetLines() {
+  return document.getElementById("gdTopicsArea").value.split("\n").map(l => l.trimEnd());
 }
 
-function getTextareaLines() {
-  const raw = document.getElementById("topicsArea").value;
-  return raw.split("\n").map(l => l.trimEnd());
+function gdSetLines(lines) {
+  document.getElementById("gdTopicsArea").value = lines.join("\n");
 }
 
-function setTextareaLines(lines) {
-  document.getElementById("topicsArea").value = lines.join("\n");
-}
-
-function togglePreset(name, chip) {
+function gdTogglePreset(name, chip) {
   const topics = PRESETS[name];
-  if (activePresets.has(name)) {
-    // Remove topics belonging to this preset
-    activePresets.delete(name);
+  if (gdActivePresets.has(name)) {
+    gdActivePresets.delete(name);
     chip.classList.remove("active");
-    const current = getTextareaLines();
     const topicSet = new Set(topics);
-    const filtered = current.filter(l => !topicSet.has(l.trim()));
-    // Collapse consecutive blank lines left behind
-    const cleaned = filtered.join("\n").replace(/\n{3,}/g, "\n\n").trimEnd();
-    setTextareaLines(cleaned ? cleaned.split("\n") : [""]);
+    const filtered = gdGetLines().filter(l => !topicSet.has(l.trim()));
+    const cleaned  = filtered.join("\n").replace(/\n{3,}/g, "\n\n").trimEnd();
+    gdSetLines(cleaned ? cleaned.split("\n") : [""]);
   } else {
-    // Add topics
-    activePresets.add(name);
+    gdActivePresets.add(name);
     chip.classList.add("active");
-    const current = getTextareaLines().filter(l => l.trim() !== "" || false);
-    const existing = new Set(current.map(l => l.trim()));
-    const toAdd = topics.filter(t => !existing.has(t));
+    const existing = new Set(gdGetLines().map(l => l.trim()));
+    const toAdd    = topics.filter(t => !existing.has(t));
     if (toAdd.length) {
-      const base = current.join("\n").trimEnd();
-      const newVal = base ? base + "\n" + toAdd.join("\n") : toAdd.join("\n");
-      setTextareaLines(newVal.split("\n"));
+      const base = gdGetLines().join("\n").trimEnd();
+      gdSetLines((base ? base + "\n" + toAdd.join("\n") : toAdd.join("\n")).split("\n"));
     }
   }
 }
 
-buildChips();
+let gdResults = [];
+const GD_STEPS_PER_TOPIC = 9;
 
-// ─── PubMed helpers ──────────────────────────────────────────────────────────
-const BASE_URL = "https://eutils.ncbi.nlm.nih.gov/entrez/eutils";
+document.getElementById("gdScanBtn").addEventListener("click", gdRunScan);
+document.getElementById("gdExportBtn").addEventListener("click", gdExportCsv);
 
-const FILTERS = {
-  rct:              "Randomized Controlled Trial[pt]",
-  cohort:           "(Observational Study[pt] OR Cohort Studies[mh])",
-  case_series:      "Case Reports[pt]",
-  meta_analysis:    "Meta-Analysis[pt]",
-  systematic_review:"Systematic Review[pt]",
-};
+async function gdRunScan() {
+  const topics = document.getElementById("gdTopicsArea").value
+    .split("\n").map(l => l.trim()).filter(l => l && !l.startsWith("#"));
 
-function sleep(ms) { return new Promise(r => setTimeout(r, ms)); }
+  if (!topics.length) { alert("Enter at least one topic to scan."); return; }
 
-async function esearchCount(query, apiKey) {
-  const params = new URLSearchParams({ db: "pubmed", term: query, rettype: "count", retmode: "json" });
-  if (apiKey) params.set("api_key", apiKey);
-  const resp = await fetch(`${BASE_URL}/esearch.fcgi?${params}`);
-  if (!resp.ok) throw new Error(`PubMed error ${resp.status}`);
-  const json = await resp.json();
-  return parseInt(json.esearchresult.count, 10);
-}
+  const key   = apiKey();
+  const del   = delay();
+  const total = topics.length * GD_STEPS_PER_TOPIC;
+  let   done  = 0;
 
-async function countStudies(topic, apiKey, delay, onStep) {
-  const result = {
-    topic,
-    total: 0, rct: 0, cohort: 0, case_series: 0,
-    meta_analysis: 0, systematic_review: 0,
-    recent_rct: 0, recent_cohort: 0,
+  const scanBtn    = document.getElementById("gdScanBtn");
+  const exportBtn  = document.getElementById("gdExportBtn");
+  const labelEl    = document.getElementById("gdProgressLabel");
+  const trackEl    = document.getElementById("gdProgressTrack");
+  const fillEl     = document.getElementById("gdProgressFill");
+  const resultsEl  = document.getElementById("gdResults");
+  const summaryEl  = document.getElementById("gdSummaryBar");
+
+  scanBtn.disabled  = true;
+  exportBtn.disabled= true;
+  trackEl.classList.add("visible");
+  fillEl.classList.add("running");
+  fillEl.style.width   = "0%";
+  resultsEl.innerHTML  = "";
+  summaryEl.style.display = "none";
+  gdResults = [];
+
+  const onStep = () => {
+    done++;
+    fillEl.style.width = `${Math.round((done / total) * 100)}%`;
   };
-
-  result.total = await esearchCount(topic, apiKey);
-  await sleep(delay); onStep();
-
-  for (const [key, filter] of Object.entries(FILTERS)) {
-    result[key] = await esearchCount(`(${topic}) AND ${filter}`, apiKey);
-    await sleep(delay); onStep();
-  }
-
-  const recent = 'AND ("2023"[PDAT] : "2026"[PDAT])';
-  result.recent_rct    = await esearchCount(`(${topic}) AND ${FILTERS.rct} ${recent}`, apiKey);
-  await sleep(delay); onStep();
-  result.recent_cohort = await esearchCount(`(${topic}) AND ${FILTERS.cohort} ${recent}`, apiKey);
-  await sleep(delay); onStep();
-
-  return result;
-}
-
-function gapScore(r) {
-  if (r.systematic_review >= 3) return 0;
-  const primary   = r.rct * 3 + r.cohort * 1.5 + r.case_series * 0.3;
-  const penalty   = r.systematic_review * 15 + r.meta_analysis * 15;
-  const recency   = r.recent_rct * 4 + r.recent_cohort * 2;
-  return Math.max(0, primary + recency - penalty);
-}
-
-function hasGap(r)     { return (r.rct + r.cohort) >= 5 && r.systematic_review === 0; }
-function hasWeakGap(r) { return (r.rct + r.cohort) >= 3 && r.systematic_review <= 1 && (r.rct + r.cohort) >= 8; }
-
-// ─── Scan ────────────────────────────────────────────────────────────────────
-let scanResults = [];
-
-document.getElementById("scanBtn").addEventListener("click", runScan);
-
-async function runScan() {
-  const textarea  = document.getElementById("topicsArea");
-  const topics    = textarea.value.split("\n")
-    .map(l => l.trim())
-    .filter(l => l && !l.startsWith("#"));
-
-  if (!topics.length) {
-    alert("Enter at least one topic to scan.");
-    return;
-  }
-
-  const apiKey   = document.getElementById("ncciKey").value.trim() || null;
-  const delay    = apiKey ? 110 : 360;  // ms between requests
-  const STEPS_PER_TOPIC = 9;            // total, count + 5 filters + 2 recent + 1 total
-  const totalSteps = topics.length * STEPS_PER_TOPIC;
-  let   doneSteps  = 0;
-
-  const scanBtn    = document.getElementById("scanBtn");
-  const exportBtn  = document.getElementById("exportBtn");
-  const progressEl = document.getElementById("progressText");
-  const progressWrap = document.getElementById("progressWrap");
-  const progressFill = document.getElementById("progressFill");
-  const resultsEl  = document.getElementById("results");
-  const summaryBar = document.getElementById("summaryBar");
-
-  scanBtn.disabled = true;
-  exportBtn.disabled = true;
-  progressWrap.style.display = "block";
-  resultsEl.innerHTML = "";
-  summaryBar.style.display = "none";
-  scanResults = [];
-
-  function onStep() {
-    doneSteps++;
-    const pct = Math.round((doneSteps / totalSteps) * 100);
-    progressFill.style.width = pct + "%";
-  }
 
   for (let i = 0; i < topics.length; i++) {
     const topic = topics[i];
-    progressEl.textContent = `Scanning ${i + 1} / ${topics.length}: ${topic.slice(0, 60)}…`;
+    labelEl.textContent = `Scanning ${i + 1} of ${topics.length} — ${topic.slice(0, 65)}${topic.length > 65 ? "…" : ""}`;
     try {
-      const r = await countStudies(topic, apiKey, delay, onStep);
+      const r = await countStudiesFull(topic, key, del, onStep);
       r.score = gapScore(r);
-      scanResults.push(r);
+      gdResults.push(r);
     } catch (err) {
-      resultsEl.insertAdjacentHTML("beforeend", `
-        <div class="error-msg">Error scanning <code>${escHtml(topic)}</code>: ${escHtml(err.message)}</div>
-      `);
-      doneSteps += STEPS_PER_TOPIC;
-      onStep();
+      done += GD_STEPS_PER_TOPIC;
+      resultsEl.insertAdjacentHTML("beforeend",
+        `<div class="error-msg">Error scanning <code>${escHtml(topic)}</code>: ${escHtml(err.message)}</div>`
+      );
     }
   }
 
-  // Sort by score
-  scanResults.sort((a, b) => b.score - a.score);
+  gdResults.sort((a, b) => b.score - a.score);
 
-  progressEl.textContent = `Done — ${scanResults.length} topic${scanResults.length !== 1 ? "s" : ""} scanned.`;
-  progressFill.style.width = "100%";
+  fillEl.classList.remove("running");
+  fillEl.style.width  = "100%";
+  labelEl.textContent = `Scan complete — ${gdResults.length} topic${gdResults.length !== 1 ? "s" : ""} analysed.`;
 
-  renderResults(scanResults);
-  renderSummary(scanResults);
+  gdRenderResults(gdResults);
+  gdRenderSummary(gdResults);
 
-  scanBtn.disabled = false;
-  if (scanResults.length) exportBtn.disabled = false;
+  scanBtn.disabled  = false;
+  if (gdResults.length) exportBtn.disabled = false;
 }
 
-// ─── Render ──────────────────────────────────────────────────────────────────
-function escHtml(s) {
-  return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;");
-}
+function gdRenderResults(results) {
+  const container = document.getElementById("gdResults");
+  container.innerHTML = "";
 
-function prosperoUrl(topic) {
-  // Strip PubMed field tags and boolean operators for a cleaner PROSPERO search
-  const cleaned = topic
-    .replace(/\[[\w\s/]+\]/g, "")   // remove [MeSH], [pt], [mh] etc.
-    .replace(/\bAND\b|\bOR\b|\bNOT\b/g, " ")
-    .replace(/[()]/g, " ")
-    .replace(/\s+/g, " ")
-    .trim();
-  return `https://www.crd.york.ac.uk/prospero/search/SearchResults.php?TermText=${encodeURIComponent(cleaned)}`;
-}
-
-function pubmedUrl(topic) {
-  return `https://pubmed.ncbi.nlm.nih.gov/?term=${encodeURIComponent(topic)}`;
-}
-
-function renderResults(results) {
-  const el = document.getElementById("results");
-  el.innerHTML = "";
-
-  results.forEach(r => {
-    const strong = hasGap(r);
-    const weak   = !strong && hasWeakGap(r);
-    const cls    = strong ? "gap-strong" : weak ? "gap-weak" : "gap-none";
-    const badge  = strong
-      ? '<span class="badge badge-strong">Strong Gap</span>'
-      : weak
-        ? '<span class="badge badge-weak">Weak Gap</span>'
-        : '<span class="badge badge-covered">Covered</span>';
-
-    el.insertAdjacentHTML("beforeend", `
-      <div class="result-card ${cls}">
-        <div class="result-header">
-          <span class="result-topic">${escHtml(r.topic)}</span>
-          ${badge}
-        </div>
-        <div class="result-stats">
-          <span><b>${r.total}</b> total</span>
-          <span><b>${r.rct}</b> RCTs</span>
-          <span><b>${r.cohort}</b> cohort</span>
-          <span><b>${r.case_series}</b> case reports</span>
-          <span><b>${r.systematic_review}</b> systematic reviews</span>
-          <span><b>${r.meta_analysis}</b> meta-analyses</span>
-          <span><b>${r.recent_rct + r.recent_cohort}</b> recent primary (3 yr)</span>
-        </div>
-        <div class="result-footer">
-          <span class="score-pill">Gap score: <b>${r.score.toFixed(1)}</b></span>
-          <a class="prospero-link"
-             href="${escHtml(prosperoUrl(r.topic))}"
-             target="_blank" rel="noopener">Check PROSPERO</a>
-          <a class="pubmed-link"
-             href="${escHtml(pubmedUrl(r.topic))}"
-             target="_blank" rel="noopener">View on PubMed</a>
-        </div>
+  results.forEach((r, i) => {
+    const card = document.createElement("div");
+    card.className = `result-card ${gapClass(r)}`;
+    card.style.animationDelay = `${i * 55}ms`;
+    card.innerHTML = `
+      <div class="card-header">
+        <span class="card-topic">${escHtml(r.topic)}</span>
+        <span class="badge ${badgeClass(r)}">${gapLabel(r)}</span>
       </div>
-    `);
+      <div class="card-stats">
+        <span class="stat-item"><strong>${r.total}</strong> total</span>
+        <span class="stat-item"><strong>${r.rct}</strong> RCT${r.rct !== 1 ? "s" : ""}</span>
+        <span class="stat-item"><strong>${r.cohort}</strong> cohort</span>
+        <span class="stat-item"><strong>${r.case_series}</strong> case reports</span>
+        <span class="stat-item"><strong>${r.systematic_review}</strong> systematic review${r.systematic_review !== 1 ? "s" : ""}</span>
+        <span class="stat-item"><strong>${r.meta_analysis}</strong> meta-anal${r.meta_analysis !== 1 ? "yses" : "ysis"}</span>
+        <span class="stat-item"><strong>${r.recent_rct + r.recent_cohort}</strong> recent primary (3 yr)</span>
+      </div>
+      <div class="card-footer">
+        <span class="score-tag">Gap score&thinsp;·&thinsp;<strong>${r.score.toFixed(1)}</strong></span>
+        <a class="card-link card-link-prospero" href="${escHtml(prosperoUrl(r.topic))}" target="_blank" rel="noopener">Check PROSPERO</a>
+        <a class="card-link card-link-pubmed"   href="${escHtml(pubmedUrl(r.topic))}"   target="_blank" rel="noopener">View on PubMed</a>
+      </div>`;
+    container.appendChild(card);
   });
 }
 
-function renderSummary(results) {
-  const strong = results.filter(hasGap).length;
-  const weak   = results.filter(r => !hasGap(r) && hasWeakGap(r)).length;
-  const covered= results.length - strong - weak;
-  const bar    = document.getElementById("summaryBar");
-
-  bar.innerHTML = `
-    <span class="sum-strong"><b>${strong}</b> strong gap${strong !== 1 ? "s" : ""}</span>
-    <span class="sum-weak"><b>${weak}</b> weak gap${weak !== 1 ? "s" : ""}</span>
-    <span class="sum-none"><b>${covered}</b> covered</span>
-    <span style="color:var(--text-dim)">out of <b style="color:var(--text)">${results.length}</b> topic${results.length !== 1 ? "s" : ""}</span>
-  `;
-  bar.style.display = "flex";
+function gdRenderSummary(results) {
+  const strong  = results.filter(hasGap).length;
+  const weak    = results.filter(r => !hasGap(r) && hasWeakGap(r)).length;
+  const covered = results.length - strong - weak;
+  const el      = document.getElementById("gdSummaryBar");
+  el.innerHTML = `
+    <div class="summary-stat s-strong"><strong>${strong}</strong> strong gap${strong !== 1 ? "s" : ""}</div>
+    <div class="summary-divider"></div>
+    <div class="summary-stat s-weak"><strong>${weak}</strong> weak gap${weak !== 1 ? "s" : ""}</div>
+    <div class="summary-divider"></div>
+    <div class="summary-stat s-covered"><strong>${covered}</strong> covered</div>
+    <div class="summary-divider"></div>
+    <div class="summary-stat s-total"><strong>${results.length}</strong> topic${results.length !== 1 ? "s" : ""} scanned</div>`;
+  el.style.display = "flex";
 }
 
-// ─── Export CSV ──────────────────────────────────────────────────────────────
-document.getElementById("exportBtn").addEventListener("click", exportCsv);
+function gdExportCsv() {
+  if (!gdResults.length) return;
+  downloadCsv(
+    `litgap-gaps-${new Date().toISOString().slice(0, 10)}.csv`,
+    ["Topic","Gap Status","Gap Score","Total","RCTs","Cohort","Case Reports",
+     "Systematic Reviews","Meta-Analyses","Recent RCTs (3yr)","Recent Cohort (3yr)",
+     "PROSPERO URL","PubMed URL"],
+    gdResults.map(r => [
+      r.topic,
+      hasGap(r) ? "Strong Gap" : hasWeakGap(r) ? "Weak Gap" : "Covered",
+      r.score.toFixed(1),
+      r.total, r.rct, r.cohort, r.case_series,
+      r.systematic_review, r.meta_analysis,
+      r.recent_rct, r.recent_cohort,
+      prosperoUrl(r.topic), pubmedUrl(r.topic),
+    ])
+  );
+}
 
-function exportCsv() {
-  if (!scanResults.length) return;
 
-  const headers = [
-    "Topic", "Gap Status", "Gap Score",
-    "Total", "RCTs", "Cohort", "Case Reports",
-    "Systematic Reviews", "Meta-Analyses",
-    "Recent RCTs (3yr)", "Recent Cohort (3yr)",
-    "PROSPERO Search URL", "PubMed URL",
-  ];
+// ═══════════════════════════════════════════════════════════════════════════════
+// INTERVENTION SCANNER
+// ═══════════════════════════════════════════════════════════════════════════════
 
-  const rows = scanResults.map(r => [
-    r.topic,
-    hasGap(r) ? "Strong Gap" : hasWeakGap(r) ? "Weak Gap" : "Covered",
-    r.score.toFixed(1),
-    r.total, r.rct, r.cohort, r.case_series,
-    r.systematic_review, r.meta_analysis,
-    r.recent_rct, r.recent_cohort,
-    prosperoUrl(r.topic),
-    pubmedUrl(r.topic),
-  ]);
+const OUTCOME_TERMS = [
+  "outcomes",
+  "complications",
+  "efficacy",
+  "safety",
+  "mortality",
+  "quality of life",
+  "adverse events",
+  "functional outcomes",
+];
 
-  const csvContent = [headers, ...rows]
-    .map(row => row.map(cell => {
-      const s = String(cell);
-      // Quote fields containing commas, quotes, or newlines
-      return /[,"\n]/.test(s) ? `"${s.replace(/"/g, '""')}"` : s;
-    }).join(","))
-    .join("\r\n");
+// Common abbreviations for clinical interventions
+const ABBREVIATION_MAP = {
+  "deep brain stimulation":                  ["DBS"],
+  "spinal cord stimulation":                 ["SCS"],
+  "transcranial magnetic stimulation":       ["TMS", "rTMS"],
+  "transcranial direct current stimulation": ["tDCS"],
+  "laser interstitial thermal therapy":      ["LITT"],
+  "stereotactic radiosurgery":               ["SRS", "GKRS"],
+  "gamma knife radiosurgery":                ["GKRS", "GKS"],
+  "intravitreal injection":                  ["IVI", "IVT"],
+  "endoscopic third ventriculostomy":        ["ETV"],
+  "ventriculoperitoneal shunt":              ["VPS"],
+  "anterior cervical discectomy and fusion": ["ACDF"],
+  "lumbar spinal fusion":                    ["LSF"],
+  "total knee arthroplasty":                 ["TKA", "TKR"],
+  "total hip arthroplasty":                  ["THA", "THR"],
+  "radiofrequency ablation":                 ["RFA"],
+  "photodynamic therapy":                    ["PDT"],
+  "cochlear implant":                        ["CI"],
+  "magnetic resonance imaging":              ["MRI"],
+  "computed tomography":                     ["CT"],
+  "positron emission tomography":            ["PET"],
+};
 
-  const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
-  const url  = URL.createObjectURL(blob);
-  const a    = document.createElement("a");
-  const ts   = new Date().toISOString().slice(0, 10);
-  a.href     = url;
-  a.download = `litgap-${ts}.csv`;
-  a.click();
-  URL.revokeObjectURL(url);
+/**
+ * Search the MeSH database for descriptors matching the intervention.
+ * Returns { meshTerms: string[], synonyms: string[] }
+ */
+async function lookupMeshTerms(intervention, key, del) {
+  // Search MeSH database
+  const searchParams = new URLSearchParams({
+    db: "mesh", term: intervention, retmax: 3, retmode: "json",
+  });
+  if (key) searchParams.set("api_key", key);
+
+  const searchResp = await fetch(`${PUBMED_BASE}/esearch.fcgi?${searchParams}`);
+  if (!searchResp.ok) throw new Error(`MeSH search error ${searchResp.status}`);
+  const searchData = await searchResp.json();
+  await sleep(del);
+
+  const ids = searchData.esearchresult.idlist ?? [];
+  if (!ids.length) return { meshTerms: [], synonyms: [] };
+
+  // Fetch the top 2 MeSH records
+  const fetchParams = new URLSearchParams({
+    db: "mesh", id: ids.slice(0, 2).join(","), retmode: "xml",
+  });
+  if (key) fetchParams.set("api_key", key);
+
+  const fetchResp = await fetch(`${PUBMED_BASE}/efetch.fcgi?${fetchParams}`);
+  if (!fetchResp.ok) throw new Error(`MeSH fetch error ${fetchResp.status}`);
+  const xmlText = await fetchResp.text();
+  await sleep(del);
+
+  // Parse MeSH XML
+  const doc = new DOMParser().parseFromString(xmlText, "text/xml");
+  const meshTerms = [];
+  const synonyms  = [];
+
+  doc.querySelectorAll("DescriptorRecord").forEach(record => {
+    const preferred = record.querySelector("DescriptorName String")?.textContent?.trim();
+    if (preferred) meshTerms.push(preferred);
+
+    record.querySelectorAll("TermList Term String").forEach(el => {
+      const t = el.textContent?.trim();
+      if (t && t !== preferred) synonyms.push(t);
+    });
+  });
+
+  return { meshTerms, synonyms };
+}
+
+/**
+ * Build a deduplicated list of search terms from:
+ * 1. The user's original input
+ * 2. MeSH preferred descriptors (max 2)
+ * 3. Known abbreviations from ABBREVIATION_MAP
+ * 4. A selection of MeSH synonyms (max 2, excluding very short strings)
+ * Returns array of { term: string, isMesh: boolean }
+ */
+function buildSearchTerms(intervention, meshTerms, synonyms) {
+  const seen = new Set();
+  const results = [];
+
+  const add = (term, isMesh) => {
+    const key = term.toLowerCase();
+    if (!seen.has(key)) {
+      seen.add(key);
+      results.push({ term, isMesh });
+    }
+  };
+
+  // 1. Original input
+  add(intervention, false);
+
+  // 2. MeSH preferred terms (these get [MeSH Terms] queries)
+  meshTerms.slice(0, 2).forEach(t => add(t, true));
+
+  // 3. Known abbreviations
+  const abbrevs = ABBREVIATION_MAP[intervention.toLowerCase()] ?? [];
+  abbrevs.forEach(a => add(a, false));
+
+  // 4. Filtered synonyms — skip very short strings (noise) and keep max 2
+  synonyms
+    .filter(s => s.length >= 4)
+    .slice(0, 2)
+    .forEach(s => add(s, false));
+
+  return results.slice(0, 5); // cap at 5 distinct terms
+}
+
+/**
+ * Build PubMed query for a given search term + outcome.
+ * MeSH terms get combined [MeSH Terms] OR [tiab] coverage.
+ * Keywords/abbreviations use [tiab] only.
+ */
+function buildQuery(termObj, outcome) {
+  const { term, isMesh } = termObj;
+  const interventionClause = isMesh
+    ? `("${term}"[MeSH Terms] OR "${term}"[tiab])`
+    : `"${term}"[tiab]`;
+  return `${interventionClause} AND "${outcome}"[tiab]`;
+}
+
+let isResults = [];
+
+document.getElementById("isScanBtn").addEventListener("click",   isRunScan);
+document.getElementById("isExportBtn").addEventListener("click", isExportCsv);
+
+async function isRunScan() {
+  const intervention = document.getElementById("isInterventionInput").value.trim();
+  if (!intervention) { alert("Enter a clinical intervention to scan."); return; }
+
+  const key = apiKey();
+  const del = delay();
+
+  const scanBtn   = document.getElementById("isScanBtn");
+  const exportBtn = document.getElementById("isExportBtn");
+  const labelEl   = document.getElementById("isProgressLabel");
+  const trackEl   = document.getElementById("isProgressTrack");
+  const fillEl    = document.getElementById("isProgressFill");
+  const summaryEl = document.getElementById("isSummaryBar");
+  const tableWrap = document.getElementById("isTableWrap");
+  const tableBody = document.getElementById("isTableBody");
+  const emptyEl   = document.getElementById("isEmptyState");
+  const previewEl = document.getElementById("isTermsPreview");
+
+  // Reset UI
+  scanBtn.disabled   = true;
+  exportBtn.disabled = true;
+  trackEl.classList.add("visible");
+  fillEl.classList.add("running");
+  fillEl.style.width      = "0%";
+  tableBody.innerHTML     = "";
+  tableWrap.style.display = "none";
+  emptyEl.classList.remove("visible");
+  previewEl.classList.remove("visible");
+  summaryEl.style.display = "none";
+  isResults = [];
+
+  // ── Phase 1: MeSH lookup ─────────────────────────────────────────
+  labelEl.textContent = `Looking up MeSH terms for "${intervention}"…`;
+
+  let searchTerms;
+  try {
+    const { meshTerms, synonyms } = await lookupMeshTerms(intervention, key, del);
+    searchTerms = buildSearchTerms(intervention, meshTerms, synonyms);
+  } catch (err) {
+    // Fallback: just use the original term
+    searchTerms = [{ term: intervention, isMesh: false }];
+  }
+
+  // ── Show terms preview ───────────────────────────────────────────
+  const termsList    = document.getElementById("isTermsList");
+  const outcomesList = document.getElementById("isOutcomesList");
+  termsList.innerHTML = searchTerms
+    .map(t => `<span class="term-tag ${t.isMesh ? "mesh" : ""}">${escHtml(t.term)}</span>`)
+    .join("");
+  outcomesList.innerHTML = OUTCOME_TERMS
+    .map(o => `<span class="term-tag">${escHtml(o)}</span>`)
+    .join("");
+  previewEl.classList.add("visible");
+
+  // ── Phase 2: Scan combinations ───────────────────────────────────
+  const combinations = searchTerms.flatMap(termObj =>
+    OUTCOME_TERMS.map(outcome => ({ termObj, outcome, query: buildQuery(termObj, outcome) }))
+  );
+
+  const IS_STEPS_PER_COMBO = 5;
+  const totalSteps = combinations.length * IS_STEPS_PER_COMBO;
+  let   doneSteps  = 0;
+
+  const onStep = () => {
+    doneSteps++;
+    fillEl.style.width = `${Math.round((doneSteps / totalSteps) * 100)}%`;
+  };
+
+  labelEl.textContent = `Found ${searchTerms.length} term${searchTerms.length !== 1 ? "s" : ""} × ${OUTCOME_TERMS.length} outcomes = ${combinations.length} combinations…`;
+  tableWrap.style.display = "block";
+
+  for (let i = 0; i < combinations.length; i++) {
+    const { termObj, outcome, query } = combinations[i];
+    try {
+      const r = await countStudiesLight(query, key, del, onStep);
+      r.score       = gapScore(r);
+      r.termLabel   = termObj.term;
+      r.outcomeLabel= outcome;
+      isResults.push(r);
+      isAppendRow(r, isResults.length - 1);
+    } catch (err) {
+      doneSteps += IS_STEPS_PER_COMBO;
+    }
+  }
+
+  // Sort table rows by score descending
+  isResults.sort((a, b) => b.score - a.score);
+  isRerenderTable(isResults);
+
+  fillEl.classList.remove("running");
+  fillEl.style.width  = "100%";
+  labelEl.textContent = `Scan complete — ${isResults.length} combinations analysed.`;
+
+  if (isResults.length > 0) {
+    isRenderSummary(isResults);
+    exportBtn.disabled = false;
+  } else {
+    tableWrap.style.display = "none";
+    emptyEl.classList.add("visible");
+  }
+
+  scanBtn.disabled = false;
+}
+
+function isAppendRow(r, index) {
+  const tbody = document.getElementById("isTableBody");
+  const tr    = document.createElement("tr");
+  tr.style.animationDelay = `${Math.min(index, 10) * 30}ms`;
+  tr.dataset.score = r.score;
+  tr.innerHTML = isRowHtml(r);
+  tbody.appendChild(tr);
+}
+
+function isRerenderTable(results) {
+  const tbody = document.getElementById("isTableBody");
+  tbody.innerHTML = "";
+  results.forEach((r, i) => {
+    const tr = document.createElement("tr");
+    tr.style.animationDelay = `${Math.min(i, 15) * 30}ms`;
+    tr.innerHTML = isRowHtml(r);
+    tbody.appendChild(tr);
+  });
+}
+
+function isRowHtml(r) {
+  const primary = r.rct + r.cohort;
+  return `
+    <td class="td-intervention" title="${escHtml(r.topic)}">${escHtml(r.termLabel)}</td>
+    <td class="td-outcome">${escHtml(r.outcomeLabel)}</td>
+    <td class="col-num ${r.total === 0 ? "dim" : ""}">${r.total}</td>
+    <td class="col-num ${r.rct === 0 ? "dim" : ""}">${r.rct}</td>
+    <td class="col-num ${r.cohort === 0 ? "dim" : ""}">${r.cohort}</td>
+    <td class="col-num ${r.systematic_review === 0 ? "dim" : ""}">${r.systematic_review}</td>
+    <td class="col-num ${r.meta_analysis === 0 ? "dim" : ""}">${r.meta_analysis}</td>
+    <td class="col-num"><strong>${r.score.toFixed(1)}</strong></td>
+    <td><span class="badge ${badgeClass(r)}">${gapLabel(r)}</span></td>
+    <td>
+      <div class="td-links">
+        <a class="card-link card-link-prospero" href="${escHtml(prosperoUrl(r.topic))}" target="_blank" rel="noopener">PROSPERO</a>
+        <a class="card-link card-link-pubmed"   href="${escHtml(pubmedUrl(r.topic))}"   target="_blank" rel="noopener">PubMed</a>
+      </div>
+    </td>`;
+}
+
+function isRenderSummary(results) {
+  const strong  = results.filter(hasGap).length;
+  const weak    = results.filter(r => !hasGap(r) && hasWeakGap(r)).length;
+  const covered = results.length - strong - weak;
+  const el      = document.getElementById("isSummaryBar");
+  el.innerHTML = `
+    <div class="summary-stat s-strong"><strong>${strong}</strong> strong gap${strong !== 1 ? "s" : ""}</div>
+    <div class="summary-divider"></div>
+    <div class="summary-stat s-weak"><strong>${weak}</strong> weak gap${weak !== 1 ? "s" : ""}</div>
+    <div class="summary-divider"></div>
+    <div class="summary-stat s-covered"><strong>${covered}</strong> covered</div>
+    <div class="summary-divider"></div>
+    <div class="summary-stat s-total"><strong>${results.length}</strong> combination${results.length !== 1 ? "s" : ""} scanned</div>`;
+  el.style.display = "flex";
+}
+
+function isExportCsv() {
+  if (!isResults.length) return;
+  downloadCsv(
+    `litgap-intervention-${new Date().toISOString().slice(0, 10)}.csv`,
+    ["Intervention Term","Outcome","Full Query","Gap Status","Gap Score",
+     "Total","RCTs","Cohort","Systematic Reviews","Meta-Analyses",
+     "PROSPERO URL","PubMed URL"],
+    isResults.map(r => [
+      r.termLabel, r.outcomeLabel, r.topic,
+      hasGap(r) ? "Strong Gap" : hasWeakGap(r) ? "Weak Gap" : "Covered",
+      r.score.toFixed(1),
+      r.total, r.rct, r.cohort, r.systematic_review, r.meta_analysis,
+      prosperoUrl(r.topic), pubmedUrl(r.topic),
+    ])
+  );
 }
 </script>
 </body>
