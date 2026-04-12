@@ -128,13 +128,98 @@
     /* ── App shell ──────────────────────────────────────────────── */
     .app {
       flex: 1;
-      max-width: 860px;
       width: 100%;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+
+    /* ── Workspace split layout ─────────────────────────────────── */
+    .workspace {
+      display: flex;
+      align-items: flex-start;
+      flex: 1;
+      overflow: hidden;
+    }
+
+    /* Input pane — full-width in idle, narrows in split */
+    .input-pane {
+      width: 100%;
+      flex-shrink: 0;
+      min-width: 0;
+      transition: width 0.45s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .input-inner {
+      max-width: 860px;
       margin: 0 auto;
       padding: 2rem 1.5rem 4rem;
       display: flex;
       flex-direction: column;
       gap: 1rem;
+      transition: max-width 0.45s ease, padding 0.45s ease;
+    }
+
+    /* Results pane — hidden in idle, slides in when split */
+    .results-pane {
+      width: 0;
+      flex-shrink: 0;
+      min-width: 0;
+      opacity: 0;
+      pointer-events: none;
+      overflow: hidden;
+      border-left: 1px solid transparent;
+      transition:
+        width 0.45s cubic-bezier(0.4, 0, 0.2, 1),
+        opacity 0.3s ease 0.15s,
+        border-color 0.3s ease 0.15s;
+    }
+
+    .results-pane-inner {
+      padding: 2rem 1.5rem 4rem;
+      min-width: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+
+    /* Split state */
+    .workspace.split .input-pane {
+      width: 38%;
+    }
+
+    .workspace.split .input-inner {
+      max-width: none;
+      padding: 1.5rem 1.25rem 3rem;
+    }
+
+    .workspace.split .results-pane {
+      width: 62%;
+      opacity: 1;
+      pointer-events: auto;
+      overflow-y: auto;
+      overflow-x: hidden;
+      border-left-color: var(--border);
+    }
+
+    /* ── Results pane header ────────────────────────────────────── */
+    .results-header {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      flex-wrap: wrap;
+    }
+
+    .btn-back {
+      flex-shrink: 0;
+    }
+
+    .progress-area {
+      flex: 1;
+      min-width: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
     }
 
     /* ── Shared panel ───────────────────────────────────────────── */
@@ -214,9 +299,9 @@
       border-bottom-color: var(--accent);
     }
 
-    /* ── Tab panels ─────────────────────────────────────────────── */
-    .tab-panel { display: none; flex-direction: column; gap: 1rem; }
-    .tab-panel.active { display: flex; }
+    /* ── Tab input panels ───────────────────────────────────────── */
+    .tab-input { display: none; flex-direction: column; gap: 1rem; }
+    .tab-input.active { display: flex; }
 
     /* ── Preset chips ───────────────────────────────────────────── */
     .chip-group {
@@ -326,8 +411,6 @@
     .progress-label {
       font-size: 0.78rem;
       color: var(--text-2);
-      flex: 1;
-      min-width: 0;
       overflow: hidden;
       text-overflow: ellipsis;
       white-space: nowrap;
@@ -395,7 +478,7 @@
       flex-shrink: 0;
     }
 
-    /* ── Result cards (Gap Detector) ────────────────────────────── */
+    /* ── Result cards ───────────────────────────────────────────── */
     .results-list {
       display: flex;
       flex-direction: column;
@@ -472,11 +555,9 @@
     .stat-item { font-size: 0.75rem; color: var(--text-2); }
     .stat-item strong { color: var(--text); font-weight: 600; }
 
-    /* Context-only stats: scoping + narrative reviews don't affect gap score */
     .stat-item.stat-context { color: var(--text-3); }
     .stat-item.stat-context strong { color: var(--text-2); font-weight: 500; }
 
-    /* Vertical rule separating primary studies from review counts */
     .stat-divider {
       display: block;
       width: 1px;
@@ -487,7 +568,6 @@
       margin: 0 0.1rem;
     }
 
-    /* Context columns in the intervention scanner table */
     .col-context { color: var(--text-3) !important; }
 
     .card-footer {
@@ -704,49 +784,7 @@
 
     .empty-state.visible { display: block; }
 
-    /* ── Footer ─────────────────────────────────────────────────── */
-    footer {
-      border-top: 1px solid var(--border);
-      padding: 2rem 1.5rem;
-    }
-
-    .footer-inner {
-      max-width: 860px;
-      margin: 0 auto;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 1rem;
-      flex-wrap: wrap;
-    }
-
-    .footer-brand {
-      font-size: 0.82rem;
-      font-weight: 700;
-      color: var(--text-3);
-      letter-spacing: -0.02em;
-    }
-
-    .footer-links { display: flex; gap: 1.25rem; flex-wrap: wrap; }
-
-    .footer-link {
-      font-size: 0.78rem;
-      color: var(--text-3);
-      text-decoration: none;
-      transition: color var(--t);
-    }
-
-    .footer-link:hover { color: var(--text-2); }
-
-    .footer-note {
-      width: 100%;
-      font-size: 0.72rem;
-      color: var(--text-3);
-      margin-top: 0.25rem;
-    }
-
     /* ── Suggest angles button ──────────────────────────────────── */
-    /* Reset button defaults so card-link styles apply cleanly */
     button.card-link {
       font-family: inherit;
       cursor: pointer;
@@ -766,7 +804,7 @@
       border-color: rgba(79,125,248,0.25);
     }
 
-    /* ── AI angles section ───────────────────────────────────────── */
+    /* ── AI angles section ──────────────────────────────────────── */
     .angles-section {
       border-top: 1px solid var(--border);
       margin-top: 0.9rem;
@@ -875,10 +913,73 @@
       min-width: 0;
     }
 
+    /* ── Footer ─────────────────────────────────────────────────── */
+    footer {
+      border-top: 1px solid var(--border);
+      padding: 2rem 1.5rem;
+    }
+
+    .footer-inner {
+      max-width: 860px;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+      flex-wrap: wrap;
+    }
+
+    .footer-brand {
+      font-size: 0.82rem;
+      font-weight: 700;
+      color: var(--text-3);
+      letter-spacing: -0.02em;
+    }
+
+    .footer-links { display: flex; gap: 1.25rem; flex-wrap: wrap; }
+
+    .footer-link {
+      font-size: 0.78rem;
+      color: var(--text-3);
+      text-decoration: none;
+      transition: color var(--t);
+    }
+
+    .footer-link:hover { color: var(--text-2); }
+
+    .footer-note {
+      width: 100%;
+      font-size: 0.72rem;
+      color: var(--text-3);
+      margin-top: 0.25rem;
+    }
+
     /* ── Responsive ─────────────────────────────────────────────── */
-    @media (max-width: 600px) {
+    @media (max-width: 700px) {
       .hero { padding: 3.5rem 1.25rem 3rem; }
-      .app  { padding: 1.5rem 1rem 3rem; }
+
+      /* On mobile, input pane always full width */
+      .workspace.split .input-pane { width: 100%; }
+
+      /* Results pane slides over full screen on mobile */
+      .results-pane {
+        position: fixed !important;
+        top: 0; left: 0; right: 0; bottom: 0;
+        width: 100% !important;
+        max-width: 100% !important;
+        transform: translateX(100%);
+        opacity: 1 !important;
+        background: var(--bg);
+        border-left: none !important;
+        overflow-y: auto;
+        z-index: 100;
+        transition: transform 0.38s cubic-bezier(0.4, 0, 0.2, 1) !important;
+      }
+
+      .workspace.split .results-pane {
+        transform: translateX(0);
+      }
+
       .panel { padding: 1rem 1.1rem; }
       .card-header { flex-direction: column; align-items: flex-start; }
     }
@@ -897,146 +998,167 @@
 
 <!-- ── App ───────────────────────────────────────────────────────── -->
 <main class="app">
+  <div id="workspace" class="workspace">
 
-  <!-- Shared config (visible on both tabs) -->
-  <div class="panel">
-    <div class="section-label">Configuration</div>
-    <div class="api-row">
-      <label for="ncbiKey">NCBI API key</label>
-      <input id="ncbiKey" class="field-input" type="password"
-        placeholder="Optional — raises rate limit from 3 to 10 req/sec" autocomplete="off" />
-    </div>
-    <div class="api-row" style="margin-top:0.75rem">
-      <label for="anthropicKeyInput">Anthropic API key</label>
-      <input id="anthropicKeyInput" class="field-input" type="password"
-        placeholder="Optional — enables AI angle suggestions on gap cards" autocomplete="off" />
-    </div>
-  </div>
+    <!-- ════════════════ INPUT PANE ════════════════ -->
+    <div id="inputPane" class="input-pane">
+      <div class="input-inner">
 
-  <!-- Tab bar -->
-  <div class="tab-bar">
-    <button class="tab active" data-tab="gap-detector">Gap Detector</button>
-    <button class="tab" data-tab="intervention-scanner">Intervention Scanner</button>
-  </div>
+        <!-- Config -->
+        <div class="panel">
+          <div class="section-label">Configuration</div>
+          <div class="api-row">
+            <label for="ncbiKey">NCBI API key</label>
+            <input id="ncbiKey" class="field-input" type="password"
+              placeholder="Optional — raises rate limit from 3 to 10 req/sec" autocomplete="off" />
+          </div>
+          <div class="api-row" style="margin-top:0.75rem">
+            <label for="anthropicKeyInput">Anthropic API key</label>
+            <input id="anthropicKeyInput" class="field-input" type="password"
+              placeholder="Optional — enables AI angle suggestions on gap cards" autocomplete="off" />
+          </div>
+        </div>
 
-  <!-- ── Tab: Gap Detector ───────────────────────────────────────── -->
-  <div id="tab-gap-detector" class="tab-panel active">
+        <!-- Tab bar -->
+        <div class="tab-bar">
+          <button class="tab active" data-tab="gap-detector">Gap Detector</button>
+          <button class="tab" data-tab="intervention-scanner">Intervention Scanner</button>
+        </div>
 
-    <div class="panel">
-      <div class="section-label">Preset topics</div>
-      <div class="chip-group" id="gdChipGroup"></div>
-      <textarea id="gdTopicsArea" class="topics-textarea"
-        placeholder='"tubular retractor" AND brain AND surgery
+        <!-- Gap Detector inputs -->
+        <div id="gd-input-panel" class="tab-input active" data-tab="gap-detector">
+          <div class="panel">
+            <div class="section-label">Preset topics</div>
+            <div class="chip-group" id="gdChipGroup"></div>
+            <textarea id="gdTopicsArea" class="topics-textarea"
+              placeholder='"tubular retractor" AND brain AND surgery
 "deep brain stimulation" AND "disorders of consciousness"
 "intraoperative MRI" AND glioma AND resection
 # Lines starting with # are ignored'></textarea>
-      <p class="field-hint">One PubMed query per line. MeSH terms, boolean operators, and field tags are all supported.</p>
-    </div>
+            <p class="field-hint">One PubMed query per line. MeSH terms, boolean operators, and field tags are all supported.</p>
+          </div>
+          <div class="actions-row">
+            <button id="gdScanBtn" class="btn btn-primary">
+              <svg width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+                <circle cx="7" cy="7" r="5.5" stroke="currentColor" stroke-width="1.5"/>
+                <path d="M11 11L14.5 14.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+              </svg>
+              Scan PubMed
+            </button>
+            <button id="gdExportBtn" class="btn btn-secondary" disabled>
+              <svg width="13" height="13" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+                <path d="M8 2v8M8 10l-3-3M8 10l3-3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                <path d="M2 12h12" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+              </svg>
+              Export CSV
+            </button>
+          </div>
+        </div>
 
-    <div class="actions-row">
-      <button id="gdScanBtn" class="btn btn-primary">
-        <svg width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true">
-          <circle cx="7" cy="7" r="5.5" stroke="currentColor" stroke-width="1.5"/>
-          <path d="M11 11L14.5 14.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
-        </svg>
-        Scan PubMed
-      </button>
-      <button id="gdExportBtn" class="btn btn-secondary" disabled>
-        <svg width="13" height="13" viewBox="0 0 16 16" fill="none" aria-hidden="true">
-          <path d="M8 2v8M8 10l-3-3M8 10l3-3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-          <path d="M2 12h12" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
-        </svg>
-        Export CSV
-      </button>
-      <span id="gdProgressLabel" class="progress-label"></span>
-    </div>
+        <!-- Intervention Scanner inputs -->
+        <div id="is-input-panel" class="tab-input" data-tab="intervention-scanner">
+          <div class="panel">
+            <div class="section-label">Clinical Intervention</div>
+            <div class="api-row">
+              <input id="isInterventionInput" class="field-input" type="text"
+                placeholder="e.g. deep brain stimulation, spinal cord stimulation, intravitreal injection"
+                style="font-family: inherit;" />
+            </div>
+            <p class="field-hint">LitGap will look up related MeSH descriptors and synonyms, then test every combination against common clinical outcome types to find uncovered angles.</p>
+          </div>
+          <div class="actions-row">
+            <button id="isScanBtn" class="btn btn-primary">
+              <svg width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+                <circle cx="7" cy="7" r="5.5" stroke="currentColor" stroke-width="1.5"/>
+                <path d="M11 11L14.5 14.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+              </svg>
+              Scan Intervention
+            </button>
+            <button id="isExportBtn" class="btn btn-secondary" disabled>
+              <svg width="13" height="13" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+                <path d="M8 2v8M8 10l-3-3M8 10l3-3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                <path d="M2 12h12" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+              </svg>
+              Export CSV
+            </button>
+          </div>
+        </div>
 
-    <div id="gdProgressTrack" class="progress-track">
-      <div id="gdProgressFill" class="progress-fill"></div>
-    </div>
+      </div><!-- /input-inner -->
+    </div><!-- /inputPane -->
 
-    <div id="gdSummaryBar" class="summary-bar"></div>
-    <div id="gdResults" class="results-list"></div>
+    <!-- ════════════════ RESULTS PANE ════════════════ -->
+    <div id="resultsPane" class="results-pane">
+      <div class="results-pane-inner">
 
-  </div><!-- /gap-detector -->
+        <!-- Header: back + progress -->
+        <div class="results-header">
+          <button id="backBtn" class="btn btn-secondary btn-back">
+            <svg width="13" height="13" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+              <path d="M10 3L5 8l5 5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+            New scan
+          </button>
+          <div class="progress-area">
+            <span id="progressLabel" class="progress-label"></span>
+            <div id="progressTrack" class="progress-track">
+              <div id="progressFill" class="progress-fill"></div>
+            </div>
+          </div>
+        </div>
 
-  <!-- ── Tab: Intervention Scanner ──────────────────────────────── -->
-  <div id="tab-intervention-scanner" class="tab-panel">
+        <!-- Gap Detector results -->
+        <div id="gd-results-panel" class="results-panel" data-tab="gap-detector">
+          <div id="gdSummaryBar" class="summary-bar"></div>
+          <div id="gdResults" class="results-list"></div>
+        </div>
 
-    <div class="panel">
-      <div class="section-label">Clinical Intervention</div>
-      <div class="api-row">
-        <input id="isInterventionInput" class="field-input" type="text"
-          placeholder='e.g. deep brain stimulation, spinal cord stimulation, intravitreal injection'
-          style="font-family: inherit;" />
-      </div>
-      <p class="field-hint">LitGap will look up related MeSH descriptors and synonyms, then test every combination against common clinical outcome types to find uncovered angles.</p>
-    </div>
+        <!-- Intervention Scanner results -->
+        <div id="is-results-panel" class="results-panel" data-tab="intervention-scanner" style="display:none">
+          <div id="isSummaryBar" class="summary-bar"></div>
 
-    <div class="actions-row">
-      <button id="isScanBtn" class="btn btn-primary">
-        <svg width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true">
-          <circle cx="7" cy="7" r="5.5" stroke="currentColor" stroke-width="1.5"/>
-          <path d="M11 11L14.5 14.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
-        </svg>
-        Scan Intervention
-      </button>
-      <button id="isExportBtn" class="btn btn-secondary" disabled>
-        <svg width="13" height="13" viewBox="0 0 16 16" fill="none" aria-hidden="true">
-          <path d="M8 2v8M8 10l-3-3M8 10l3-3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-          <path d="M2 12h12" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
-        </svg>
-        Export CSV
-      </button>
-      <span id="isProgressLabel" class="progress-label"></span>
-    </div>
+          <div id="isTermsPreview" class="terms-preview">
+            <div class="terms-row">
+              <span class="terms-row-label">Search terms</span>
+              <div id="isTermsList" class="term-tags"></div>
+            </div>
+            <div class="terms-row">
+              <span class="terms-row-label">Outcomes</span>
+              <div id="isOutcomesList" class="term-tags"></div>
+            </div>
+          </div>
 
-    <div id="isProgressTrack" class="progress-track">
-      <div id="isProgressFill" class="progress-fill"></div>
-    </div>
+          <div id="isTableWrap" class="table-wrap" style="display:none">
+            <table class="results-table">
+              <thead>
+                <tr>
+                  <th>Intervention term</th>
+                  <th>Outcome</th>
+                  <th class="col-num">Total</th>
+                  <th class="col-num">RCTs</th>
+                  <th class="col-num">Cohort</th>
+                  <th class="col-num">SRs</th>
+                  <th class="col-num">MAs</th>
+                  <th class="col-num col-context">Scoping</th>
+                  <th class="col-num col-context">Narrative</th>
+                  <th class="col-num">Score</th>
+                  <th>Status</th>
+                  <th>Links</th>
+                </tr>
+              </thead>
+              <tbody id="isTableBody"></tbody>
+            </table>
+          </div>
 
-    <!-- Terms preview -->
-    <div id="isTermsPreview" class="terms-preview">
-      <div class="terms-row">
-        <span class="terms-row-label">Search terms</span>
-        <div id="isTermsList" class="term-tags"></div>
-      </div>
-      <div class="terms-row">
-        <span class="terms-row-label">Outcomes</span>
-        <div id="isOutcomesList" class="term-tags"></div>
-      </div>
-    </div>
+          <div id="isEmptyState" class="empty-state">
+            No combinations returned results. Try a different intervention term.
+          </div>
+        </div>
 
-    <div id="isSummaryBar" class="summary-bar"></div>
+      </div><!-- /results-pane-inner -->
+    </div><!-- /resultsPane -->
 
-    <div id="isTableWrap" class="table-wrap" style="display:none">
-      <table class="results-table">
-        <thead>
-          <tr>
-            <th>Intervention term</th>
-            <th>Outcome</th>
-            <th class="col-num">Total</th>
-            <th class="col-num">RCTs</th>
-            <th class="col-num">Cohort</th>
-            <th class="col-num">SRs</th>
-            <th class="col-num">MAs</th>
-            <th class="col-num col-context">Scoping</th>
-            <th class="col-num col-context">Narrative</th>
-            <th class="col-num">Score</th>
-            <th>Status</th>
-            <th>Links</th>
-          </tr>
-        </thead>
-        <tbody id="isTableBody"></tbody>
-      </table>
-    </div>
-
-    <div id="isEmptyState" class="empty-state">
-      No combinations returned results. Try a different intervention term.
-    </div>
-
-  </div><!-- /intervention-scanner -->
-
+  </div><!-- /workspace -->
 </main>
 
 <!-- ── Footer ────────────────────────────────────────────────────── -->
@@ -1066,10 +1188,8 @@ const STUDY_FILTERS = {
   rct:               "Randomized Controlled Trial[pt]",
   cohort:            "(Observational Study[pt] OR Cohort Studies[mh])",
   case_series:       "Case Reports[pt]",
-  // Tagged [pt] + keyword [tiab] for broader coverage
   meta_analysis:     "(Meta-Analysis[pt] OR \"meta-analysis\"[tiab])",
   systematic_review: "(Systematic Review[pt] OR \"systematic review\"[tiab])",
-  // Keyword-only — no publication type tag exists for these in PubMed
   scoping_review:    "\"scoping review\"[tiab]",
   narrative_review:  "\"narrative review\"[tiab]",
 };
@@ -1094,7 +1214,6 @@ async function esearchCount(query, key) {
   return parseInt((await resp.json()).esearchresult.count, 10);
 }
 
-// Full study count — used by Gap Detector (10 calls: total + 7 filters + 2 recent)
 async function countStudiesFull(topic, key, del, onStep) {
   const r = { topic, total: 0, rct: 0, cohort: 0, case_series: 0,
                meta_analysis: 0, systematic_review: 0,
@@ -1122,31 +1241,29 @@ async function countStudiesFull(topic, key, del, onStep) {
   return r;
 }
 
-// Light study count — used by Intervention Scanner (7 calls: total + rct + cohort + 4 review types)
 async function countStudiesLight(topic, key, del, onStep) {
   const r = { topic, total: 0, rct: 0, cohort: 0,
                meta_analysis: 0, systematic_review: 0,
                scoping_review: 0, narrative_review: 0 };
 
-  r.total            = await esearchCount(topic, key);
+  r.total             = await esearchCount(topic, key);
   await sleep(del); onStep();
-  r.rct              = await esearchCount(`(${topic}) AND ${STUDY_FILTERS.rct}`,               key);
+  r.rct               = await esearchCount(`(${topic}) AND ${STUDY_FILTERS.rct}`,               key);
   await sleep(del); onStep();
-  r.cohort           = await esearchCount(`(${topic}) AND ${STUDY_FILTERS.cohort}`,            key);
+  r.cohort            = await esearchCount(`(${topic}) AND ${STUDY_FILTERS.cohort}`,            key);
   await sleep(del); onStep();
-  r.systematic_review= await esearchCount(`(${topic}) AND ${STUDY_FILTERS.systematic_review}`, key);
+  r.systematic_review = await esearchCount(`(${topic}) AND ${STUDY_FILTERS.systematic_review}`, key);
   await sleep(del); onStep();
-  r.meta_analysis    = await esearchCount(`(${topic}) AND ${STUDY_FILTERS.meta_analysis}`,     key);
+  r.meta_analysis     = await esearchCount(`(${topic}) AND ${STUDY_FILTERS.meta_analysis}`,     key);
   await sleep(del); onStep();
-  r.scoping_review   = await esearchCount(`(${topic}) AND ${STUDY_FILTERS.scoping_review}`,    key);
+  r.scoping_review    = await esearchCount(`(${topic}) AND ${STUDY_FILTERS.scoping_review}`,    key);
   await sleep(del); onStep();
-  r.narrative_review = await esearchCount(`(${topic}) AND ${STUDY_FILTERS.narrative_review}`,  key);
+  r.narrative_review  = await esearchCount(`(${topic}) AND ${STUDY_FILTERS.narrative_review}`,  key);
   await sleep(del); onStep();
 
   return r;
 }
 
-// Gap scoring — recent_rct / recent_cohort default to 0 when absent
 function gapScore(r) {
   if (r.systematic_review >= 3) return 0;
   const primary = r.rct * 3 + r.cohort * 1.5 + (r.case_series ?? 0) * 0.3;
@@ -1193,6 +1310,37 @@ function downloadCsv(filename, headers, rows) {
 
 
 // ═══════════════════════════════════════════════════════════════════════════════
+// WORKSPACE SPLIT
+// ═══════════════════════════════════════════════════════════════════════════════
+
+function enterSplitMode(activeTab) {
+  const workspace = document.getElementById("workspace");
+  workspace.classList.add("split");
+
+  // Show correct results panel
+  document.querySelectorAll(".results-panel").forEach(p => {
+    p.style.display = p.dataset.tab === activeTab ? "" : "none";
+  });
+
+  // Scroll results pane to top
+  const rp = document.getElementById("resultsPane");
+  rp.scrollTop = 0;
+}
+
+function exitSplitMode() {
+  document.getElementById("workspace").classList.remove("split");
+  document.getElementById("progressLabel").textContent = "";
+  const track = document.getElementById("progressTrack");
+  const fill  = document.getElementById("progressFill");
+  track.classList.remove("visible");
+  fill.classList.remove("running");
+  fill.style.width = "0%";
+}
+
+document.getElementById("backBtn").addEventListener("click", exitSplitMode);
+
+
+// ═══════════════════════════════════════════════════════════════════════════════
 // TAB NAVIGATION
 // ═══════════════════════════════════════════════════════════════════════════════
 
@@ -1200,9 +1348,15 @@ function switchTab(tabId) {
   document.querySelectorAll(".tab").forEach(t =>
     t.classList.toggle("active", t.dataset.tab === tabId)
   );
-  document.querySelectorAll(".tab-panel").forEach(p =>
-    p.classList.toggle("active", p.id === `tab-${tabId}`)
+  document.querySelectorAll(".tab-input").forEach(p =>
+    p.classList.toggle("active", p.dataset.tab === tabId)
   );
+  // Switch results panels only if the split is already open
+  if (document.getElementById("workspace").classList.contains("split")) {
+    document.querySelectorAll(".results-panel").forEach(p => {
+      p.style.display = p.dataset.tab === tabId ? "" : "none";
+    });
+  }
 }
 
 document.querySelectorAll(".tab").forEach(tab =>
@@ -1278,7 +1432,7 @@ function gdTogglePreset(name, chip) {
 }
 
 let gdResults = [];
-const GD_STEPS_PER_TOPIC = 10; // 1 total + 7 filters + 2 recent
+const GD_STEPS_PER_TOPIC = 10;
 
 document.getElementById("gdScanBtn").addEventListener("click", gdRunScan);
 document.getElementById("gdExportBtn").addEventListener("click", gdExportCsv);
@@ -1289,6 +1443,8 @@ async function gdRunScan() {
 
   if (!topics.length) { alert("Enter at least one topic to scan."); return; }
 
+  enterSplitMode("gap-detector");
+
   const key   = apiKey();
   const del   = delay();
   const total = topics.length * GD_STEPS_PER_TOPIC;
@@ -1296,18 +1452,18 @@ async function gdRunScan() {
 
   const scanBtn    = document.getElementById("gdScanBtn");
   const exportBtn  = document.getElementById("gdExportBtn");
-  const labelEl    = document.getElementById("gdProgressLabel");
-  const trackEl    = document.getElementById("gdProgressTrack");
-  const fillEl     = document.getElementById("gdProgressFill");
+  const labelEl    = document.getElementById("progressLabel");
+  const trackEl    = document.getElementById("progressTrack");
+  const fillEl     = document.getElementById("progressFill");
   const resultsEl  = document.getElementById("gdResults");
   const summaryEl  = document.getElementById("gdSummaryBar");
 
-  scanBtn.disabled  = true;
-  exportBtn.disabled= true;
+  scanBtn.disabled   = true;
+  exportBtn.disabled = true;
   trackEl.classList.add("visible");
   fillEl.classList.add("running");
-  fillEl.style.width   = "0%";
-  resultsEl.innerHTML  = "";
+  fillEl.style.width      = "0%";
+  resultsEl.innerHTML     = "";
   summaryEl.style.display = "none";
   gdResults = [];
 
@@ -1323,66 +1479,70 @@ async function gdRunScan() {
       const r = await countStudiesFull(topic, key, del, onStep);
       r.score = gapScore(r);
       gdResults.push(r);
+      // Stream card as soon as it's ready
+      const card = gdMakeCard(r, gdResults.length - 1);
+      resultsEl.appendChild(card);
     } catch (err) {
-      done += GD_STEPS_PER_TOPIC; // keep progress moving on error
+      done += GD_STEPS_PER_TOPIC;
       resultsEl.insertAdjacentHTML("beforeend",
         `<div class="error-msg">Error scanning <code>${escHtml(topic)}</code>: ${escHtml(err.message)}</div>`
       );
     }
   }
 
+  // Re-sort by score and re-render
   gdResults.sort((a, b) => b.score - a.score);
+  gdRenderResults(gdResults);
+  gdRenderSummary(gdResults);
 
   fillEl.classList.remove("running");
   fillEl.style.width  = "100%";
   labelEl.textContent = `Scan complete — ${gdResults.length} topic${gdResults.length !== 1 ? "s" : ""} analysed.`;
 
-  gdRenderResults(gdResults);
-  gdRenderSummary(gdResults);
-
   scanBtn.disabled  = false;
   if (gdResults.length) exportBtn.disabled = false;
+}
+
+function gdMakeCard(r, index) {
+  const isGap = hasGap(r) || hasWeakGap(r);
+  const card  = document.createElement("div");
+  card.className = `result-card ${gapClass(r)}`;
+  card.style.animationDelay = `${Math.min(index, 6) * 55}ms`;
+  card.innerHTML = `
+    <div class="card-header">
+      <span class="card-topic">${escHtml(r.topic)}</span>
+      <span class="badge ${badgeClass(r)}">${gapLabel(r)}</span>
+    </div>
+    <div class="card-stats">
+      <span class="stat-item"><strong>${r.total}</strong> total</span>
+      <span class="stat-item"><strong>${r.rct}</strong> RCT${r.rct !== 1 ? "s" : ""}</span>
+      <span class="stat-item"><strong>${r.cohort}</strong> cohort</span>
+      <span class="stat-item"><strong>${r.case_series}</strong> case reports</span>
+      <span class="stat-item"><strong>${r.recent_rct + r.recent_cohort}</strong> recent primary (3 yr)</span>
+      <span class="stat-divider"></span>
+      <span class="stat-item"><strong>${r.systematic_review}</strong> systematic review${r.systematic_review !== 1 ? "s" : ""}</span>
+      <span class="stat-item"><strong>${r.meta_analysis}</strong> meta-anal${r.meta_analysis !== 1 ? "yses" : "ysis"}</span>
+      <span class="stat-item stat-context"><strong>${r.scoping_review}</strong> scoping review${r.scoping_review !== 1 ? "s" : ""}</span>
+      <span class="stat-item stat-context"><strong>${r.narrative_review}</strong> narrative review${r.narrative_review !== 1 ? "s" : ""}</span>
+    </div>
+    <div class="card-footer">
+      <span class="score-tag">Gap score&thinsp;·&thinsp;<strong>${r.score.toFixed(1)}</strong></span>
+      <a class="card-link card-link-prospero" href="${escHtml(prosperoUrl(r.topic))}" target="_blank" rel="noopener">Check PROSPERO</a>
+      <a class="card-link card-link-pubmed"   href="${escHtml(pubmedUrl(r.topic))}"   target="_blank" rel="noopener">View on PubMed</a>
+      ${isGap ? '<button class="card-link card-link-angles angles-btn">Suggest angles</button>' : ''}
+    </div>
+    ${isGap ? '<div class="angles-section"></div>' : ''}`;
+
+  if (isGap) {
+    card.querySelector(".angles-btn").addEventListener("click", () => suggestAngles(r, card));
+  }
+  return card;
 }
 
 function gdRenderResults(results) {
   const container = document.getElementById("gdResults");
   container.innerHTML = "";
-
-  results.forEach((r, i) => {
-    const isGap = hasGap(r) || hasWeakGap(r);
-    const card  = document.createElement("div");
-    card.className = `result-card ${gapClass(r)}`;
-    card.style.animationDelay = `${i * 55}ms`;
-    card.innerHTML = `
-      <div class="card-header">
-        <span class="card-topic">${escHtml(r.topic)}</span>
-        <span class="badge ${badgeClass(r)}">${gapLabel(r)}</span>
-      </div>
-      <div class="card-stats">
-        <span class="stat-item"><strong>${r.total}</strong> total</span>
-        <span class="stat-item"><strong>${r.rct}</strong> RCT${r.rct !== 1 ? "s" : ""}</span>
-        <span class="stat-item"><strong>${r.cohort}</strong> cohort</span>
-        <span class="stat-item"><strong>${r.case_series}</strong> case reports</span>
-        <span class="stat-item"><strong>${r.recent_rct + r.recent_cohort}</strong> recent primary (3 yr)</span>
-        <span class="stat-divider"></span>
-        <span class="stat-item"><strong>${r.systematic_review}</strong> systematic review${r.systematic_review !== 1 ? "s" : ""}</span>
-        <span class="stat-item"><strong>${r.meta_analysis}</strong> meta-anal${r.meta_analysis !== 1 ? "yses" : "ysis"}</span>
-        <span class="stat-item stat-context"><strong>${r.scoping_review}</strong> scoping review${r.scoping_review !== 1 ? "s" : ""}</span>
-        <span class="stat-item stat-context"><strong>${r.narrative_review}</strong> narrative review${r.narrative_review !== 1 ? "s" : ""}</span>
-      </div>
-      <div class="card-footer">
-        <span class="score-tag">Gap score&thinsp;·&thinsp;<strong>${r.score.toFixed(1)}</strong></span>
-        <a class="card-link card-link-prospero" href="${escHtml(prosperoUrl(r.topic))}" target="_blank" rel="noopener">Check PROSPERO</a>
-        <a class="card-link card-link-pubmed"   href="${escHtml(pubmedUrl(r.topic))}"   target="_blank" rel="noopener">View on PubMed</a>
-        ${isGap ? '<button class="card-link card-link-angles angles-btn">Suggest angles</button>' : ''}
-      </div>
-      ${isGap ? '<div class="angles-section"></div>' : ''}`;
-
-    if (isGap) {
-      card.querySelector(".angles-btn").addEventListener("click", () => suggestAngles(r, card));
-    }
-    container.appendChild(card);
-  });
+  results.forEach((r, i) => container.appendChild(gdMakeCard(r, i)));
 }
 
 function gdRenderSummary(results) {
@@ -1428,10 +1588,6 @@ function gdExportCsv() {
 const ANTHROPIC_API_URL = "https://api.anthropic.com/v1/messages";
 const ANTHROPIC_MODEL   = "claude-sonnet-4-20250514";
 
-/**
- * Lazily fetch the titles of up to 5 recent primary studies for a topic.
- * Called on demand (when "Suggest angles" is clicked), not during the main scan.
- */
 async function fetchSampleTitles(topic, key, del) {
   const searchParams = new URLSearchParams({
     db: "pubmed",
@@ -1459,10 +1615,6 @@ async function fetchSampleTitles(topic, key, del) {
   return ids.map(id => data.result?.[id]?.title).filter(Boolean);
 }
 
-/**
- * Call the Anthropic API with the gap data and return parsed angle suggestions.
- * Requires the anthropic-dangerous-direct-browser-access header for CORS.
- */
 async function callAnthropicAngles(r, anthropicKeyVal) {
   const titles     = r.sampleTitles ?? [];
   const titlesText = titles.length
@@ -1517,7 +1669,6 @@ Respond with a valid JSON array only — no markdown, no preamble, no trailing t
   const data = await resp.json();
   const text = data.content?.[0]?.text ?? "";
 
-  // Parse JSON — strip any accidental markdown fences first
   const cleaned = text.replace(/^```(?:json)?\s*/i, "").replace(/\s*```$/, "").trim();
   try {
     return JSON.parse(cleaned);
@@ -1528,7 +1679,6 @@ Respond with a valid JSON array only — no markdown, no preamble, no trailing t
   }
 }
 
-/** Render parsed angle suggestions into a container element. */
 function renderAngles(container, angles) {
   if (!Array.isArray(angles) || !angles.length) {
     container.innerHTML = `<div class="angle-error">No suggestions returned — try again.</div>`;
@@ -1542,7 +1692,6 @@ function renderAngles(container, angles) {
     return "feasibility-low";
   };
 
-  // Split "High — rationale..." into label + rationale for separate display
   const feasibilityParts = text => {
     const parts = (text ?? "").split(/\s*—\s*/);
     return { label: parts[0]?.trim() ?? "Moderate", rationale: parts.slice(1).join(" — ").trim() };
@@ -1565,17 +1714,10 @@ function renderAngles(container, angles) {
   }</div>`;
 }
 
-/**
- * Handle "Suggest angles" button click on a gap result card.
- * - First click: fetches titles + calls Anthropic API + renders suggestions
- * - Subsequent clicks: toggle visibility (no re-fetch)
- * - On error: resets to idle so the user can retry
- */
 async function suggestAngles(r, card) {
   const section = card.querySelector(".angles-section");
   const btn     = card.querySelector(".angles-btn");
 
-  // Toggle if already loaded
   if (r.anglesState === "loaded") {
     const nowVisible = !section.classList.contains("visible");
     section.classList.toggle("visible", nowVisible);
@@ -1584,7 +1726,7 @@ async function suggestAngles(r, card) {
     return;
   }
 
-  if (r.anglesState === "loading") return; // debounce
+  if (r.anglesState === "loading") return;
 
   const anthropicKeyVal = document.getElementById("anthropicKeyInput").value.trim();
   if (!anthropicKeyVal) {
@@ -1602,11 +1744,9 @@ async function suggestAngles(r, card) {
     </div>`;
 
   try {
-    // Lazily fetch sample titles (cached on r after first call)
     if (!r.sampleTitles) {
       r.sampleTitles = await fetchSampleTitles(r.topic, apiKey(), delay());
     }
-
     const angles  = await callAnthropicAngles(r, anthropicKeyVal);
     r.anglesState = "loaded";
     btn.disabled  = false;
@@ -1614,7 +1754,7 @@ async function suggestAngles(r, card) {
     btn.textContent = "Hide suggestions";
     renderAngles(section, angles);
   } catch (err) {
-    r.anglesState = "idle"; // allow retry
+    r.anglesState = "idle";
     btn.disabled  = false;
     section.innerHTML = `<div class="angle-error">Error: ${escHtml(err.message)}</div>`;
   }
@@ -1636,7 +1776,6 @@ const OUTCOME_TERMS = [
   "functional outcomes",
 ];
 
-// Common abbreviations for clinical interventions
 const ABBREVIATION_MAP = {
   "deep brain stimulation":                  ["DBS"],
   "spinal cord stimulation":                 ["SCS"],
@@ -1660,12 +1799,7 @@ const ABBREVIATION_MAP = {
   "positron emission tomography":            ["PET"],
 };
 
-/**
- * Search the MeSH database for descriptors matching the intervention.
- * Returns { meshTerms: string[], synonyms: string[] }
- */
 async function lookupMeshTerms(intervention, key, del) {
-  // Search MeSH database
   const searchParams = new URLSearchParams({
     db: "mesh", term: intervention, retmax: 3, retmode: "json",
   });
@@ -1679,7 +1813,6 @@ async function lookupMeshTerms(intervention, key, del) {
   const ids = searchData.esearchresult.idlist ?? [];
   if (!ids.length) return { meshTerms: [], synonyms: [] };
 
-  // Fetch the top 2 MeSH records
   const fetchParams = new URLSearchParams({
     db: "mesh", id: ids.slice(0, 2).join(","), retmode: "xml",
   });
@@ -1690,15 +1823,13 @@ async function lookupMeshTerms(intervention, key, del) {
   const xmlText = await fetchResp.text();
   await sleep(del);
 
-  // Parse MeSH XML
-  const doc = new DOMParser().parseFromString(xmlText, "text/xml");
+  const doc      = new DOMParser().parseFromString(xmlText, "text/xml");
   const meshTerms = [];
   const synonyms  = [];
 
   doc.querySelectorAll("DescriptorRecord").forEach(record => {
     const preferred = record.querySelector("DescriptorName String")?.textContent?.trim();
     if (preferred) meshTerms.push(preferred);
-
     record.querySelectorAll("TermList Term String").forEach(el => {
       const t = el.textContent?.trim();
       if (t && t !== preferred) synonyms.push(t);
@@ -1708,50 +1839,23 @@ async function lookupMeshTerms(intervention, key, del) {
   return { meshTerms, synonyms };
 }
 
-/**
- * Build a deduplicated list of search terms from:
- * 1. The user's original input
- * 2. MeSH preferred descriptors (max 2)
- * 3. Known abbreviations from ABBREVIATION_MAP
- * 4. A selection of MeSH synonyms (max 2, excluding very short strings)
- * Returns array of { term: string, isMesh: boolean }
- */
 function buildSearchTerms(intervention, meshTerms, synonyms) {
   const seen = new Set();
   const results = [];
 
   const add = (term, isMesh) => {
     const key = term.toLowerCase();
-    if (!seen.has(key)) {
-      seen.add(key);
-      results.push({ term, isMesh });
-    }
+    if (!seen.has(key)) { seen.add(key); results.push({ term, isMesh }); }
   };
 
-  // 1. Original input
   add(intervention, false);
-
-  // 2. MeSH preferred terms (these get [MeSH Terms] queries)
   meshTerms.slice(0, 2).forEach(t => add(t, true));
+  (ABBREVIATION_MAP[intervention.toLowerCase()] ?? []).forEach(a => add(a, false));
+  synonyms.filter(s => s.length >= 4).slice(0, 2).forEach(s => add(s, false));
 
-  // 3. Known abbreviations
-  const abbrevs = ABBREVIATION_MAP[intervention.toLowerCase()] ?? [];
-  abbrevs.forEach(a => add(a, false));
-
-  // 4. Filtered synonyms — skip very short strings (noise) and keep max 2
-  synonyms
-    .filter(s => s.length >= 4)
-    .slice(0, 2)
-    .forEach(s => add(s, false));
-
-  return results.slice(0, 5); // cap at 5 distinct terms
+  return results.slice(0, 5);
 }
 
-/**
- * Build PubMed query for a given search term + outcome.
- * MeSH terms get combined [MeSH Terms] OR [tiab] coverage.
- * Keywords/abbreviations use [tiab] only.
- */
 function buildQuery(termObj, outcome) {
   const { term, isMesh } = termObj;
   const interventionClause = isMesh
@@ -1769,21 +1873,22 @@ async function isRunScan() {
   const intervention = document.getElementById("isInterventionInput").value.trim();
   if (!intervention) { alert("Enter a clinical intervention to scan."); return; }
 
+  enterSplitMode("intervention-scanner");
+
   const key = apiKey();
   const del = delay();
 
   const scanBtn   = document.getElementById("isScanBtn");
   const exportBtn = document.getElementById("isExportBtn");
-  const labelEl   = document.getElementById("isProgressLabel");
-  const trackEl   = document.getElementById("isProgressTrack");
-  const fillEl    = document.getElementById("isProgressFill");
+  const labelEl   = document.getElementById("progressLabel");
+  const trackEl   = document.getElementById("progressTrack");
+  const fillEl    = document.getElementById("progressFill");
   const summaryEl = document.getElementById("isSummaryBar");
   const tableWrap = document.getElementById("isTableWrap");
   const tableBody = document.getElementById("isTableBody");
   const emptyEl   = document.getElementById("isEmptyState");
   const previewEl = document.getElementById("isTermsPreview");
 
-  // Reset UI
   scanBtn.disabled   = true;
   exportBtn.disabled = true;
   trackEl.classList.add("visible");
@@ -1796,35 +1901,29 @@ async function isRunScan() {
   summaryEl.style.display = "none";
   isResults = [];
 
-  // ── Phase 1: MeSH lookup ─────────────────────────────────────────
   labelEl.textContent = `Looking up MeSH terms for "${intervention}"…`;
 
   let searchTerms;
   try {
     const { meshTerms, synonyms } = await lookupMeshTerms(intervention, key, del);
     searchTerms = buildSearchTerms(intervention, meshTerms, synonyms);
-  } catch (err) {
-    // Fallback: just use the original term
+  } catch {
     searchTerms = [{ term: intervention, isMesh: false }];
   }
 
-  // ── Show terms preview ───────────────────────────────────────────
-  const termsList    = document.getElementById("isTermsList");
-  const outcomesList = document.getElementById("isOutcomesList");
-  termsList.innerHTML = searchTerms
+  document.getElementById("isTermsList").innerHTML = searchTerms
     .map(t => `<span class="term-tag ${t.isMesh ? "mesh" : ""}">${escHtml(t.term)}</span>`)
     .join("");
-  outcomesList.innerHTML = OUTCOME_TERMS
+  document.getElementById("isOutcomesList").innerHTML = OUTCOME_TERMS
     .map(o => `<span class="term-tag">${escHtml(o)}</span>`)
     .join("");
   previewEl.classList.add("visible");
 
-  // ── Phase 2: Scan combinations ───────────────────────────────────
   const combinations = searchTerms.flatMap(termObj =>
     OUTCOME_TERMS.map(outcome => ({ termObj, outcome, query: buildQuery(termObj, outcome) }))
   );
 
-  const IS_STEPS_PER_COMBO = 7; // 1 total + 2 primary + 4 review types
+  const IS_STEPS_PER_COMBO = 7;
   const totalSteps = combinations.length * IS_STEPS_PER_COMBO;
   let   doneSteps  = 0;
 
@@ -1840,17 +1939,16 @@ async function isRunScan() {
     const { termObj, outcome, query } = combinations[i];
     try {
       const r = await countStudiesLight(query, key, del, onStep);
-      r.score       = gapScore(r);
-      r.termLabel   = termObj.term;
-      r.outcomeLabel= outcome;
+      r.score        = gapScore(r);
+      r.termLabel    = termObj.term;
+      r.outcomeLabel = outcome;
       isResults.push(r);
       isAppendRow(r, isResults.length - 1);
-    } catch (err) {
-      doneSteps += IS_STEPS_PER_COMBO; // keep progress moving on error
+    } catch {
+      doneSteps += IS_STEPS_PER_COMBO;
     }
   }
 
-  // Sort table rows by score descending
   isResults.sort((a, b) => b.score - a.score);
   isRerenderTable(isResults);
 
