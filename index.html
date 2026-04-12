@@ -8,7 +8,6 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
   <style>
-    /* ── Reset & tokens ──────────────────────────────────────────── */
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
     :root {
@@ -19,967 +18,268 @@
       --border:        #1c1f32;
       --border-2:      #232640;
       --accent:        #4f7df8;
-      --accent-muted:  rgba(79, 125, 248, 0.12);
+      --accent-muted:  rgba(79,125,248,0.12);
       --text:          #dde0f0;
       --text-2:        #7a80a0;
       --text-3:        #474d68;
       --strong:        #df5f5f;
-      --strong-bg:     rgba(223, 95, 95, 0.09);
-      --strong-border: rgba(223, 95, 95, 0.22);
+      --strong-bg:     rgba(223,95,95,0.09);
+      --strong-border: rgba(223,95,95,0.22);
       --weak:          #c98830;
-      --weak-bg:       rgba(201, 136, 48, 0.09);
-      --weak-border:   rgba(201, 136, 48, 0.22);
+      --weak-bg:       rgba(201,136,48,0.09);
+      --weak-border:   rgba(201,136,48,0.22);
       --covered:       #3aaa72;
-      --covered-bg:    rgba(58, 170, 114, 0.08);
-      --covered-border:rgba(58, 170, 114, 0.2);
-      --radius-sm:     4px;
-      --radius:        6px;
-      --radius-md:     8px;
-      --radius-lg:     10px;
-      --shadow-card:   0 1px 3px rgba(0,0,0,0.4), 0 4px 16px rgba(0,0,0,0.3);
-      --shadow-hover:  0 2px 8px rgba(0,0,0,0.5), 0 8px 28px rgba(0,0,0,0.4);
-      --t:             0.18s ease;
+      --covered-bg:    rgba(58,170,114,0.08);
+      --covered-border:rgba(58,170,114,0.2);
+      --algo:          #9a7ff5;
+      --algo-bg:       rgba(154,127,245,0.09);
+      --algo-border:   rgba(154,127,245,0.22);
+      --radius-sm: 4px; --radius: 6px; --radius-md: 8px; --radius-lg: 10px;
+      --shadow-card:  0 1px 3px rgba(0,0,0,0.4), 0 4px 16px rgba(0,0,0,0.3);
+      --shadow-hover: 0 2px 8px rgba(0,0,0,0.5), 0 8px 28px rgba(0,0,0,0.4);
+      --t: 0.18s ease;
     }
 
     html { font-size: 16px; -webkit-font-smoothing: antialiased; }
+    body { font-family: "Inter", -apple-system, BlinkMacSystemFont, sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; display: flex; flex-direction: column; }
 
-    body {
-      font-family: "Inter", -apple-system, BlinkMacSystemFont, sans-serif;
-      background: var(--bg);
-      color: var(--text);
-      min-height: 100vh;
-      display: flex;
-      flex-direction: column;
-    }
-
-    /* ── Hero ───────────────────────────────────────────────────── */
+    /* ── Hero ─────────────────────────────────────────────── */
     .hero {
-      position: relative;
-      overflow: hidden;
-      padding: 5rem 2rem 4rem;
+      position: relative; overflow: hidden; padding: 4rem 2rem 3.25rem;
       border-bottom: 1px solid var(--border);
       background:
         radial-gradient(ellipse 70% 55% at 50% -5%,  rgba(79,125,248,0.13) 0%, transparent 70%),
         radial-gradient(ellipse 40% 35% at 80%  20%, rgba(120,80,220,0.07) 0%, transparent 60%),
         var(--bg);
     }
-
     .hero::before {
-      content: "";
-      position: absolute;
-      inset: 0;
-      background-image:
-        linear-gradient(var(--border) 1px, transparent 1px),
-        linear-gradient(90deg, var(--border) 1px, transparent 1px);
-      background-size: 48px 48px;
-      opacity: 0.35;
+      content: ""; position: absolute; inset: 0;
+      background-image: linear-gradient(var(--border) 1px, transparent 1px), linear-gradient(90deg, var(--border) 1px, transparent 1px);
+      background-size: 48px 48px; opacity: 0.35;
       mask-image: radial-gradient(ellipse 80% 60% at 50% 0%, black, transparent);
     }
-
-    .hero-inner {
-      position: relative;
-      max-width: 860px;
-      margin: 0 auto;
-    }
-
+    .hero-inner { position: relative; max-width: 860px; margin: 0 auto; }
     .hero-eyebrow {
-      display: inline-flex;
-      align-items: center;
-      gap: 0.5rem;
-      font-size: 0.72rem;
-      font-weight: 600;
-      letter-spacing: 0.1em;
-      text-transform: uppercase;
-      color: var(--accent);
-      background: var(--accent-muted);
-      border: 1px solid rgba(79,125,248,0.2);
-      border-radius: var(--radius-sm);
-      padding: 0.3rem 0.65rem;
-      margin-bottom: 1.5rem;
+      display: inline-flex; align-items: center; gap: 0.5rem;
+      font-size: 0.72rem; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase;
+      color: var(--accent); background: var(--accent-muted); border: 1px solid rgba(79,125,248,0.2);
+      border-radius: var(--radius-sm); padding: 0.3rem 0.65rem; margin-bottom: 1.25rem;
     }
-
-    .hero-eyebrow::before {
-      content: "";
-      width: 6px; height: 6px;
-      border-radius: 50%;
-      background: var(--accent);
-      flex-shrink: 0;
-    }
-
+    .hero-eyebrow::before { content: ""; width: 6px; height: 6px; border-radius: 50%; background: var(--accent); flex-shrink: 0; }
     .hero h1 {
-      font-size: clamp(2.4rem, 5vw, 3.6rem);
-      font-weight: 800;
-      letter-spacing: -0.04em;
-      line-height: 1.1;
+      font-size: clamp(2.2rem, 5vw, 3.4rem); font-weight: 800; letter-spacing: -0.04em; line-height: 1.1;
       background: linear-gradient(135deg, #e8ecff 30%, #8ba4f8 100%);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
-      margin-bottom: 1rem;
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; margin-bottom: 0.85rem;
     }
+    .hero p { font-size: 0.95rem; color: var(--text-2); line-height: 1.65; max-width: 440px; }
 
-    .hero p {
-      font-size: 1rem;
-      color: var(--text-2);
-      line-height: 1.65;
-      max-width: 480px;
-    }
+    /* ── App / workspace ──────────────────────────────────── */
+    .app { flex: 1; width: 100%; display: flex; flex-direction: column; overflow: hidden; }
+    .workspace { display: flex; align-items: flex-start; flex: 1; overflow: hidden; }
 
-    /* ── App shell ──────────────────────────────────────────────── */
-    .app {
-      flex: 1;
-      width: 100%;
-      display: flex;
-      flex-direction: column;
-      overflow: hidden;
-    }
+    .input-pane { width: 100%; flex-shrink: 0; min-width: 0; transition: width 0.45s cubic-bezier(0.4,0,0.2,1); }
+    .input-inner { max-width: 860px; margin: 0 auto; padding: 2rem 1.5rem 4rem; display: flex; flex-direction: column; gap: 1rem; transition: max-width 0.45s ease, padding 0.45s ease; }
 
-    /* ── Workspace split layout ─────────────────────────────────── */
-    .workspace {
-      display: flex;
-      align-items: flex-start;
-      flex: 1;
-      overflow: hidden;
-    }
-
-    /* Input pane — full-width in idle, narrows in split */
-    .input-pane {
-      width: 100%;
-      flex-shrink: 0;
-      min-width: 0;
-      transition: width 0.45s cubic-bezier(0.4, 0, 0.2, 1);
-    }
-
-    .input-inner {
-      max-width: 860px;
-      margin: 0 auto;
-      padding: 2rem 1.5rem 4rem;
-      display: flex;
-      flex-direction: column;
-      gap: 1rem;
-      transition: max-width 0.45s ease, padding 0.45s ease;
-    }
-
-    /* Results pane — hidden in idle, slides in when split */
     .results-pane {
-      width: 0;
-      flex-shrink: 0;
-      min-width: 0;
-      opacity: 0;
-      pointer-events: none;
-      overflow: hidden;
-      border-left: 1px solid transparent;
-      transition:
-        width 0.45s cubic-bezier(0.4, 0, 0.2, 1),
-        opacity 0.3s ease 0.15s,
-        border-color 0.3s ease 0.15s;
+      width: 0; flex-shrink: 0; min-width: 0; opacity: 0; pointer-events: none;
+      overflow: hidden; border-left: 1px solid transparent;
+      transition: width 0.45s cubic-bezier(0.4,0,0.2,1), opacity 0.3s ease 0.15s, border-color 0.3s ease 0.15s;
     }
+    .results-pane-inner { padding: 2rem 1.5rem 4rem; min-width: 0; display: flex; flex-direction: column; gap: 1rem; }
 
-    .results-pane-inner {
-      padding: 2rem 1.5rem 4rem;
-      min-width: 0;
-      display: flex;
-      flex-direction: column;
-      gap: 1rem;
-    }
+    .workspace.split .input-pane { width: 40%; }
+    .workspace.split .input-inner { max-width: none; padding: 1.5rem 1.25rem 3rem; }
+    .workspace.split .results-pane { width: 60%; opacity: 1; pointer-events: auto; overflow-y: auto; overflow-x: hidden; border-left-color: var(--border); }
 
-    /* Split state */
-    .workspace.split .input-pane {
-      width: 38%;
-    }
+    /* ── Results header ───────────────────────────────────── */
+    .results-header { display: flex; align-items: center; gap: 0.75rem; flex-wrap: wrap; }
+    .progress-area { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 0.4rem; }
 
-    .workspace.split .input-inner {
-      max-width: none;
-      padding: 1.5rem 1.25rem 3rem;
-    }
+    /* ── Panel ────────────────────────────────────────────── */
+    .panel { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 1.25rem 1.5rem; }
+    .section-label { font-size: 0.68rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--text-3); margin-bottom: 0.8rem; }
 
-    .workspace.split .results-pane {
-      width: 62%;
-      opacity: 1;
-      pointer-events: auto;
-      overflow-y: auto;
-      overflow-x: hidden;
-      border-left-color: var(--border);
-    }
-
-    /* ── Results pane header ────────────────────────────────────── */
-    .results-header {
-      display: flex;
-      align-items: center;
-      gap: 0.75rem;
-      flex-wrap: wrap;
-    }
-
-    .btn-back {
-      flex-shrink: 0;
-    }
-
-    .progress-area {
-      flex: 1;
-      min-width: 0;
-      display: flex;
-      flex-direction: column;
-      gap: 0.5rem;
-    }
-
-    /* ── Shared panel ───────────────────────────────────────────── */
-    .panel {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: var(--radius-lg);
-      padding: 1.25rem 1.5rem;
-    }
-
-    .section-label {
-      font-size: 0.68rem;
-      font-weight: 700;
-      letter-spacing: 0.1em;
-      text-transform: uppercase;
-      color: var(--text-3);
-      margin-bottom: 0.8rem;
-    }
-
-    /* ── API key ────────────────────────────────────────────────── */
-    .api-row {
-      display: flex;
-      align-items: center;
-      gap: 0.75rem;
-      flex-wrap: wrap;
-    }
-
-    .api-row label {
-      font-size: 0.8rem;
-      font-weight: 500;
-      color: var(--text-2);
-      white-space: nowrap;
-    }
-
+    /* ── Config row ───────────────────────────────────────── */
+    .config-row { display: flex; align-items: center; gap: 0.75rem; flex-wrap: wrap; }
+    .config-row label { font-size: 0.8rem; font-weight: 500; color: var(--text-2); white-space: nowrap; }
     .field-input {
-      flex: 1;
-      min-width: 200px;
-      background: var(--surface-3);
-      border: 1px solid var(--border-2);
-      border-radius: var(--radius);
-      padding: 0.5rem 0.85rem;
-      font-size: 0.82rem;
-      font-family: "JetBrains Mono", monospace;
-      color: var(--text);
-      outline: none;
-      transition: border-color var(--t);
+      flex: 1; min-width: 180px; background: var(--surface-3); border: 1px solid var(--border-2);
+      border-radius: var(--radius); padding: 0.5rem 0.85rem; font-size: 0.82rem;
+      font-family: "JetBrains Mono", monospace; color: var(--text); outline: none; transition: border-color var(--t);
     }
-
     .field-input:focus { border-color: rgba(79,125,248,0.5); }
     .field-input::placeholder { color: var(--text-3); }
 
-    /* ── Tab bar ────────────────────────────────────────────────── */
-    .tab-bar {
-      display: flex;
-      border-bottom: 1px solid var(--border);
-      gap: 0;
-    }
-
+    /* ── Tabs ─────────────────────────────────────────────── */
+    .tab-bar { display: flex; border-bottom: 1px solid var(--border); }
     .tab {
-      padding: 0.7rem 1.1rem;
-      font-family: inherit;
-      font-size: 0.85rem;
-      font-weight: 500;
-      color: var(--text-2);
-      background: none;
-      border: none;
-      border-bottom: 2px solid transparent;
-      margin-bottom: -1px;
-      cursor: pointer;
-      transition: color var(--t), border-color var(--t);
+      padding: 0.7rem 1.1rem; font-family: inherit; font-size: 0.85rem; font-weight: 500;
+      color: var(--text-2); background: none; border: none; border-bottom: 2px solid transparent;
+      margin-bottom: -1px; cursor: pointer; transition: color var(--t), border-color var(--t);
     }
-
     .tab:hover { color: var(--text); }
+    .tab.active { color: var(--text); border-bottom-color: var(--accent); }
 
-    .tab.active {
-      color: var(--text);
-      border-bottom-color: var(--accent);
-    }
-
-    /* ── Tab input panels ───────────────────────────────────────── */
     .tab-input { display: none; flex-direction: column; gap: 1rem; }
     .tab-input.active { display: flex; }
 
-    /* ── Preset chips ───────────────────────────────────────────── */
-    .chip-group {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 0.45rem;
-    }
-
+    /* ── Specialty chips ──────────────────────────────────── */
+    .chip-group { display: flex; flex-wrap: wrap; gap: 0.4rem; }
     .chip {
-      padding: 0.35rem 0.75rem;
-      border-radius: var(--radius-sm);
-      border: 1px solid var(--border-2);
-      background: var(--surface-2);
-      color: var(--text-2);
-      font-family: inherit;
-      font-size: 0.775rem;
-      font-weight: 500;
-      cursor: pointer;
-      user-select: none;
-      transition: background var(--t), color var(--t), border-color var(--t);
-      line-height: 1;
+      padding: 0.3rem 0.7rem; border-radius: var(--radius-sm); border: 1px solid var(--border-2);
+      background: var(--surface-2); color: var(--text-2); font-family: inherit; font-size: 0.75rem;
+      font-weight: 500; cursor: pointer; user-select: none; transition: background var(--t), color var(--t), border-color var(--t); line-height: 1;
     }
-
     .chip:hover { background: var(--surface-3); color: var(--text); }
+    .chip.active { background: var(--accent-muted); border-color: rgba(79,125,248,0.4); color: var(--accent); }
+    .chip-hint { font-size: 0.68rem; color: var(--text-3); margin-top: 0.4rem; }
 
-    .chip.active {
-      background: var(--accent-muted);
-      border-color: rgba(79,125,248,0.4);
-      color: var(--accent);
-    }
-
-    /* ── Textarea ───────────────────────────────────────────────── */
+    /* ── Textarea ─────────────────────────────────────────── */
     .topics-textarea {
-      width: 100%;
-      min-height: 148px;
-      background: var(--surface-3);
-      border: 1px solid var(--border-2);
-      border-radius: var(--radius-md);
-      padding: 0.85rem 1rem;
-      color: var(--text);
-      font-family: "JetBrains Mono", monospace;
-      font-size: 0.8rem;
-      line-height: 1.7;
-      resize: vertical;
-      outline: none;
-      transition: border-color var(--t);
-      margin-top: 1rem;
+      width: 100%; min-height: 140px; background: var(--surface-3); border: 1px solid var(--border-2);
+      border-radius: var(--radius-md); padding: 0.85rem 1rem; color: var(--text);
+      font-family: "JetBrains Mono", monospace; font-size: 0.8rem; line-height: 1.7;
+      resize: vertical; outline: none; transition: border-color var(--t); margin-top: 0.75rem;
     }
-
     .topics-textarea:focus { border-color: rgba(79,125,248,0.4); }
     .topics-textarea::placeholder { color: var(--text-3); }
+    .field-hint { font-size: 0.72rem; color: var(--text-3); margin-top: 0.45rem; line-height: 1.5; }
 
-    .field-hint {
-      font-size: 0.72rem;
-      color: var(--text-3);
-      margin-top: 0.5rem;
-      line-height: 1.5;
-    }
-
-    /* ── Buttons ────────────────────────────────────────────────── */
-    .actions-row {
-      display: flex;
-      align-items: center;
-      gap: 0.65rem;
-      flex-wrap: wrap;
-    }
-
+    /* ── Buttons ──────────────────────────────────────────── */
+    .actions-row { display: flex; align-items: center; gap: 0.65rem; flex-wrap: wrap; }
     .btn {
-      display: inline-flex;
-      align-items: center;
-      gap: 0.45rem;
-      border: none;
-      border-radius: var(--radius);
-      font-family: inherit;
-      font-size: 0.85rem;
-      font-weight: 600;
-      padding: 0.6rem 1.2rem;
-      cursor: pointer;
-      transition: opacity var(--t), background var(--t), box-shadow var(--t);
-      white-space: nowrap;
+      display: inline-flex; align-items: center; gap: 0.45rem; border: none; border-radius: var(--radius);
+      font-family: inherit; font-size: 0.85rem; font-weight: 600; padding: 0.6rem 1.2rem;
+      cursor: pointer; transition: opacity var(--t), background var(--t), box-shadow var(--t); white-space: nowrap;
     }
-
     .btn:disabled { opacity: 0.35; cursor: not-allowed; }
+    .btn-primary { background: var(--accent); color: #fff; box-shadow: 0 1px 2px rgba(0,0,0,0.3), 0 0 0 1px rgba(79,125,248,0.4) inset; }
+    .btn-primary:not(:disabled):hover { opacity: 0.88; box-shadow: 0 2px 6px rgba(79,125,248,0.35), 0 0 0 1px rgba(79,125,248,0.4) inset; }
+    .btn-secondary { background: var(--surface-2); color: var(--text-2); border: 1px solid var(--border-2); }
+    .btn-secondary:not(:disabled):hover { color: var(--text); background: var(--surface-3); }
+    .progress-label { font-size: 0.78rem; color: var(--text-2); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 
-    .btn-primary {
-      background: var(--accent);
-      color: #fff;
-      box-shadow: 0 1px 2px rgba(0,0,0,0.3), 0 0 0 1px rgba(79,125,248,0.4) inset;
-    }
-
-    .btn-primary:not(:disabled):hover {
-      opacity: 0.88;
-      box-shadow: 0 2px 6px rgba(79,125,248,0.35), 0 0 0 1px rgba(79,125,248,0.4) inset;
-    }
-
-    .btn-secondary {
-      background: var(--surface-2);
-      color: var(--text-2);
-      border: 1px solid var(--border-2);
-    }
-
-    .btn-secondary:not(:disabled):hover {
-      color: var(--text);
-      background: var(--surface-3);
-    }
-
-    .progress-label {
-      font-size: 0.78rem;
-      color: var(--text-2);
-      overflow: hidden;
-      text-overflow: ellipsis;
-      white-space: nowrap;
-    }
-
-    /* ── Progress bar ───────────────────────────────────────────── */
-    .progress-track {
-      height: 3px;
-      background: var(--surface-3);
-      border-radius: 2px;
-      overflow: hidden;
-      opacity: 0;
-      transition: opacity 0.2s ease;
-    }
-
+    /* ── Progress bar ─────────────────────────────────────── */
+    .progress-track { height: 3px; background: var(--surface-3); border-radius: 2px; overflow: hidden; opacity: 0; transition: opacity 0.2s ease; }
     .progress-track.visible { opacity: 1; }
-
-    .progress-fill {
-      height: 100%;
-      width: 0%;
-      background: linear-gradient(90deg, var(--accent), #9a7ff5, var(--accent));
-      background-size: 200% 100%;
-      border-radius: 2px;
-      transition: width 0.3s ease;
-    }
-
+    .progress-fill { height: 100%; width: 0%; background: linear-gradient(90deg, var(--accent), #9a7ff5, var(--accent)); background-size: 200% 100%; border-radius: 2px; transition: width 0.3s ease; }
     .progress-fill.running { animation: shimmer 1.8s linear infinite; }
+    @keyframes shimmer { 0% { background-position: 200% center; } 100% { background-position: -200% center; } }
 
-    @keyframes shimmer {
-      0%   { background-position:  200% center; }
-      100% { background-position: -200% center; }
-    }
-
-    /* ── Summary bar ────────────────────────────────────────────── */
-    .summary-bar {
-      display: none;
-      align-items: center;
-      gap: 1.5rem;
-      padding: 0.9rem 1.25rem;
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: var(--radius-md);
-      flex-wrap: wrap;
-      animation: fadeSlideUp 0.3s ease both;
-    }
-
-    .summary-stat {
-      display: flex;
-      align-items: baseline;
-      gap: 0.35rem;
-      font-size: 0.82rem;
-      color: var(--text-2);
-    }
-
+    /* ── Summary bar ──────────────────────────────────────── */
+    .summary-bar { display: none; align-items: center; gap: 1.25rem; padding: 0.85rem 1.25rem; background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-md); flex-wrap: wrap; animation: fadeSlideUp 0.3s ease both; }
+    .summary-stat { display: flex; align-items: baseline; gap: 0.35rem; font-size: 0.82rem; color: var(--text-2); }
     .summary-stat strong { font-size: 1rem; font-weight: 700; }
-    .summary-stat.s-strong  strong { color: var(--strong); }
-    .summary-stat.s-weak    strong { color: var(--weak); }
+    .summary-stat.s-strong strong { color: var(--strong); }
+    .summary-stat.s-weak   strong { color: var(--weak); }
     .summary-stat.s-covered strong { color: var(--covered); }
-    .summary-stat.s-total   strong { color: var(--text); }
+    .summary-stat.s-total  strong { color: var(--text); }
+    .summary-divider { width: 1px; height: 16px; background: var(--border-2); flex-shrink: 0; }
 
-    .summary-divider {
-      width: 1px;
-      height: 16px;
-      background: var(--border-2);
-      flex-shrink: 0;
-    }
-
-    /* ── Result cards ───────────────────────────────────────────── */
-    .results-list {
-      display: flex;
-      flex-direction: column;
-      gap: 0.75rem;
-    }
-
+    /* ── Result cards ─────────────────────────────────────── */
+    .results-list { display: flex; flex-direction: column; gap: 0.75rem; }
     .result-card {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: var(--radius-lg);
-      padding: 1.25rem 1.4rem;
-      box-shadow: var(--shadow-card);
+      background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-lg);
+      padding: 1.25rem 1.4rem; box-shadow: var(--shadow-card);
       transition: transform var(--t), box-shadow var(--t), border-color var(--t);
-      opacity: 0;
-      transform: translateY(10px);
-      animation: fadeSlideUp 0.32s ease forwards;
+      opacity: 0; transform: translateY(10px); animation: fadeSlideUp 0.32s ease forwards;
     }
+    .result-card:hover { transform: translateY(-2px); box-shadow: var(--shadow-hover); border-color: var(--border-2); }
+    .result-card.gap-strong  { border-left: 3px solid var(--strong);  padding-left: calc(1.4rem - 2px); }
+    .result-card.gap-weak    { border-left: 3px solid var(--weak);    padding-left: calc(1.4rem - 2px); }
+    .result-card.gap-covered { border-left: 3px solid var(--covered); padding-left: calc(1.4rem - 2px); }
+    @keyframes fadeSlideUp { to { opacity: 1; transform: translateY(0); } }
 
-    .result-card:hover {
-      transform: translateY(-2px);
-      box-shadow: var(--shadow-hover);
-      border-color: var(--border-2);
-    }
+    .card-header { display: flex; align-items: flex-start; justify-content: space-between; gap: 0.75rem; }
+    .card-topic { font-family: "JetBrains Mono", monospace; font-size: 0.79rem; line-height: 1.6; color: var(--text); flex: 1; word-break: break-word; }
+    .badge { flex-shrink: 0; font-size: 0.67rem; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; padding: 0.25rem 0.55rem; border-radius: var(--radius-sm); border: 1px solid transparent; white-space: nowrap; }
+    .badge-strong  { background: var(--strong-bg);  border-color: var(--strong-border);  color: var(--strong); }
+    .badge-weak    { background: var(--weak-bg);    border-color: var(--weak-border);    color: var(--weak); }
+    .badge-covered { background: var(--covered-bg); border-color: var(--covered-border); color: var(--covered); }
 
-    .result-card.gap-strong { border-left: 3px solid var(--strong); padding-left: calc(1.4rem - 2px); }
-    .result-card.gap-weak   { border-left: 3px solid var(--weak);   padding-left: calc(1.4rem - 2px); }
-    .result-card.gap-covered{ border-left: 3px solid var(--covered); padding-left: calc(1.4rem - 2px); }
-
-    @keyframes fadeSlideUp {
-      to { opacity: 1; transform: translateY(0); }
-    }
-
-    .card-header {
-      display: flex;
-      align-items: flex-start;
-      justify-content: space-between;
-      gap: 0.75rem;
-    }
-
-    .card-topic {
-      font-family: "JetBrains Mono", monospace;
-      font-size: 0.79rem;
-      line-height: 1.6;
-      color: var(--text);
-      flex: 1;
-      word-break: break-word;
-    }
-
-    .badge {
-      flex-shrink: 0;
-      font-size: 0.67rem;
-      font-weight: 700;
-      letter-spacing: 0.06em;
-      text-transform: uppercase;
-      padding: 0.25rem 0.55rem;
-      border-radius: var(--radius-sm);
-      border: 1px solid transparent;
-      white-space: nowrap;
-    }
-
-    .badge-strong { background: var(--strong-bg);  border-color: var(--strong-border);  color: var(--strong); }
-    .badge-weak   { background: var(--weak-bg);    border-color: var(--weak-border);    color: var(--weak); }
-    .badge-covered{ background: var(--covered-bg); border-color: var(--covered-border); color: var(--covered); }
-
-    .card-stats {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 0.35rem 1.25rem;
-      margin-top: 0.9rem;
-      padding-top: 0.9rem;
-      border-top: 1px solid var(--border);
-    }
-
+    .card-stats { display: flex; flex-wrap: wrap; gap: 0.35rem 1.1rem; margin-top: 0.85rem; padding-top: 0.85rem; border-top: 1px solid var(--border); }
     .stat-item { font-size: 0.75rem; color: var(--text-2); }
     .stat-item strong { color: var(--text); font-weight: 600; }
-
     .stat-item.stat-context { color: var(--text-3); }
     .stat-item.stat-context strong { color: var(--text-2); font-weight: 500; }
+    .stat-divider { display: block; width: 1px; height: 14px; background: var(--border-2); align-self: center; flex-shrink: 0; margin: 0 0.1rem; }
 
-    .stat-divider {
-      display: block;
-      width: 1px;
-      height: 14px;
-      background: var(--border-2);
-      align-self: center;
-      flex-shrink: 0;
-      margin: 0 0.1rem;
-    }
-
-    .col-context { color: var(--text-3) !important; }
-
-    .card-footer {
-      display: flex;
-      align-items: center;
-      gap: 0.6rem;
-      margin-top: 0.9rem;
-      flex-wrap: wrap;
-    }
-
-    .score-tag {
-      font-size: 0.73rem;
-      color: var(--text-2);
-      background: var(--surface-3);
-      border: 1px solid var(--border-2);
-      border-radius: var(--radius-sm);
-      padding: 0.22rem 0.6rem;
-    }
-
+    .card-footer { display: flex; align-items: center; gap: 0.6rem; margin-top: 0.85rem; flex-wrap: wrap; }
+    .score-tag { font-size: 0.73rem; color: var(--text-2); background: var(--surface-3); border: 1px solid var(--border-2); border-radius: var(--radius-sm); padding: 0.22rem 0.6rem; }
     .score-tag strong { color: var(--text); font-weight: 600; }
 
-    .card-link {
-      font-size: 0.75rem;
-      font-weight: 500;
-      text-decoration: none;
-      padding: 0.25rem 0.65rem;
-      border-radius: var(--radius-sm);
-      border: 1px solid transparent;
-      transition: background var(--t), border-color var(--t), color var(--t);
-    }
-
-    .card-link-prospero {
-      color: var(--accent);
-      border-color: rgba(79,125,248,0.25);
-      background: var(--accent-muted);
-    }
-
-    .card-link-prospero:hover {
-      background: rgba(79,125,248,0.18);
-      border-color: rgba(79,125,248,0.4);
-    }
-
-    .card-link-pubmed {
-      color: var(--text-2);
-      border-color: var(--border-2);
-    }
-
+    .card-link { font-size: 0.75rem; font-weight: 500; text-decoration: none; padding: 0.25rem 0.65rem; border-radius: var(--radius-sm); border: 1px solid transparent; transition: background var(--t), border-color var(--t), color var(--t); }
+    .card-link-prospero { color: var(--accent); border-color: rgba(79,125,248,0.25); background: var(--accent-muted); }
+    .card-link-prospero:hover { background: rgba(79,125,248,0.18); border-color: rgba(79,125,248,0.4); }
+    .card-link-pubmed { color: var(--text-2); border-color: var(--border-2); }
     .card-link-pubmed:hover { color: var(--text); background: var(--surface-3); }
+    button.card-link { font-family: inherit; cursor: pointer; background: none; }
+    .card-link-angles { color: var(--text-2); border-color: var(--border-2); }
+    .card-link-angles:hover { color: var(--text); background: var(--surface-3); }
+    .card-link-angles.active { color: var(--algo); background: var(--algo-bg); border-color: var(--algo-border); }
 
-    /* ── Terms preview (Intervention Scanner) ───────────────────── */
-    .terms-preview {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: var(--radius-md);
-      padding: 1rem 1.25rem;
-      display: none;
-      flex-direction: column;
-      gap: 0.75rem;
-      animation: fadeSlideUp 0.25s ease both;
-    }
+    /* ── Algo angles ──────────────────────────────────────── */
+    .angles-section { border-top: 1px solid var(--border); margin-top: 0.85rem; padding-top: 0.85rem; display: none; }
+    .angles-section.visible { display: block; }
+    .algo-disclaimer { font-size: 0.7rem; color: var(--text-3); margin-bottom: 0.75rem; padding: 0.4rem 0.7rem; background: var(--surface-2); border: 1px solid var(--border-2); border-radius: var(--radius-sm); }
+    .angles-list { display: flex; flex-direction: column; gap: 0.55rem; }
+    .angle-item { background: var(--surface-2); border: 1px solid var(--border); border-radius: var(--radius-md); padding: 0.85rem 1rem; opacity: 0; animation: fadeSlideUp 0.28s ease forwards; }
+    .angle-type { font-size: 0.65rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--algo); margin-bottom: 0.35rem; }
+    .angle-title { font-size: 0.83rem; font-weight: 600; color: var(--text); line-height: 1.4; margin-bottom: 0.45rem; }
+    .angle-rationale { font-size: 0.74rem; color: var(--text-2); line-height: 1.6; }
 
+    /* ── Terms preview ────────────────────────────────────── */
+    .terms-preview { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-md); padding: 1rem 1.25rem; display: none; flex-direction: column; gap: 0.65rem; animation: fadeSlideUp 0.25s ease both; }
     .terms-preview.visible { display: flex; }
+    .terms-row { display: flex; align-items: flex-start; gap: 0.75rem; flex-wrap: wrap; }
+    .terms-row-label { font-size: 0.68rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--text-3); white-space: nowrap; padding-top: 0.15rem; min-width: 78px; }
+    .term-tags { display: flex; flex-wrap: wrap; gap: 0.35rem; flex: 1; }
+    .term-tag { font-size: 0.72rem; font-family: "JetBrains Mono", monospace; color: var(--text-2); background: var(--surface-2); border: 1px solid var(--border-2); border-radius: var(--radius-sm); padding: 0.2rem 0.5rem; }
+    .term-tag.mesh { color: var(--accent); background: var(--accent-muted); border-color: rgba(79,125,248,0.25); }
 
-    .terms-row {
-      display: flex;
-      align-items: flex-start;
-      gap: 0.75rem;
-      flex-wrap: wrap;
-    }
-
-    .terms-row-label {
-      font-size: 0.68rem;
-      font-weight: 700;
-      letter-spacing: 0.08em;
-      text-transform: uppercase;
-      color: var(--text-3);
-      white-space: nowrap;
-      padding-top: 0.15rem;
-      min-width: 80px;
-    }
-
-    .term-tags {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 0.35rem;
-      flex: 1;
-    }
-
-    .term-tag {
-      font-size: 0.72rem;
-      font-family: "JetBrains Mono", monospace;
-      color: var(--text-2);
-      background: var(--surface-2);
-      border: 1px solid var(--border-2);
-      border-radius: var(--radius-sm);
-      padding: 0.2rem 0.5rem;
-    }
-
-    .term-tag.mesh {
-      color: var(--accent);
-      background: var(--accent-muted);
-      border-color: rgba(79,125,248,0.25);
-    }
-
-    /* ── Results table (Intervention Scanner) ───────────────────── */
-    .table-wrap {
-      overflow-x: auto;
-      border: 1px solid var(--border);
-      border-radius: var(--radius-lg);
-      background: var(--surface);
-    }
-
-    .results-table {
-      width: 100%;
-      border-collapse: collapse;
-      font-size: 0.8rem;
-    }
-
-    .results-table thead tr {
-      background: var(--surface-2);
-      border-bottom: 1px solid var(--border);
-    }
-
-    .results-table th {
-      padding: 0.65rem 1rem;
-      font-size: 0.66rem;
-      font-weight: 700;
-      letter-spacing: 0.08em;
-      text-transform: uppercase;
-      color: var(--text-3);
-      text-align: left;
-      white-space: nowrap;
-    }
-
+    /* ── Results table ────────────────────────────────────── */
+    .table-wrap { overflow-x: auto; border: 1px solid var(--border); border-radius: var(--radius-lg); background: var(--surface); }
+    .results-table { width: 100%; border-collapse: collapse; font-size: 0.8rem; }
+    .results-table thead tr { background: var(--surface-2); border-bottom: 1px solid var(--border); }
+    .results-table th { padding: 0.6rem 0.9rem; font-size: 0.64rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--text-3); text-align: left; white-space: nowrap; }
     .results-table th.col-num { text-align: right; }
-
-    .results-table tbody tr {
-      border-bottom: 1px solid var(--border);
-      opacity: 0;
-      transform: translateX(-4px);
-      animation: rowIn 0.22s ease forwards;
-      transition: background var(--t);
-    }
-
+    .results-table tbody tr { border-bottom: 1px solid var(--border); opacity: 0; transform: translateX(-4px); animation: rowIn 0.22s ease forwards; transition: background var(--t); }
     .results-table tbody tr:last-child { border-bottom: none; }
     .results-table tbody tr:hover { background: var(--surface-2); }
-
-    @keyframes rowIn {
-      to { opacity: 1; transform: translateX(0); }
-    }
-
-    .results-table td {
-      padding: 0.7rem 1rem;
-      vertical-align: middle;
-    }
-
-    .results-table td.col-num {
-      text-align: right;
-      font-family: "JetBrains Mono", monospace;
-      font-size: 0.78rem;
-      color: var(--text);
-      font-weight: 500;
-    }
-
+    @keyframes rowIn { to { opacity: 1; transform: translateX(0); } }
+    .results-table td { padding: 0.65rem 0.9rem; vertical-align: middle; }
+    .results-table td.col-num { text-align: right; font-family: "JetBrains Mono", monospace; font-size: 0.78rem; color: var(--text); font-weight: 500; }
     .results-table td.col-num.dim { color: var(--text-2); }
+    .col-context { color: var(--text-3) !important; }
+    .td-intervention { font-weight: 500; color: var(--text); font-size: 0.8rem; font-family: "JetBrains Mono", monospace; max-width: 180px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .td-outcome { font-size: 0.78rem; color: var(--text-2); }
+    .td-links { display: flex; gap: 0.4rem; white-space: nowrap; }
 
-    .td-intervention {
-      font-weight: 500;
-      color: var(--text);
-      font-size: 0.8rem;
-      font-family: "JetBrains Mono", monospace;
-      max-width: 200px;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      white-space: nowrap;
-    }
-
-    .td-outcome {
-      font-size: 0.78rem;
-      color: var(--text-2);
-    }
-
-    .td-links {
-      display: flex;
-      gap: 0.4rem;
-      white-space: nowrap;
-    }
-
-    /* ── Error ──────────────────────────────────────────────────── */
-    .error-msg {
-      background: var(--strong-bg);
-      border: 1px solid var(--strong-border);
-      border-radius: var(--radius-md);
-      padding: 0.75rem 1rem;
-      font-size: 0.8rem;
-      color: var(--strong);
-    }
-
-    .error-msg code {
-      font-family: "JetBrains Mono", monospace;
-      font-size: 0.78rem;
-    }
-
-    /* ── Empty state ────────────────────────────────────────────── */
-    .empty-state {
-      text-align: center;
-      padding: 3rem 1rem;
-      color: var(--text-3);
-      font-size: 0.85rem;
-      border: 1px dashed var(--border-2);
-      border-radius: var(--radius-lg);
-      display: none;
-    }
-
+    /* ── Error / empty ────────────────────────────────────── */
+    .error-msg { background: var(--strong-bg); border: 1px solid var(--strong-border); border-radius: var(--radius-md); padding: 0.75rem 1rem; font-size: 0.8rem; color: var(--strong); }
+    .error-msg code { font-family: "JetBrains Mono", monospace; font-size: 0.78rem; }
+    .empty-state { text-align: center; padding: 3rem 1rem; color: var(--text-3); font-size: 0.85rem; border: 1px dashed var(--border-2); border-radius: var(--radius-lg); display: none; }
     .empty-state.visible { display: block; }
 
-    /* ── Suggest angles button ──────────────────────────────────── */
-    button.card-link {
-      font-family: inherit;
-      cursor: pointer;
-      background: none;
-    }
-
-    .card-link-angles {
-      color: var(--text-2);
-      border-color: var(--border-2);
-    }
-
-    .card-link-angles:hover { color: var(--text); background: var(--surface-3); }
-
-    .card-link-angles.active {
-      color: var(--accent);
-      background: var(--accent-muted);
-      border-color: rgba(79,125,248,0.25);
-    }
-
-    /* ── AI angles section ──────────────────────────────────────── */
-    .angles-section {
-      border-top: 1px solid var(--border);
-      margin-top: 0.9rem;
-      padding-top: 0.9rem;
-      display: none;
-    }
-
-    .angles-section.visible { display: block; }
-
-    .angle-loading {
-      display: flex;
-      align-items: center;
-      gap: 0.65rem;
-      font-size: 0.78rem;
-      color: var(--text-2);
-      padding: 0.25rem 0;
-    }
-
-    .angle-spinner {
-      width: 13px;
-      height: 13px;
-      border: 2px solid var(--border-2);
-      border-top-color: var(--accent);
-      border-radius: 50%;
-      flex-shrink: 0;
-      animation: spin 0.75s linear infinite;
-    }
-
-    @keyframes spin { to { transform: rotate(360deg); } }
-
-    .angle-error {
-      font-size: 0.78rem;
-      color: var(--strong);
-      padding: 0.25rem 0;
-    }
-
-    .angles-list {
-      display: flex;
-      flex-direction: column;
-      gap: 0.6rem;
-    }
-
-    .angle-item {
-      background: var(--surface-2);
-      border: 1px solid var(--border);
-      border-radius: var(--radius-md);
-      padding: 0.9rem 1rem;
-      opacity: 0;
-      animation: fadeSlideUp 0.28s ease forwards;
-    }
-
-    .angle-num {
-      font-size: 0.67rem;
-      font-weight: 700;
-      letter-spacing: 0.08em;
-      text-transform: uppercase;
-      color: var(--text-3);
-      margin-bottom: 0.4rem;
-    }
-
-    .angle-title {
-      font-size: 0.85rem;
-      font-weight: 600;
-      color: var(--text);
-      line-height: 1.4;
-      margin-bottom: 0.55rem;
-    }
-
-    .angle-pico {
-      font-size: 0.76rem;
-      color: var(--text-2);
-      line-height: 1.65;
-      margin-bottom: 0.6rem;
-      white-space: pre-line;
-    }
-
-    .angle-meta {
-      display: flex;
-      align-items: flex-start;
-      gap: 0.55rem;
-      flex-wrap: wrap;
-    }
-
-    .feasibility-tag {
-      font-size: 0.67rem;
-      font-weight: 700;
-      letter-spacing: 0.05em;
-      text-transform: uppercase;
-      padding: 0.22rem 0.5rem;
-      border-radius: var(--radius-sm);
-      border: 1px solid transparent;
-      white-space: nowrap;
-      flex-shrink: 0;
-      margin-top: 0.1rem;
-    }
-
-    .feasibility-high     { background: var(--covered-bg);  border-color: var(--covered-border); color: var(--covered); }
-    .feasibility-moderate { background: var(--weak-bg);     border-color: var(--weak-border);    color: var(--weak); }
-    .feasibility-low      { background: var(--strong-bg);   border-color: var(--strong-border);  color: var(--strong); }
-
-    .angle-novelty {
-      font-size: 0.75rem;
-      color: var(--text-2);
-      line-height: 1.55;
-      flex: 1;
-      min-width: 0;
-    }
-
-    /* ── Footer ─────────────────────────────────────────────────── */
-    footer {
-      border-top: 1px solid var(--border);
-      padding: 2rem 1.5rem;
-    }
-
-    .footer-inner {
-      max-width: 860px;
-      margin: 0 auto;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 1rem;
-      flex-wrap: wrap;
-    }
-
-    .footer-brand {
-      font-size: 0.82rem;
-      font-weight: 700;
-      color: var(--text-3);
-      letter-spacing: -0.02em;
-    }
-
+    /* ── Footer ───────────────────────────────────────────── */
+    footer { border-top: 1px solid var(--border); padding: 1.5rem 1.5rem; }
+    .footer-inner { max-width: 860px; margin: 0 auto; display: flex; align-items: center; justify-content: space-between; gap: 1rem; flex-wrap: wrap; }
+    .footer-brand { font-size: 0.82rem; font-weight: 700; color: var(--text-3); letter-spacing: -0.02em; }
     .footer-links { display: flex; gap: 1.25rem; flex-wrap: wrap; }
-
-    .footer-link {
-      font-size: 0.78rem;
-      color: var(--text-3);
-      text-decoration: none;
-      transition: color var(--t);
-    }
-
+    .footer-link { font-size: 0.78rem; color: var(--text-3); text-decoration: none; transition: color var(--t); }
     .footer-link:hover { color: var(--text-2); }
 
-    .footer-note {
-      width: 100%;
-      font-size: 0.72rem;
-      color: var(--text-3);
-      margin-top: 0.25rem;
-    }
-
-    /* ── Responsive ─────────────────────────────────────────────── */
+    /* ── Mobile ───────────────────────────────────────────── */
     @media (max-width: 700px) {
-      .hero { padding: 3.5rem 1.25rem 3rem; }
-
-      /* On mobile, input pane always full width */
+      .hero { padding: 3rem 1.25rem 2.5rem; }
       .workspace.split .input-pane { width: 100%; }
-
-      /* Results pane slides over full screen on mobile */
       .results-pane {
-        position: fixed !important;
-        top: 0; left: 0; right: 0; bottom: 0;
-        width: 100% !important;
-        max-width: 100% !important;
-        transform: translateX(100%);
-        opacity: 1 !important;
-        background: var(--bg);
-        border-left: none !important;
-        overflow-y: auto;
-        z-index: 100;
-        transition: transform 0.38s cubic-bezier(0.4, 0, 0.2, 1) !important;
+        position: fixed !important; top: 0; left: 0; right: 0; bottom: 0;
+        width: 100% !important; transform: translateX(100%); opacity: 1 !important;
+        background: var(--bg); border-left: none !important; overflow-y: auto; z-index: 100;
+        transition: transform 0.38s cubic-bezier(0.4,0,0.2,1) !important;
       }
-
-      .workspace.split .results-pane {
-        transform: translateX(0);
-      }
-
+      .workspace.split .results-pane { transform: translateX(0); }
       .panel { padding: 1rem 1.1rem; }
       .card-header { flex-direction: column; align-items: flex-start; }
     }
@@ -987,39 +287,32 @@
 </head>
 <body>
 
-<!-- ── Hero ──────────────────────────────────────────────────────── -->
 <header class="hero">
   <div class="hero-inner">
     <div class="hero-eyebrow">Evidence Mapping Tool</div>
     <h1>LitGap</h1>
-    <p>Identify research gaps in the literature — topics with primary evidence but no systematic review. Built for researchers and clinicians.</p>
+    <p>Identify research gaps in the literature — topics with primary evidence and an opportunity for systematic synthesis.</p>
   </div>
 </header>
 
-<!-- ── App ───────────────────────────────────────────────────────── -->
 <main class="app">
   <div id="workspace" class="workspace">
 
-    <!-- ════════════════ INPUT PANE ════════════════ -->
+    <!-- ══════════ INPUT PANE ══════════ -->
     <div id="inputPane" class="input-pane">
       <div class="input-inner">
 
-        <!-- Config -->
+        <!-- Config: NCBI key only -->
         <div class="panel">
           <div class="section-label">Configuration</div>
-          <div class="api-row">
+          <div class="config-row">
             <label for="ncbiKey">NCBI API key</label>
             <input id="ncbiKey" class="field-input" type="password"
               placeholder="Optional — raises rate limit from 3 to 10 req/sec" autocomplete="off" />
           </div>
-          <div class="api-row" style="margin-top:0.75rem">
-            <label for="anthropicKeyInput">Anthropic API key</label>
-            <input id="anthropicKeyInput" class="field-input" type="password"
-              placeholder="Optional — enables AI angle suggestions on gap cards" autocomplete="off" />
-          </div>
         </div>
 
-        <!-- Tab bar -->
+        <!-- Tabs -->
         <div class="tab-bar">
           <button class="tab active" data-tab="gap-detector">Gap Detector</button>
           <button class="tab" data-tab="intervention-scanner">Intervention Scanner</button>
@@ -1028,28 +321,23 @@
         <!-- Gap Detector inputs -->
         <div id="gd-input-panel" class="tab-input active" data-tab="gap-detector">
           <div class="panel">
-            <div class="section-label">Preset topics</div>
+            <div class="section-label">Medical specialty</div>
             <div class="chip-group" id="gdChipGroup"></div>
+            <p class="chip-hint">Click a specialty to load 5 sample queries. Click again to cycle through more.</p>
             <textarea id="gdTopicsArea" class="topics-textarea"
               placeholder='"tubular retractor" AND brain AND surgery
 "deep brain stimulation" AND "disorders of consciousness"
 "intraoperative MRI" AND glioma AND resection
 # Lines starting with # are ignored'></textarea>
-            <p class="field-hint">One PubMed query per line. MeSH terms, boolean operators, and field tags are all supported.</p>
+            <p class="field-hint">One PubMed query per line. MeSH terms and boolean operators are supported.</p>
           </div>
           <div class="actions-row">
             <button id="gdScanBtn" class="btn btn-primary">
-              <svg width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true">
-                <circle cx="7" cy="7" r="5.5" stroke="currentColor" stroke-width="1.5"/>
-                <path d="M11 11L14.5 14.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
-              </svg>
+              <svg width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true"><circle cx="7" cy="7" r="5.5" stroke="currentColor" stroke-width="1.5"/><path d="M11 11L14.5 14.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
               Scan PubMed
             </button>
             <button id="gdExportBtn" class="btn btn-secondary" disabled>
-              <svg width="13" height="13" viewBox="0 0 16 16" fill="none" aria-hidden="true">
-                <path d="M8 2v8M8 10l-3-3M8 10l3-3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-                <path d="M2 12h12" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
-              </svg>
+              <svg width="13" height="13" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M8 2v8M8 10l-3-3M8 10l3-3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M2 12h12" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
               Export CSV
             </button>
           </div>
@@ -1059,44 +347,35 @@
         <div id="is-input-panel" class="tab-input" data-tab="intervention-scanner">
           <div class="panel">
             <div class="section-label">Clinical Intervention</div>
-            <div class="api-row">
+            <div class="config-row">
               <input id="isInterventionInput" class="field-input" type="text"
                 placeholder="e.g. deep brain stimulation, spinal cord stimulation, intravitreal injection"
-                style="font-family: inherit;" />
+                style="font-family:inherit;" />
             </div>
-            <p class="field-hint">LitGap will look up related MeSH descriptors and synonyms, then test every combination against common clinical outcome types to find uncovered angles.</p>
+            <p class="field-hint">LitGap looks up related MeSH descriptors and synonyms, then tests every combination against common outcome types.</p>
           </div>
           <div class="actions-row">
             <button id="isScanBtn" class="btn btn-primary">
-              <svg width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true">
-                <circle cx="7" cy="7" r="5.5" stroke="currentColor" stroke-width="1.5"/>
-                <path d="M11 11L14.5 14.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
-              </svg>
+              <svg width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true"><circle cx="7" cy="7" r="5.5" stroke="currentColor" stroke-width="1.5"/><path d="M11 11L14.5 14.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
               Scan Intervention
             </button>
             <button id="isExportBtn" class="btn btn-secondary" disabled>
-              <svg width="13" height="13" viewBox="0 0 16 16" fill="none" aria-hidden="true">
-                <path d="M8 2v8M8 10l-3-3M8 10l3-3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-                <path d="M2 12h12" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
-              </svg>
+              <svg width="13" height="13" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M8 2v8M8 10l-3-3M8 10l3-3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M2 12h12" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
               Export CSV
             </button>
           </div>
         </div>
 
-      </div><!-- /input-inner -->
+      </div>
     </div><!-- /inputPane -->
 
-    <!-- ════════════════ RESULTS PANE ════════════════ -->
+    <!-- ══════════ RESULTS PANE ══════════ -->
     <div id="resultsPane" class="results-pane">
       <div class="results-pane-inner">
 
-        <!-- Header: back + progress -->
         <div class="results-header">
-          <button id="backBtn" class="btn btn-secondary btn-back">
-            <svg width="13" height="13" viewBox="0 0 16 16" fill="none" aria-hidden="true">
-              <path d="M10 3L5 8l5 5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-            </svg>
+          <button id="backBtn" class="btn btn-secondary">
+            <svg width="13" height="13" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M10 3L5 8l5 5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
             New scan
           </button>
           <div class="progress-area">
@@ -1116,7 +395,6 @@
         <!-- Intervention Scanner results -->
         <div id="is-results-panel" class="results-panel" data-tab="intervention-scanner" style="display:none">
           <div id="isSummaryBar" class="summary-bar"></div>
-
           <div id="isTermsPreview" class="terms-preview">
             <div class="terms-row">
               <span class="terms-row-label">Search terms</span>
@@ -1127,7 +405,6 @@
               <div id="isOutcomesList" class="term-tags"></div>
             </div>
           </div>
-
           <div id="isTableWrap" class="table-wrap" style="display:none">
             <table class="results-table">
               <thead>
@@ -1149,19 +426,15 @@
               <tbody id="isTableBody"></tbody>
             </table>
           </div>
-
-          <div id="isEmptyState" class="empty-state">
-            No combinations returned results. Try a different intervention term.
-          </div>
+          <div id="isEmptyState" class="empty-state">No combinations returned results. Try a different intervention term.</div>
         </div>
 
-      </div><!-- /results-pane-inner -->
+      </div>
     </div><!-- /resultsPane -->
 
   </div><!-- /workspace -->
 </main>
 
-<!-- ── Footer ────────────────────────────────────────────────────── -->
 <footer>
   <div class="footer-inner">
     <span class="footer-brand">LitGap</span>
@@ -1169,18 +442,16 @@
       <a class="footer-link" href="https://pubmed.ncbi.nlm.nih.gov/" target="_blank" rel="noopener">PubMed</a>
       <a class="footer-link" href="https://www.crd.york.ac.uk/prospero/" target="_blank" rel="noopener">PROSPERO</a>
       <a class="footer-link" href="https://www.ncbi.nlm.nih.gov/account/settings/" target="_blank" rel="noopener">NCBI API Key</a>
-      <a class="footer-link" href="https://github.com/mahersza-hub/litgap" target="_blank" rel="noopener">GitHub</a>
     </nav>
-    <p class="footer-note">Data retrieved from NCBI E-utilities. This tool does not store or transmit any data. Gap scores are heuristic indicators only.</p>
   </div>
 </footer>
 
 <script>
 "use strict";
 
-// ═══════════════════════════════════════════════════════════════════════════════
+// ═══════════════════════════════════════════════════════════════
 // SHARED UTILITIES
-// ═══════════════════════════════════════════════════════════════════════════════
+// ═══════════════════════════════════════════════════════════════
 
 const PUBMED_BASE = "https://eutils.ncbi.nlm.nih.gov/entrez/eutils";
 
@@ -1194,7 +465,7 @@ const STUDY_FILTERS = {
   narrative_review:  "\"narrative review\"[tiab]",
 };
 
-const RECENT_DATE_FILTER = '("2023"[PDAT] : "2026"[PDAT])';
+const RECENT_DATE_FILTER = '("2022"[PDAT] : "2026"[PDAT])';
 
 const sleep  = ms  => new Promise(r => setTimeout(r, ms));
 const apiKey = ()  => document.getElementById("ncbiKey").value.trim() || null;
@@ -1202,65 +473,41 @@ const delay  = ()  => apiKey() ? 110 : 360;
 
 function escHtml(str) {
   return String(str)
-    .replace(/&/g, "&amp;").replace(/</g, "&lt;")
-    .replace(/>/g, "&gt;").replace(/"/g, "&quot;");
+    .replace(/&/g,"&amp;").replace(/</g,"&lt;")
+    .replace(/>/g,"&gt;").replace(/"/g,"&quot;");
 }
 
 async function esearchCount(query, key) {
-  const params = new URLSearchParams({ db: "pubmed", term: query, rettype: "count", retmode: "json" });
-  if (key) params.set("api_key", key);
-  const resp = await fetch(`${PUBMED_BASE}/esearch.fcgi?${params}`);
+  const p = new URLSearchParams({ db:"pubmed", term:query, rettype:"count", retmode:"json" });
+  if (key) p.set("api_key", key);
+  const resp = await fetch(`${PUBMED_BASE}/esearch.fcgi?${p}`);
   if (!resp.ok) throw new Error(`PubMed ${resp.status}`);
   return parseInt((await resp.json()).esearchresult.count, 10);
 }
 
 async function countStudiesFull(topic, key, del, onStep) {
-  const r = { topic, total: 0, rct: 0, cohort: 0, case_series: 0,
-               meta_analysis: 0, systematic_review: 0,
-               scoping_review: 0, narrative_review: 0,
-               recent_rct: 0, recent_cohort: 0 };
-
-  r.total = await esearchCount(topic, key);
-  await sleep(del); onStep();
-
+  const r = { topic, total:0, rct:0, cohort:0, case_series:0,
+               meta_analysis:0, systematic_review:0,
+               scoping_review:0, narrative_review:0,
+               recent_rct:0, recent_cohort:0 };
+  r.total = await esearchCount(topic, key); await sleep(del); onStep();
   for (const [field, filter] of Object.entries(STUDY_FILTERS)) {
-    r[field] = await esearchCount(`(${topic}) AND ${filter}`, key);
-    await sleep(del); onStep();
+    r[field] = await esearchCount(`(${topic}) AND ${filter}`, key); await sleep(del); onStep();
   }
-
-  r.recent_rct = await esearchCount(
-    `(${topic}) AND ${STUDY_FILTERS.rct} AND ${RECENT_DATE_FILTER}`, key
-  );
-  await sleep(del); onStep();
-
-  r.recent_cohort = await esearchCount(
-    `(${topic}) AND ${STUDY_FILTERS.cohort} AND ${RECENT_DATE_FILTER}`, key
-  );
-  await sleep(del); onStep();
-
+  r.recent_rct    = await esearchCount(`(${topic}) AND ${STUDY_FILTERS.rct}    AND ${RECENT_DATE_FILTER}`, key); await sleep(del); onStep();
+  r.recent_cohort = await esearchCount(`(${topic}) AND ${STUDY_FILTERS.cohort} AND ${RECENT_DATE_FILTER}`, key); await sleep(del); onStep();
   return r;
 }
 
 async function countStudiesLight(topic, key, del, onStep) {
-  const r = { topic, total: 0, rct: 0, cohort: 0,
-               meta_analysis: 0, systematic_review: 0,
-               scoping_review: 0, narrative_review: 0 };
-
-  r.total             = await esearchCount(topic, key);
-  await sleep(del); onStep();
-  r.rct               = await esearchCount(`(${topic}) AND ${STUDY_FILTERS.rct}`,               key);
-  await sleep(del); onStep();
-  r.cohort            = await esearchCount(`(${topic}) AND ${STUDY_FILTERS.cohort}`,            key);
-  await sleep(del); onStep();
-  r.systematic_review = await esearchCount(`(${topic}) AND ${STUDY_FILTERS.systematic_review}`, key);
-  await sleep(del); onStep();
-  r.meta_analysis     = await esearchCount(`(${topic}) AND ${STUDY_FILTERS.meta_analysis}`,     key);
-  await sleep(del); onStep();
-  r.scoping_review    = await esearchCount(`(${topic}) AND ${STUDY_FILTERS.scoping_review}`,    key);
-  await sleep(del); onStep();
-  r.narrative_review  = await esearchCount(`(${topic}) AND ${STUDY_FILTERS.narrative_review}`,  key);
-  await sleep(del); onStep();
-
+  const r = { topic, total:0, rct:0, cohort:0, meta_analysis:0, systematic_review:0, scoping_review:0, narrative_review:0 };
+  r.total             = await esearchCount(topic, key);                                                   await sleep(del); onStep();
+  r.rct               = await esearchCount(`(${topic}) AND ${STUDY_FILTERS.rct}`,               key);    await sleep(del); onStep();
+  r.cohort            = await esearchCount(`(${topic}) AND ${STUDY_FILTERS.cohort}`,            key);    await sleep(del); onStep();
+  r.systematic_review = await esearchCount(`(${topic}) AND ${STUDY_FILTERS.systematic_review}`, key);    await sleep(del); onStep();
+  r.meta_analysis     = await esearchCount(`(${topic}) AND ${STUDY_FILTERS.meta_analysis}`,     key);    await sleep(del); onStep();
+  r.scoping_review    = await esearchCount(`(${topic}) AND ${STUDY_FILTERS.scoping_review}`,    key);    await sleep(del); onStep();
+  r.narrative_review  = await esearchCount(`(${topic}) AND ${STUDY_FILTERS.narrative_review}`,  key);    await sleep(del); onStep();
   return r;
 }
 
@@ -1272,164 +519,344 @@ function gapScore(r) {
   return Math.max(0, primary + recency - penalty);
 }
 
-function hasGap(r)      { return (r.rct + r.cohort) >= 5 && r.systematic_review === 0; }
-function hasWeakGap(r)  { return (r.rct + r.cohort) >= 3 && r.systematic_review <= 1 && (r.rct + r.cohort) >= 8; }
-function gapClass(r)    { return hasGap(r) ? "gap-strong"   : hasWeakGap(r) ? "gap-weak"   : "gap-covered"; }
-function gapLabel(r)    { return hasGap(r) ? "Strong Gap"   : hasWeakGap(r) ? "Weak Gap"   : "Covered"; }
-function badgeClass(r)  { return hasGap(r) ? "badge-strong" : hasWeakGap(r) ? "badge-weak" : "badge-covered"; }
+function hasGap(r)     { return (r.rct + r.cohort) >= 5 && r.systematic_review === 0; }
+function hasWeakGap(r) { return (r.rct + r.cohort) >= 3 && r.systematic_review <= 1 && (r.rct + r.cohort) >= 8; }
+function gapClass(r)   { return hasGap(r) ? "gap-strong" : hasWeakGap(r) ? "gap-weak" : "gap-covered"; }
+function gapLabel(r)   { return hasGap(r) ? "Gap"        : hasWeakGap(r) ? "Weak Gap" : "Covered"; }
+function badgeClass(r) { return hasGap(r) ? "badge-strong": hasWeakGap(r)? "badge-weak":"badge-covered"; }
 
 function prosperoUrl(topic) {
-  const cleaned = topic
-    .replace(/\[[\w\s/]+\]/g, "")
-    .replace(/\bAND\b|\bOR\b|\bNOT\b/g, " ")
-    .replace(/[()]/g, " ")
-    .replace(/\s+/g, " ")
-    .trim();
-  return `https://www.crd.york.ac.uk/prospero/search/SearchResults.php?TermText=${encodeURIComponent(cleaned)}`;
+  const q = topic.replace(/\[[\w\s/]+\]/g,"").replace(/\bAND\b|\bOR\b|\bNOT\b/g," ").replace(/[()]/g," ").replace(/\s+/g," ").trim();
+  return `https://www.crd.york.ac.uk/prospero/search/SearchResults.php?TermText=${encodeURIComponent(q)}`;
 }
-
-function pubmedUrl(topic) {
-  return `https://pubmed.ncbi.nlm.nih.gov/?term=${encodeURIComponent(topic)}`;
-}
+function pubmedUrl(topic) { return `https://pubmed.ncbi.nlm.nih.gov/?term=${encodeURIComponent(topic)}`; }
 
 function downloadCsv(filename, headers, rows) {
-  const csvContent = [headers, ...rows]
-    .map(row => row.map(cell => {
-      const s = String(cell);
-      return /[,"\n]/.test(s) ? `"${s.replace(/"/g, '""')}"` : s;
-    }).join(","))
-    .join("\r\n");
-  const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
-  const url  = URL.createObjectURL(blob);
-  const a    = document.createElement("a");
-  a.href = url;
-  a.download = filename;
-  a.click();
-  URL.revokeObjectURL(url);
+  const csv = [headers, ...rows].map(row =>
+    row.map(c => { const s = String(c); return /[,"\n]/.test(s) ? `"${s.replace(/"/g,'""')}"` : s; }).join(",")
+  ).join("\r\n");
+  const a = Object.assign(document.createElement("a"), {
+    href: URL.createObjectURL(new Blob([csv], { type:"text/csv;charset=utf-8;" })),
+    download: filename
+  });
+  a.click(); URL.revokeObjectURL(a.href);
 }
 
 
-// ═══════════════════════════════════════════════════════════════════════════════
+// ═══════════════════════════════════════════════════════════════
 // WORKSPACE SPLIT
-// ═══════════════════════════════════════════════════════════════════════════════
+// ═══════════════════════════════════════════════════════════════
 
 function enterSplitMode(activeTab) {
-  const workspace = document.getElementById("workspace");
-  workspace.classList.add("split");
-
-  // Show correct results panel
+  document.getElementById("workspace").classList.add("split");
   document.querySelectorAll(".results-panel").forEach(p => {
     p.style.display = p.dataset.tab === activeTab ? "" : "none";
   });
-
-  // Scroll results pane to top
-  const rp = document.getElementById("resultsPane");
-  rp.scrollTop = 0;
+  document.getElementById("resultsPane").scrollTop = 0;
 }
 
 function exitSplitMode() {
   document.getElementById("workspace").classList.remove("split");
-  document.getElementById("progressLabel").textContent = "";
-  const track = document.getElementById("progressTrack");
-  const fill  = document.getElementById("progressFill");
-  track.classList.remove("visible");
-  fill.classList.remove("running");
-  fill.style.width = "0%";
+  const lbl = document.getElementById("progressLabel");
+  const trk = document.getElementById("progressTrack");
+  const fil = document.getElementById("progressFill");
+  lbl.textContent = "";
+  trk.classList.remove("visible");
+  fil.classList.remove("running");
+  fil.style.width = "0%";
 }
 
 document.getElementById("backBtn").addEventListener("click", exitSplitMode);
 
 
-// ═══════════════════════════════════════════════════════════════════════════════
+// ═══════════════════════════════════════════════════════════════
 // TAB NAVIGATION
-// ═══════════════════════════════════════════════════════════════════════════════
+// ═══════════════════════════════════════════════════════════════
 
 function switchTab(tabId) {
-  document.querySelectorAll(".tab").forEach(t =>
-    t.classList.toggle("active", t.dataset.tab === tabId)
-  );
-  document.querySelectorAll(".tab-input").forEach(p =>
-    p.classList.toggle("active", p.dataset.tab === tabId)
-  );
-  // Switch results panels only if the split is already open
+  document.querySelectorAll(".tab").forEach(t => t.classList.toggle("active", t.dataset.tab === tabId));
+  document.querySelectorAll(".tab-input").forEach(p => p.classList.toggle("active", p.dataset.tab === tabId));
   if (document.getElementById("workspace").classList.contains("split")) {
-    document.querySelectorAll(".results-panel").forEach(p => {
-      p.style.display = p.dataset.tab === tabId ? "" : "none";
-    });
+    document.querySelectorAll(".results-panel").forEach(p => { p.style.display = p.dataset.tab === tabId ? "" : "none"; });
   }
 }
 
-document.querySelectorAll(".tab").forEach(tab =>
-  tab.addEventListener("click", () => switchTab(tab.dataset.tab))
-);
+document.querySelectorAll(".tab").forEach(t => t.addEventListener("click", () => switchTab(t.dataset.tab)));
 
 
-// ═══════════════════════════════════════════════════════════════════════════════
-// GAP DETECTOR
-// ═══════════════════════════════════════════════════════════════════════════════
+// ═══════════════════════════════════════════════════════════════
+// SPECIALTY QUERY POOLS
+// ═══════════════════════════════════════════════════════════════
 
-const PRESETS = {
-  "Minimally Invasive": [
-    '"tubular retractor" AND brain AND surgery',
+const SPECIALTY_POOLS = {
+  "Cardiology": [
+    '"percutaneous coronary intervention"[MeSH] AND "heart failure" AND outcomes',
+    '"atrial fibrillation"[MeSH] AND "catheter ablation"[MeSH] AND recurrence',
+    '"coronary artery disease"[MeSH] AND "cardiac rehabilitation" AND outcomes',
+    '"transcatheter aortic valve replacement" AND complications AND outcomes',
+    '"heart failure with preserved ejection fraction" AND treatment AND outcomes',
+    '"anticoagulation" AND "atrial fibrillation" AND "chronic kidney disease"',
+    '"cardiac resynchronization therapy" AND "heart failure" AND "quality of life"',
+    '"myocardial infarction"[MeSH] AND "door-to-balloon time" AND outcomes',
+    '"coronary artery bypass grafting" AND "off-pump" AND outcomes',
+    '"statins" AND "primary prevention" AND "cardiovascular events"',
+    '"implantable cardioverter defibrillator" AND "sudden cardiac death" AND outcomes',
+    '"aortic stenosis" AND "valve replacement" AND "quality of life"',
   ],
-  "Spine": [
+  "Orthopaedics": [
+    '"total knee arthroplasty"[MeSH] AND "patient-reported outcomes"',
+    '"anterior cruciate ligament reconstruction" AND "return to sport"',
+    '"rotator cuff repair" AND outcomes AND arthroscopic',
+    '"hip arthroplasty"[MeSH] AND dislocation AND outcomes',
+    '"spinal fusion"[MeSH] AND "adjacent segment disease"',
+    '"tibial plateau fracture" AND "open reduction internal fixation" AND outcomes',
+    '"shoulder arthroplasty" AND reverse AND "functional outcomes"',
+    '"platelet-rich plasma" AND "osteoarthritis" AND knee AND outcomes',
+    '"Achilles tendon repair" AND "functional outcomes" AND "return to activity"',
+    '"distal radius fracture" AND surgical AND "functional outcomes"',
+    '"lumbar disc herniation" AND microdiscectomy AND outcomes',
+    '"perioperative pain management" AND arthroplasty AND opioid',
+  ],
+  "Emergency medicine": [
+    '"sepsis"[MeSH] AND "early goal-directed therapy" AND mortality',
+    '"traumatic brain injury"[MeSH] AND prehospital AND outcomes',
+    '"point-of-care ultrasound" AND "emergency department" AND diagnosis',
+    '"targeted temperature management" AND "cardiac arrest" AND outcomes',
+    '"analgesia" AND "emergency department" AND "pain management"',
+    '"pulmonary embolism"[MeSH] AND "CT pulmonary angiography" AND diagnosis',
+    '"laceration repair" AND "tissue adhesive" AND "emergency department"',
+    '"stroke" AND thrombolysis AND "emergency department" AND outcomes',
+    '"major trauma" AND "damage control resuscitation" AND outcomes',
+    '"acute kidney injury" AND "emergency department" AND outcomes',
+    '"procedural sedation" AND "emergency department" AND safety',
+    '"paediatric fever" AND "emergency department" AND management',
+  ],
+  "Paediatrics": [
+    '"childhood obesity"[MeSH] AND intervention AND outcomes',
+    '"neonatal sepsis"[MeSH] AND antibiotic AND outcomes',
+    '"attention deficit disorder with hyperactivity"[MeSH] AND methylphenidate AND outcomes',
+    '"bronchiolitis"[MeSH] AND treatment AND outcomes',
+    '"Kawasaki disease"[MeSH] AND "intravenous immunoglobulin" AND outcomes',
+    '"paediatric" AND "appendicitis" AND laparoscopic AND outcomes',
+    '"neonatal jaundice" AND phototherapy AND outcomes',
+    '"paediatric" AND epilepsy AND "ketogenic diet" AND seizure',
+    '"type 1 diabetes" AND "insulin pump" AND "glycaemic control" AND paediatric',
+    '"febrile seizures" AND recurrence AND outcomes',
+    '"childhood asthma" AND "inhaled corticosteroids" AND adherence',
+    '"preterm birth" AND "respiratory distress syndrome" AND outcomes',
+  ],
+  "Psychiatry": [
+    '"depression"[MeSH] AND "cognitive behavioral therapy" AND outcomes',
+    '"schizophrenia"[MeSH] AND antipsychotic AND "metabolic syndrome"',
+    '"bipolar disorder"[MeSH] AND lithium AND relapse',
+    '"post-traumatic stress disorder"[MeSH] AND EMDR AND outcomes',
+    '"anxiety disorders"[MeSH] AND mindfulness AND outcomes',
+    '"treatment-resistant depression" AND ketamine AND outcomes',
+    '"electroconvulsive therapy" AND depression AND outcomes',
+    '"eating disorders"[MeSH] AND "cognitive behavioral therapy" AND outcomes',
+    '"borderline personality disorder" AND "dialectical behavior therapy"',
+    '"obsessive-compulsive disorder"[MeSH] AND "exposure response prevention"',
+    '"major depressive disorder" AND antidepressant AND pregnancy',
+    '"dementia"[MeSH] AND "caregiver burden" AND intervention',
+  ],
+  "Dermatology": [
+    '"psoriasis"[MeSH] AND biologics AND outcomes',
+    '"atopic dermatitis"[MeSH] AND dupilumab AND outcomes',
+    '"melanoma"[MeSH] AND immunotherapy AND survival',
+    '"acne vulgaris"[MeSH] AND isotretinoin AND outcomes',
+    '"wound healing" AND "negative pressure wound therapy" AND outcomes',
+    '"chronic urticaria" AND antihistamine AND outcomes',
+    '"hidradenitis suppurativa" AND treatment AND outcomes',
+    '"vitiligo"[MeSH] AND phototherapy AND outcomes',
+    '"basal cell carcinoma"[MeSH] AND "Mohs surgery" AND outcomes',
+    '"alopecia areata"[MeSH] AND treatment AND outcomes',
+    '"rosacea"[MeSH] AND treatment AND outcomes',
+    '"keloid" AND intralesional AND treatment AND outcomes',
+  ],
+  "Urology": [
+    '"prostate cancer"[MeSH] AND "radical prostatectomy" AND "functional outcomes"',
+    '"bladder cancer"[MeSH] AND "intravesical therapy" AND recurrence',
+    '"kidney stones"[MeSH] AND ureteroscopy AND "stone-free rate"',
+    '"urinary incontinence"[MeSH] AND "pelvic floor" AND treatment',
+    '"benign prostatic hyperplasia"[MeSH] AND "alpha blockers" AND outcomes',
+    '"renal cell carcinoma"[MeSH] AND immunotherapy AND outcomes',
+    '"overactive bladder" AND anticholinergic AND outcomes',
+    '"erectile dysfunction"[MeSH] AND "phosphodiesterase inhibitors" AND outcomes',
+    '"testicular cancer"[MeSH] AND chemotherapy AND outcomes',
+    '"urinary tract infection"[MeSH] AND antibiotic AND recurrence',
+    '"nephrolithiasis" AND "shock wave lithotripsy" AND outcomes',
+    '"radical cystectomy" AND "urinary diversion" AND "quality of life"',
+  ],
+  "General surgery": [
+    '"laparoscopic cholecystectomy"[MeSH] AND complications AND outcomes',
+    '"inguinal hernia"[MeSH] AND "mesh repair" AND recurrence',
+    '"appendicitis"[MeSH] AND laparoscopic AND outcomes',
+    '"colorectal cancer"[MeSH] AND laparoscopic AND "surgical outcomes"',
+    '"bariatric surgery"[MeSH] AND "type 2 diabetes" AND remission',
+    '"thyroid cancer"[MeSH] AND thyroidectomy AND complications',
+    '"anastomotic leak" AND "colorectal surgery" AND "risk factors"',
+    '"ventral hernia" AND mesh AND "surgical outcomes"',
+    '"acute pancreatitis"[MeSH] AND management AND outcomes',
+    '"pancreaticoduodenectomy" AND "pancreatic cancer" AND outcomes',
+    '"enhanced recovery after surgery" AND "general surgery" AND outcomes',
+    '"lower gastrointestinal bleeding" AND management AND outcomes',
+  ],
+  "Ophthalmology": [
+    '"diabetic retinopathy"[MeSH] AND "anti-VEGF" AND outcomes',
+    '"glaucoma"[MeSH] AND trabeculectomy AND outcomes',
+    '"cataract extraction"[MeSH] AND "intraocular lens" AND outcomes',
+    '"age-related macular degeneration"[MeSH] AND ranibizumab AND outcomes',
+    '"corneal transplantation"[MeSH] AND "graft survival"',
+    '"strabismus"[MeSH] AND "surgical correction" AND outcomes',
+    '"vitrectomy"[MeSH] AND "macular hole" AND outcomes',
+    '"retinal detachment"[MeSH] AND vitrectomy AND outcomes',
+    '"dry eye disease" AND treatment AND outcomes',
+    '"intravitreal injection" AND endophthalmitis AND prevention',
+    '"uveitis"[MeSH] AND "biologic therapy" AND outcomes',
+    '"keratoconus"[MeSH] AND "corneal collagen crosslinking" AND outcomes',
+  ],
+  "Neurosurgery": [
+    '"tubular retractor" AND brain AND surgery',
     '"short segment fixation" AND "metastatic spine"',
     '"full-endoscopic" AND "intradural" AND spine',
     '"minimally invasive" AND "lumbar fusion" AND outcomes',
-  ],
-  "Functional / Tech": [
     '"deep brain stimulation" AND "disorders of consciousness"',
     '"brain-computer interface" AND "motor recovery"',
     '"intraoperative MRI" AND glioma AND resection',
-  ],
-  "Neuro + AI": [
-    '"artificial intelligence" AND "neurosurgery" AND "decision making"',
+    '"artificial intelligence" AND neurosurgery AND "decision making"',
     '"large language model" AND "clinical guidelines" AND surgery',
+    '"glioblastoma"[MeSH] AND temozolomide AND "tumor treating fields"',
+    '"cerebral aneurysm"[MeSH] AND endovascular AND outcomes',
+    '"spinal cord injury"[MeSH] AND rehabilitation AND "functional outcomes"',
+  ],
+  "Obstetrics & gynaecology": [
+    '"preeclampsia"[MeSH] AND aspirin AND prevention',
+    '"caesarean section"[MeSH] AND "vaginal birth after caesarean" AND outcomes',
+    '"endometriosis"[MeSH] AND laparoscopic AND outcomes',
+    '"polycystic ovary syndrome"[MeSH] AND metformin AND outcomes',
+    '"preterm labour"[MeSH] AND tocolysis AND outcomes',
+    '"ovarian cancer"[MeSH] AND "PARP inhibitors" AND outcomes',
+    '"hysterectomy"[MeSH] AND laparoscopic AND "minimally invasive" AND outcomes',
+    '"gestational diabetes"[MeSH] AND insulin AND outcomes',
+    '"intrauterine growth restriction" AND management AND outcomes',
+    '"female infertility"[MeSH] AND "in vitro fertilization" AND outcomes',
+    '"uterine fibroids"[MeSH] AND "uterine artery embolization" AND outcomes',
+    '"postpartum haemorrhage"[MeSH] AND oxytocin AND prevention',
+  ],
+  "Gastroenterology": [
+    '"inflammatory bowel disease"[MeSH] AND "biological therapy" AND outcomes',
+    '"Helicobacter pylori"[MeSH] AND "eradication therapy" AND outcomes',
+    '"colorectal cancer screening" AND colonoscopy AND "adenoma detection"',
+    '"liver cirrhosis"[MeSH] AND "portal hypertension" AND management',
+    '"non-alcoholic fatty liver disease" AND treatment AND outcomes',
+    '"irritable bowel syndrome"[MeSH] AND "low-FODMAP diet" AND outcomes',
+    '"Crohn\'s disease"[MeSH] AND surgical AND outcomes',
+    '"upper gastrointestinal bleeding" AND endoscopy AND outcomes',
+    '"hepatocellular carcinoma"[MeSH] AND sorafenib AND outcomes',
+    '"coeliac disease"[MeSH] AND "gluten-free diet" AND "quality of life"',
+    '"acute liver failure" AND management AND outcomes',
+    '"Barrett\'s oesophagus" AND "radiofrequency ablation" AND outcomes',
+  ],
+  "Respiratory medicine": [
+    '"COPD"[MeSH] AND "pulmonary rehabilitation" AND outcomes',
+    '"asthma"[MeSH] AND "biologic therapy" AND outcomes',
+    '"pulmonary fibrosis"[MeSH] AND antifibrotic AND outcomes',
+    '"sleep apnea"[MeSH] AND CPAP AND "cardiovascular outcomes"',
+    '"lung cancer"[MeSH] AND immunotherapy AND survival',
+    '"community-acquired pneumonia"[MeSH] AND antibiotic AND outcomes',
+    '"pulmonary arterial hypertension"[MeSH] AND treatment AND outcomes',
+    '"mechanical ventilation"[MeSH] AND weaning AND outcomes',
+    '"bronchiectasis" AND "airway clearance" AND outcomes',
+    '"tuberculosis"[MeSH] AND "short-course therapy" AND outcomes',
+    '"acute respiratory distress syndrome"[MeSH] AND "prone positioning" AND outcomes',
+    '"pleural effusion"[MeSH] AND drainage AND outcomes',
+  ],
+  "ENT": [
+    '"chronic rhinosinusitis"[MeSH] AND "functional endoscopic sinus surgery" AND outcomes',
+    '"tonsillectomy"[MeSH] AND "obstructive sleep apnoea" AND outcomes',
+    '"hearing loss"[MeSH] AND "cochlear implant" AND outcomes',
+    '"laryngeal cancer"[MeSH] AND chemoradiation AND outcomes',
+    '"otitis media"[MeSH] AND "tympanostomy tube" AND outcomes',
+    '"tinnitus"[MeSH] AND treatment AND outcomes',
+    '"thyroid nodule"[MeSH] AND "fine needle aspiration" AND diagnosis',
+    '"vertigo"[MeSH] AND "vestibular rehabilitation" AND outcomes',
+    '"salivary gland neoplasms"[MeSH] AND parotidectomy AND outcomes',
+    '"epistaxis"[MeSH] AND management AND outcomes',
+    '"oral cavity cancer" AND reconstruction AND outcomes',
+    '"allergic rhinitis"[MeSH] AND immunotherapy AND outcomes',
+  ],
+  "Oncology": [
+    '"breast cancer"[MeSH] AND immunotherapy AND outcomes',
+    '"colorectal cancer"[MeSH] AND "targeted therapy" AND outcomes',
+    '"lung cancer"[MeSH] AND "EGFR mutation" AND "targeted therapy"',
+    '"pancreatic cancer"[MeSH] AND gemcitabine AND survival',
+    '"lymphoma"[MeSH] AND "CAR-T cell therapy" AND outcomes',
+    '"prostate cancer"[MeSH] AND "androgen deprivation therapy" AND outcomes',
+    '"melanoma"[MeSH] AND "checkpoint inhibitors" AND survival',
+    '"multiple myeloma"[MeSH] AND "proteasome inhibitors" AND outcomes',
+    '"ovarian cancer"[MeSH] AND "debulking surgery" AND survival',
+    '"hepatocellular carcinoma"[MeSH] AND immunotherapy AND outcomes',
+    '"cancer pain" AND opioid AND management',
+    '"palliative care"[MeSH] AND cancer AND "quality of life"',
   ],
 };
 
-const gdActivePresets = new Set();
+// Track rotation index per specialty
+const specialtyRotation = {};
 
-(function buildChips() {
+(function buildSpecialtyChips() {
   const container = document.getElementById("gdChipGroup");
-  Object.keys(PRESETS).forEach(name => {
+  Object.keys(SPECIALTY_POOLS).forEach(name => {
     const chip = document.createElement("button");
     chip.className = "chip";
     chip.textContent = name;
-    chip.dataset.preset = name;
-    chip.addEventListener("click", () => gdTogglePreset(name, chip));
+    chip.dataset.specialty = name;
+    chip.addEventListener("click", () => gdToggleSpecialty(name, chip));
     container.appendChild(chip);
   });
 })();
 
-function gdGetLines() {
-  return document.getElementById("gdTopicsArea").value.split("\n").map(l => l.trimEnd());
-}
+function gdGetLines() { return document.getElementById("gdTopicsArea").value.split("\n").map(l => l.trimEnd()); }
+function gdSetLines(lines) { document.getElementById("gdTopicsArea").value = lines.join("\n"); }
 
-function gdSetLines(lines) {
-  document.getElementById("gdTopicsArea").value = lines.join("\n");
-}
+// Tracks which 5 queries each specialty currently has in the textarea
+const specialtyCurrentTopics = {};
 
-function gdTogglePreset(name, chip) {
-  const topics = PRESETS[name];
-  if (gdActivePresets.has(name)) {
-    gdActivePresets.delete(name);
-    chip.classList.remove("active");
-    const topicSet = new Set(topics);
-    const filtered = gdGetLines().filter(l => !topicSet.has(l.trim()));
+function gdToggleSpecialty(name, chip) {
+  const pool = SPECIALTY_POOLS[name];
+  const isActive = chip.classList.contains("active");
+
+  if (isActive) {
+    // Remove current specialty topics from textarea
+    const toRemove = new Set(specialtyCurrentTopics[name] ?? []);
+    const filtered = gdGetLines().filter(l => !toRemove.has(l.trim()));
     const cleaned  = filtered.join("\n").replace(/\n{3,}/g, "\n\n").trimEnd();
     gdSetLines(cleaned ? cleaned.split("\n") : [""]);
+    chip.classList.remove("active");
+    delete specialtyCurrentTopics[name];
   } else {
-    gdActivePresets.add(name);
+    // If chip was inactive, cycle to next 5; if chip was active (re-click), also cycle
+    const idx = specialtyRotation[name] ?? 0;
+    const topics = [];
+    for (let i = 0; i < 5; i++) topics.push(pool[(idx + i) % pool.length]);
+    specialtyRotation[name] = (idx + 5) % pool.length;
+
+    // Remove previous topics from this specialty (if any) then add new ones
+    const prevTopics = new Set(specialtyCurrentTopics[name] ?? []);
+    const existingLines = gdGetLines().filter(l => !prevTopics.has(l.trim()));
+    const base = existingLines.join("\n").trimEnd();
+    const toAdd = topics.filter(t => !new Set(existingLines.map(l => l.trim())).has(t));
+    gdSetLines((base ? base + "\n" + toAdd.join("\n") : toAdd.join("\n")).split("\n"));
+
+    specialtyCurrentTopics[name] = topics;
     chip.classList.add("active");
-    const existing = new Set(gdGetLines().map(l => l.trim()));
-    const toAdd    = topics.filter(t => !existing.has(t));
-    if (toAdd.length) {
-      const base = gdGetLines().join("\n").trimEnd();
-      gdSetLines((base ? base + "\n" + toAdd.join("\n") : toAdd.join("\n")).split("\n"));
-    }
   }
 }
+
+
+// ═══════════════════════════════════════════════════════════════
+// GAP DETECTOR
+// ═══════════════════════════════════════════════════════════════
 
 let gdResults = [];
 const GD_STEPS_PER_TOPIC = 10;
@@ -1440,66 +867,51 @@ document.getElementById("gdExportBtn").addEventListener("click", gdExportCsv);
 async function gdRunScan() {
   const topics = document.getElementById("gdTopicsArea").value
     .split("\n").map(l => l.trim()).filter(l => l && !l.startsWith("#"));
-
   if (!topics.length) { alert("Enter at least one topic to scan."); return; }
 
   enterSplitMode("gap-detector");
 
-  const key   = apiKey();
-  const del   = delay();
-  const total = topics.length * GD_STEPS_PER_TOPIC;
-  let   done  = 0;
+  const key = apiKey(), del = delay();
+  const totalSteps = topics.length * GD_STEPS_PER_TOPIC;
+  let done = 0;
 
-  const scanBtn    = document.getElementById("gdScanBtn");
-  const exportBtn  = document.getElementById("gdExportBtn");
-  const labelEl    = document.getElementById("progressLabel");
-  const trackEl    = document.getElementById("progressTrack");
-  const fillEl     = document.getElementById("progressFill");
-  const resultsEl  = document.getElementById("gdResults");
-  const summaryEl  = document.getElementById("gdSummaryBar");
+  const scanBtn   = document.getElementById("gdScanBtn");
+  const exportBtn = document.getElementById("gdExportBtn");
+  const labelEl   = document.getElementById("progressLabel");
+  const trackEl   = document.getElementById("progressTrack");
+  const fillEl    = document.getElementById("progressFill");
+  const resultsEl = document.getElementById("gdResults");
+  const summaryEl = document.getElementById("gdSummaryBar");
 
-  scanBtn.disabled   = true;
-  exportBtn.disabled = true;
-  trackEl.classList.add("visible");
-  fillEl.classList.add("running");
-  fillEl.style.width      = "0%";
-  resultsEl.innerHTML     = "";
-  summaryEl.style.display = "none";
-  gdResults = [];
+  scanBtn.disabled = true; exportBtn.disabled = true;
+  trackEl.classList.add("visible"); fillEl.classList.add("running"); fillEl.style.width = "0%";
+  resultsEl.innerHTML = ""; summaryEl.style.display = "none"; gdResults = [];
 
-  const onStep = () => {
-    done++;
-    fillEl.style.width = `${Math.round((done / total) * 100)}%`;
-  };
+  const onStep = () => { done++; fillEl.style.width = `${Math.round((done / totalSteps) * 100)}%`; };
 
   for (let i = 0; i < topics.length; i++) {
     const topic = topics[i];
-    labelEl.textContent = `Scanning ${i + 1} of ${topics.length} — ${topic.slice(0, 65)}${topic.length > 65 ? "…" : ""}`;
+    labelEl.textContent = `Scanning ${i + 1} / ${topics.length} — ${topic.slice(0, 60)}${topic.length > 60 ? "…" : ""}`;
     try {
       const r = await countStudiesFull(topic, key, del, onStep);
       r.score = gapScore(r);
       gdResults.push(r);
-      // Stream card as soon as it's ready
       const card = gdMakeCard(r, gdResults.length - 1);
       resultsEl.appendChild(card);
     } catch (err) {
       done += GD_STEPS_PER_TOPIC;
       resultsEl.insertAdjacentHTML("beforeend",
-        `<div class="error-msg">Error scanning <code>${escHtml(topic)}</code>: ${escHtml(err.message)}</div>`
-      );
+        `<div class="error-msg">Error scanning <code>${escHtml(topic)}</code>: ${escHtml(err.message)}</div>`);
     }
   }
 
-  // Re-sort by score and re-render
   gdResults.sort((a, b) => b.score - a.score);
   gdRenderResults(gdResults);
   gdRenderSummary(gdResults);
 
-  fillEl.classList.remove("running");
-  fillEl.style.width  = "100%";
+  fillEl.classList.remove("running"); fillEl.style.width = "100%";
   labelEl.textContent = `Scan complete — ${gdResults.length} topic${gdResults.length !== 1 ? "s" : ""} analysed.`;
-
-  scanBtn.disabled  = false;
+  scanBtn.disabled = false;
   if (gdResults.length) exportBtn.disabled = false;
 }
 
@@ -1507,7 +919,7 @@ function gdMakeCard(r, index) {
   const isGap = hasGap(r) || hasWeakGap(r);
   const card  = document.createElement("div");
   card.className = `result-card ${gapClass(r)}`;
-  card.style.animationDelay = `${Math.min(index, 6) * 55}ms`;
+  card.style.animationDelay = `${Math.min(index, 8) * 50}ms`;
   card.innerHTML = `
     <div class="card-header">
       <span class="card-topic">${escHtml(r.topic)}</span>
@@ -1518,12 +930,12 @@ function gdMakeCard(r, index) {
       <span class="stat-item"><strong>${r.rct}</strong> RCT${r.rct !== 1 ? "s" : ""}</span>
       <span class="stat-item"><strong>${r.cohort}</strong> cohort</span>
       <span class="stat-item"><strong>${r.case_series}</strong> case reports</span>
-      <span class="stat-item"><strong>${r.recent_rct + r.recent_cohort}</strong> recent primary (3 yr)</span>
+      <span class="stat-item"><strong>${r.recent_rct + r.recent_cohort}</strong> recent (3 yr)</span>
       <span class="stat-divider"></span>
       <span class="stat-item"><strong>${r.systematic_review}</strong> systematic review${r.systematic_review !== 1 ? "s" : ""}</span>
       <span class="stat-item"><strong>${r.meta_analysis}</strong> meta-anal${r.meta_analysis !== 1 ? "yses" : "ysis"}</span>
-      <span class="stat-item stat-context"><strong>${r.scoping_review}</strong> scoping review${r.scoping_review !== 1 ? "s" : ""}</span>
-      <span class="stat-item stat-context"><strong>${r.narrative_review}</strong> narrative review${r.narrative_review !== 1 ? "s" : ""}</span>
+      <span class="stat-item stat-context"><strong>${r.scoping_review}</strong> scoping</span>
+      <span class="stat-item stat-context"><strong>${r.narrative_review}</strong> narrative</span>
     </div>
     <div class="card-footer">
       <span class="score-tag">Gap score&thinsp;·&thinsp;<strong>${r.score.toFixed(1)}</strong></span>
@@ -1532,193 +944,157 @@ function gdMakeCard(r, index) {
       ${isGap ? '<button class="card-link card-link-angles angles-btn">Suggest angles</button>' : ''}
     </div>
     ${isGap ? '<div class="angles-section"></div>' : ''}`;
-
   if (isGap) {
-    card.querySelector(".angles-btn").addEventListener("click", () => suggestAngles(r, card));
+    card.querySelector(".angles-btn").addEventListener("click", () => toggleAngles(r, card));
   }
   return card;
 }
 
 function gdRenderResults(results) {
-  const container = document.getElementById("gdResults");
-  container.innerHTML = "";
-  results.forEach((r, i) => container.appendChild(gdMakeCard(r, i)));
+  const el = document.getElementById("gdResults");
+  el.innerHTML = "";
+  results.forEach((r, i) => el.appendChild(gdMakeCard(r, i)));
 }
 
 function gdRenderSummary(results) {
   const strong  = results.filter(hasGap).length;
   const weak    = results.filter(r => !hasGap(r) && hasWeakGap(r)).length;
   const covered = results.length - strong - weak;
-  const el      = document.getElementById("gdSummaryBar");
+  const el = document.getElementById("gdSummaryBar");
   el.innerHTML = `
-    <div class="summary-stat s-strong"><strong>${strong}</strong> strong gap${strong !== 1 ? "s" : ""}</div>
+    <div class="summary-stat s-strong"><strong>${strong}</strong> gap${strong !== 1 ? "s" : ""}</div>
     <div class="summary-divider"></div>
     <div class="summary-stat s-weak"><strong>${weak}</strong> weak gap${weak !== 1 ? "s" : ""}</div>
     <div class="summary-divider"></div>
     <div class="summary-stat s-covered"><strong>${covered}</strong> covered</div>
     <div class="summary-divider"></div>
-    <div class="summary-stat s-total"><strong>${results.length}</strong> topic${results.length !== 1 ? "s" : ""} scanned</div>`;
+    <div class="summary-stat s-total"><strong>${results.length}</strong> scanned</div>`;
   el.style.display = "flex";
 }
 
 function gdExportCsv() {
   if (!gdResults.length) return;
   downloadCsv(
-    `litgap-gaps-${new Date().toISOString().slice(0, 10)}.csv`,
+    `litgap-gaps-${new Date().toISOString().slice(0,10)}.csv`,
     ["Topic","Gap Status","Gap Score","Total","RCTs","Cohort","Case Reports",
      "Systematic Reviews","Meta-Analyses","Scoping Reviews","Narrative Reviews",
-     "Recent RCTs (3yr)","Recent Cohort (3yr)","PROSPERO URL","PubMed URL"],
+     "Recent Primary (3yr)","PROSPERO URL","PubMed URL"],
     gdResults.map(r => [
-      r.topic,
-      hasGap(r) ? "Strong Gap" : hasWeakGap(r) ? "Weak Gap" : "Covered",
-      r.score.toFixed(1),
-      r.total, r.rct, r.cohort, r.case_series,
+      r.topic, hasGap(r) ? "Gap" : hasWeakGap(r) ? "Weak Gap" : "Covered",
+      r.score.toFixed(1), r.total, r.rct, r.cohort, r.case_series,
       r.systematic_review, r.meta_analysis, r.scoping_review, r.narrative_review,
-      r.recent_rct, r.recent_cohort,
-      prosperoUrl(r.topic), pubmedUrl(r.topic),
+      r.recent_rct + r.recent_cohort, prosperoUrl(r.topic), pubmedUrl(r.topic),
     ])
   );
 }
 
 
-// ═══════════════════════════════════════════════════════════════════════════════
-// AI ANGLE SUGGESTIONS
-// ═══════════════════════════════════════════════════════════════════════════════
+// ═══════════════════════════════════════════════════════════════
+// ALGORITHMIC ANGLE GENERATION
+// ═══════════════════════════════════════════════════════════════
 
-const ANTHROPIC_API_URL = "https://api.anthropic.com/v1/messages";
-const ANTHROPIC_MODEL   = "claude-sonnet-4-20250514";
-
-async function fetchSampleTitles(topic, key, del) {
-  const searchParams = new URLSearchParams({
-    db: "pubmed",
-    term: `(${topic}) AND (Randomized Controlled Trial[pt] OR Observational Study[pt])`,
-    retmax: 5,
-    sort: "date",
-    retmode: "json",
-  });
-  if (key) searchParams.set("api_key", key);
-
-  const searchResp = await fetch(`${PUBMED_BASE}/esearch.fcgi?${searchParams}`);
-  if (!searchResp.ok) return [];
-  const ids = (await searchResp.json()).esearchresult.idlist ?? [];
-  if (!ids.length) return [];
-
-  await sleep(del);
-
-  const summaryParams = new URLSearchParams({ db: "pubmed", id: ids.join(","), retmode: "json" });
-  if (key) summaryParams.set("api_key", key);
-
-  const summaryResp = await fetch(`${PUBMED_BASE}/esummary.fcgi?${summaryParams}`);
-  if (!summaryResp.ok) return [];
-  const data = await summaryResp.json();
-
-  return ids.map(id => data.result?.[id]?.title).filter(Boolean);
+function cleanTopicLabel(topic) {
+  return topic
+    .replace(/\[[\w\s/]+\]/g, "")
+    .replace(/\bAND\b|\bOR\b|\bNOT\b/g, " ")
+    .replace(/[()"]/g, "")
+    .replace(/\s+/g, " ")
+    .trim()
+    .replace(/^(.{70}).*$/, "$1…");
 }
 
-async function callAnthropicAngles(r, anthropicKeyVal) {
-  const titles     = r.sampleTitles ?? [];
-  const titlesText = titles.length
-    ? `\nSample recent study titles:\n${titles.map(t => `  • ${t}`).join("\n")}`
-    : "";
+function generateAngles(r) {
+  const angles = [];
+  const primary = r.rct + r.cohort;
+  const recent  = (r.recent_rct ?? 0) + (r.recent_cohort ?? 0);
+  const label   = cleanTopicLabel(r.topic);
 
-  const prompt = `You are assisting a medical researcher identifying opportunities for new systematic reviews.
+  // 1. Meta-analysis: RCTs exist, no meta-analysis
+  if (r.rct >= 3 && r.meta_analysis === 0) {
+    angles.push({
+      type: "Meta-analysis",
+      title: `Meta-analysis of randomised controlled trials: ${label}`,
+      rationale: `${r.rct} RCT${r.rct !== 1 ? "s" : ""} identified with no published meta-analysis — sufficient evidence base for quantitative synthesis.`,
+    });
+  }
 
-Evidence gap data for the query: "${r.topic}"
+  // 2. Updated review: high proportion of recent studies
+  if (recent >= 3 && primary > 0 && recent / primary >= 0.35) {
+    angles.push({
+      type: "Updated SR",
+      title: `Updated systematic review of recent evidence (2022–present): ${label}`,
+      rationale: `${recent} of ${primary} primary studies are from the last 3 years — an update would capture rapidly evolving evidence not covered by existing reviews.`,
+    });
+  }
 
-Primary evidence:
-- RCTs: ${r.rct}
-- Cohort studies: ${r.cohort}
-- Case reports: ${r.case_series}
-- Recent primary studies (last 3 years): ${(r.recent_rct ?? 0) + (r.recent_cohort ?? 0)}
+  // 3. Scoping review: meaningful evidence base, no scoping review
+  if (primary >= 5 && r.scoping_review === 0) {
+    angles.push({
+      type: "Scoping review",
+      title: `Scoping review mapping the evidence landscape: ${label}`,
+      rationale: `No scoping review exists despite ${primary} primary studies — mapping heterogeneity and identifying sub-questions would support future targeted reviews.`,
+    });
+  }
 
-Existing review literature:
-- Systematic reviews: ${r.systematic_review}
-- Meta-analyses: ${r.meta_analysis}
-- Scoping reviews: ${r.scoping_review}
-- Narrative reviews: ${r.narrative_review}
-${titlesText}
+  // 4. Case report synthesis: case evidence dominates
+  if (r.case_series >= 5 && r.rct <= 1) {
+    angles.push({
+      type: "Case synthesis",
+      title: `Systematic synthesis of case series and case reports: ${label}`,
+      rationale: `${r.case_series} case reports with limited RCT evidence — synthesis can establish feasibility, safety signals, and design parameters for future trials.`,
+    });
+  }
 
-Suggest 3–5 specific, publishable angles for a new systematic review on this topic. Each angle must be meaningfully different from the others and distinct from any existing reviews.
+  // 5. Network meta-analysis: multiple interventions likely
+  if (r.rct >= 5 && r.systematic_review <= 1) {
+    angles.push({
+      type: "Network MA",
+      title: `Network meta-analysis ranking competing interventions: ${label}`,
+      rationale: `${r.rct} RCTs available — a network analysis would enable indirect comparisons and intervention ranking across heterogeneous trial designs.`,
+    });
+  }
 
-Respond with a valid JSON array only — no markdown, no preamble, no trailing text. Each element must have exactly these four string keys:
-- "title": A specific, publishable systematic review title
-- "pico": PICO-structured question using this exact format: "P: [population] | I: [intervention] | C: [comparison] | O: [outcome]"
-- "feasibility": One of "High", "Moderate", or "Low" followed by " — " and a one-sentence rationale based on the study count above
-- "novelty": One sentence explaining what makes this angle distinct from the existing review literature`;
+  // 6. Observational synthesis: cohort evidence without reviews
+  if (r.cohort >= 5 && r.rct <= 2 && r.systematic_review === 0) {
+    angles.push({
+      type: "Observational SR",
+      title: `Systematic review of real-world observational evidence: ${label}`,
+      rationale: `${r.cohort} cohort studies with minimal trial evidence — observational synthesis captures real-world effectiveness and long-term outcomes.`,
+    });
+  }
 
-  const resp = await fetch(ANTHROPIC_API_URL, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      "x-api-key": anthropicKeyVal,
-      "anthropic-version": "2023-06-01",
-      "anthropic-dangerous-direct-browser-access": "true",
+  // Pad to at least 3 with generic angles
+  const fallbacks = [
+    {
+      type: "Safety SR",
+      title: `Systematic review of safety and adverse events: ${label}`,
+      rationale: "Dedicated safety reviews are often absent even when efficacy data exist — a focused synthesis would characterise complication profiles.",
     },
-    body: JSON.stringify({
-      model: ANTHROPIC_MODEL,
-      max_tokens: 1000,
-      messages: [{ role: "user", content: prompt }],
-    }),
-  });
+    {
+      type: "PRO review",
+      title: `Systematic review of patient-reported outcomes: ${label}`,
+      rationale: "Patient-reported outcomes are underrepresented in primary literature — a synthesis would provide patient-centred evidence for clinical guidelines.",
+    },
+    {
+      type: "Subgroup SR",
+      title: `Systematic review in specific subpopulations: ${label}`,
+      rationale: "Subgroup evidence (e.g. paediatric, elderly, or comorbid populations) is rarely synthesised separately despite clinically meaningful differences.",
+    },
+  ];
 
-  if (!resp.ok) {
-    const err = await resp.json().catch(() => ({}));
-    throw new Error(err.error?.message ?? `Anthropic API error ${resp.status}`);
+  for (const fb of fallbacks) {
+    if (angles.length >= 3) break;
+    if (!angles.find(a => a.type === fb.type)) angles.push(fb);
   }
 
-  const data = await resp.json();
-  const text = data.content?.[0]?.text ?? "";
-
-  const cleaned = text.replace(/^```(?:json)?\s*/i, "").replace(/\s*```$/, "").trim();
-  try {
-    return JSON.parse(cleaned);
-  } catch {
-    const match = cleaned.match(/\[[\s\S]*\]/);
-    if (match) return JSON.parse(match[0]);
-    throw new Error("Could not parse response as JSON. Try again.");
-  }
+  return angles.slice(0, 5);
 }
 
-function renderAngles(container, angles) {
-  if (!Array.isArray(angles) || !angles.length) {
-    container.innerHTML = `<div class="angle-error">No suggestions returned — try again.</div>`;
-    return;
-  }
-
-  const feasibilityClass = text => {
-    const level = (text ?? "").toLowerCase();
-    if (level.startsWith("high"))     return "feasibility-high";
-    if (level.startsWith("moderate")) return "feasibility-moderate";
-    return "feasibility-low";
-  };
-
-  const feasibilityParts = text => {
-    const parts = (text ?? "").split(/\s*—\s*/);
-    return { label: parts[0]?.trim() ?? "Moderate", rationale: parts.slice(1).join(" — ").trim() };
-  };
-
-  container.innerHTML = `<div class="angles-list">${
-    angles.map((a, i) => {
-      const { label, rationale } = feasibilityParts(a.feasibility);
-      return `
-        <div class="angle-item" style="animation-delay:${i * 65}ms">
-          <div class="angle-num">Angle ${i + 1} of ${angles.length}</div>
-          <div class="angle-title">${escHtml(a.title ?? "")}</div>
-          <div class="angle-pico">${escHtml(a.pico ?? "")}</div>
-          <div class="angle-meta">
-            <span class="feasibility-tag ${feasibilityClass(a.feasibility)}">${escHtml(label)}</span>
-            <span class="angle-novelty">${escHtml(rationale ? `${rationale} · ` : "")}${escHtml(a.novelty ?? "")}</span>
-          </div>
-        </div>`;
-    }).join("")
-  }</div>`;
-}
-
-async function suggestAngles(r, card) {
+function toggleAngles(r, card) {
   const section = card.querySelector(".angles-section");
   const btn     = card.querySelector(".angles-btn");
 
-  if (r.anglesState === "loaded") {
+  if (r.anglesLoaded) {
     const nowVisible = !section.classList.contains("visible");
     section.classList.toggle("visible", nowVisible);
     btn.classList.toggle("active", nowVisible);
@@ -1726,71 +1102,50 @@ async function suggestAngles(r, card) {
     return;
   }
 
-  if (r.anglesState === "loading") return;
+  r.anglesLoaded = true;
+  const angles = generateAngles(r);
 
-  const anthropicKeyVal = document.getElementById("anthropicKeyInput").value.trim();
-  if (!anthropicKeyVal) {
-    alert("Enter your Anthropic API key in the Configuration panel to enable AI suggestions.");
-    return;
-  }
-
-  r.anglesState = "loading";
-  btn.disabled  = true;
-  section.classList.add("visible");
   section.innerHTML = `
-    <div class="angle-loading">
-      <div class="angle-spinner"></div>
-      Fetching titles and generating suggestions…
-    </div>`;
+    <div class="algo-disclaimer">Suggestions are algorithmically generated based on study counts — not AI-powered. Review critically before use.</div>
+    <div class="angles-list">${
+      angles.map((a, i) => `
+        <div class="angle-item" style="animation-delay:${i * 55}ms">
+          <div class="angle-type">${escHtml(a.type)}</div>
+          <div class="angle-title">${escHtml(a.title)}</div>
+          <div class="angle-rationale">${escHtml(a.rationale)}</div>
+        </div>`).join("")
+    }</div>`;
 
-  try {
-    if (!r.sampleTitles) {
-      r.sampleTitles = await fetchSampleTitles(r.topic, apiKey(), delay());
-    }
-    const angles  = await callAnthropicAngles(r, anthropicKeyVal);
-    r.anglesState = "loaded";
-    btn.disabled  = false;
-    btn.classList.add("active");
-    btn.textContent = "Hide suggestions";
-    renderAngles(section, angles);
-  } catch (err) {
-    r.anglesState = "idle";
-    btn.disabled  = false;
-    section.innerHTML = `<div class="angle-error">Error: ${escHtml(err.message)}</div>`;
-  }
+  section.classList.add("visible");
+  btn.classList.add("active");
+  btn.textContent = "Hide suggestions";
 }
 
 
-// ═══════════════════════════════════════════════════════════════════════════════
+// ═══════════════════════════════════════════════════════════════
 // INTERVENTION SCANNER
-// ═══════════════════════════════════════════════════════════════════════════════
+// ═══════════════════════════════════════════════════════════════
 
 const OUTCOME_TERMS = [
-  "outcomes",
-  "complications",
-  "efficacy",
-  "safety",
-  "mortality",
-  "quality of life",
-  "adverse events",
-  "functional outcomes",
+  "outcomes", "complications", "efficacy", "safety",
+  "mortality", "quality of life", "adverse events", "functional outcomes",
 ];
 
 const ABBREVIATION_MAP = {
   "deep brain stimulation":                  ["DBS"],
   "spinal cord stimulation":                 ["SCS"],
-  "transcranial magnetic stimulation":       ["TMS", "rTMS"],
+  "transcranial magnetic stimulation":       ["TMS","rTMS"],
   "transcranial direct current stimulation": ["tDCS"],
   "laser interstitial thermal therapy":      ["LITT"],
-  "stereotactic radiosurgery":               ["SRS", "GKRS"],
-  "gamma knife radiosurgery":                ["GKRS", "GKS"],
-  "intravitreal injection":                  ["IVI", "IVT"],
+  "stereotactic radiosurgery":               ["SRS","GKRS"],
+  "gamma knife radiosurgery":                ["GKRS","GKS"],
+  "intravitreal injection":                  ["IVI","IVT"],
   "endoscopic third ventriculostomy":        ["ETV"],
   "ventriculoperitoneal shunt":              ["VPS"],
   "anterior cervical discectomy and fusion": ["ACDF"],
   "lumbar spinal fusion":                    ["LSF"],
-  "total knee arthroplasty":                 ["TKA", "TKR"],
-  "total hip arthroplasty":                  ["THA", "THR"],
+  "total knee arthroplasty":                 ["TKA","TKR"],
+  "total hip arthroplasty":                  ["THA","THR"],
   "radiofrequency ablation":                 ["RFA"],
   "photodynamic therapy":                    ["PDT"],
   "cochlear implant":                        ["CI"],
@@ -1800,72 +1155,54 @@ const ABBREVIATION_MAP = {
 };
 
 async function lookupMeshTerms(intervention, key, del) {
-  const searchParams = new URLSearchParams({
-    db: "mesh", term: intervention, retmax: 3, retmode: "json",
-  });
-  if (key) searchParams.set("api_key", key);
+  const sp = new URLSearchParams({ db:"mesh", term:intervention, retmax:3, retmode:"json" });
+  if (key) sp.set("api_key", key);
+  const sr = await fetch(`${PUBMED_BASE}/esearch.fcgi?${sp}`);
+  if (!sr.ok) throw new Error(`MeSH search ${sr.status}`);
+  const sd = await sr.json(); await sleep(del);
+  const ids = sd.esearchresult.idlist ?? [];
+  if (!ids.length) return { meshTerms:[], synonyms:[] };
 
-  const searchResp = await fetch(`${PUBMED_BASE}/esearch.fcgi?${searchParams}`);
-  if (!searchResp.ok) throw new Error(`MeSH search error ${searchResp.status}`);
-  const searchData = await searchResp.json();
-  await sleep(del);
+  const fp = new URLSearchParams({ db:"mesh", id:ids.slice(0,2).join(","), retmode:"xml" });
+  if (key) fp.set("api_key", key);
+  const fr = await fetch(`${PUBMED_BASE}/efetch.fcgi?${fp}`);
+  if (!fr.ok) throw new Error(`MeSH fetch ${fr.status}`);
+  const xml = await fr.text(); await sleep(del);
 
-  const ids = searchData.esearchresult.idlist ?? [];
-  if (!ids.length) return { meshTerms: [], synonyms: [] };
-
-  const fetchParams = new URLSearchParams({
-    db: "mesh", id: ids.slice(0, 2).join(","), retmode: "xml",
-  });
-  if (key) fetchParams.set("api_key", key);
-
-  const fetchResp = await fetch(`${PUBMED_BASE}/efetch.fcgi?${fetchParams}`);
-  if (!fetchResp.ok) throw new Error(`MeSH fetch error ${fetchResp.status}`);
-  const xmlText = await fetchResp.text();
-  await sleep(del);
-
-  const doc      = new DOMParser().parseFromString(xmlText, "text/xml");
-  const meshTerms = [];
-  const synonyms  = [];
-
-  doc.querySelectorAll("DescriptorRecord").forEach(record => {
-    const preferred = record.querySelector("DescriptorName String")?.textContent?.trim();
-    if (preferred) meshTerms.push(preferred);
-    record.querySelectorAll("TermList Term String").forEach(el => {
+  const doc = new DOMParser().parseFromString(xml, "text/xml");
+  const meshTerms = [], synonyms = [];
+  doc.querySelectorAll("DescriptorRecord").forEach(rec => {
+    const pref = rec.querySelector("DescriptorName String")?.textContent?.trim();
+    if (pref) meshTerms.push(pref);
+    rec.querySelectorAll("TermList Term String").forEach(el => {
       const t = el.textContent?.trim();
-      if (t && t !== preferred) synonyms.push(t);
+      if (t && t !== pref) synonyms.push(t);
     });
   });
-
   return { meshTerms, synonyms };
 }
 
 function buildSearchTerms(intervention, meshTerms, synonyms) {
-  const seen = new Set();
-  const results = [];
-
+  const seen = new Set(), results = [];
   const add = (term, isMesh) => {
-    const key = term.toLowerCase();
-    if (!seen.has(key)) { seen.add(key); results.push({ term, isMesh }); }
+    const k = term.toLowerCase();
+    if (!seen.has(k)) { seen.add(k); results.push({ term, isMesh }); }
   };
-
   add(intervention, false);
-  meshTerms.slice(0, 2).forEach(t => add(t, true));
+  meshTerms.slice(0,2).forEach(t => add(t, true));
   (ABBREVIATION_MAP[intervention.toLowerCase()] ?? []).forEach(a => add(a, false));
-  synonyms.filter(s => s.length >= 4).slice(0, 2).forEach(s => add(s, false));
-
-  return results.slice(0, 5);
+  synonyms.filter(s => s.length >= 4).slice(0,2).forEach(s => add(s, false));
+  return results.slice(0,5);
 }
 
 function buildQuery(termObj, outcome) {
-  const { term, isMesh } = termObj;
-  const interventionClause = isMesh
-    ? `("${term}"[MeSH Terms] OR "${term}"[tiab])`
-    : `"${term}"[tiab]`;
-  return `${interventionClause} AND "${outcome}"[tiab]`;
+  const clause = termObj.isMesh
+    ? `("${termObj.term}"[MeSH Terms] OR "${termObj.term}"[tiab])`
+    : `"${termObj.term}"[tiab]`;
+  return `${clause} AND "${outcome}"[tiab]`;
 }
 
 let isResults = [];
-
 document.getElementById("isScanBtn").addEventListener("click",   isRunScan);
 document.getElementById("isExportBtn").addEventListener("click", isExportCsv);
 
@@ -1875,9 +1212,7 @@ async function isRunScan() {
 
   enterSplitMode("intervention-scanner");
 
-  const key = apiKey();
-  const del = delay();
-
+  const key = apiKey(), del = delay();
   const scanBtn   = document.getElementById("isScanBtn");
   const exportBtn = document.getElementById("isExportBtn");
   const labelEl   = document.getElementById("progressLabel");
@@ -1889,17 +1224,11 @@ async function isRunScan() {
   const emptyEl   = document.getElementById("isEmptyState");
   const previewEl = document.getElementById("isTermsPreview");
 
-  scanBtn.disabled   = true;
-  exportBtn.disabled = true;
-  trackEl.classList.add("visible");
-  fillEl.classList.add("running");
-  fillEl.style.width      = "0%";
-  tableBody.innerHTML     = "";
-  tableWrap.style.display = "none";
-  emptyEl.classList.remove("visible");
-  previewEl.classList.remove("visible");
-  summaryEl.style.display = "none";
-  isResults = [];
+  scanBtn.disabled = true; exportBtn.disabled = true;
+  trackEl.classList.add("visible"); fillEl.classList.add("running"); fillEl.style.width = "0%";
+  tableBody.innerHTML = ""; tableWrap.style.display = "none";
+  emptyEl.classList.remove("visible"); previewEl.classList.remove("visible");
+  summaryEl.style.display = "none"; isResults = [];
 
   labelEl.textContent = `Looking up MeSH terms for "${intervention}"…`;
 
@@ -1912,68 +1241,45 @@ async function isRunScan() {
   }
 
   document.getElementById("isTermsList").innerHTML = searchTerms
-    .map(t => `<span class="term-tag ${t.isMesh ? "mesh" : ""}">${escHtml(t.term)}</span>`)
-    .join("");
+    .map(t => `<span class="term-tag ${t.isMesh ? "mesh" : ""}">${escHtml(t.term)}</span>`).join("");
   document.getElementById("isOutcomesList").innerHTML = OUTCOME_TERMS
-    .map(o => `<span class="term-tag">${escHtml(o)}</span>`)
-    .join("");
+    .map(o => `<span class="term-tag">${escHtml(o)}</span>`).join("");
   previewEl.classList.add("visible");
 
-  const combinations = searchTerms.flatMap(termObj =>
-    OUTCOME_TERMS.map(outcome => ({ termObj, outcome, query: buildQuery(termObj, outcome) }))
-  );
+  const combos = searchTerms.flatMap(termObj => OUTCOME_TERMS.map(outcome => ({ termObj, outcome, query: buildQuery(termObj, outcome) })));
+  const IS_STEPS = 7;
+  const totalSteps = combos.length * IS_STEPS;
+  let doneSteps = 0;
+  const onStep = () => { doneSteps++; fillEl.style.width = `${Math.round((doneSteps / totalSteps) * 100)}%`; };
 
-  const IS_STEPS_PER_COMBO = 7;
-  const totalSteps = combinations.length * IS_STEPS_PER_COMBO;
-  let   doneSteps  = 0;
-
-  const onStep = () => {
-    doneSteps++;
-    fillEl.style.width = `${Math.round((doneSteps / totalSteps) * 100)}%`;
-  };
-
-  labelEl.textContent = `Found ${searchTerms.length} term${searchTerms.length !== 1 ? "s" : ""} × ${OUTCOME_TERMS.length} outcomes = ${combinations.length} combinations…`;
+  labelEl.textContent = `Found ${searchTerms.length} term${searchTerms.length !== 1 ? "s" : ""} × ${OUTCOME_TERMS.length} outcomes = ${combos.length} combinations…`;
   tableWrap.style.display = "block";
 
-  for (let i = 0; i < combinations.length; i++) {
-    const { termObj, outcome, query } = combinations[i];
+  for (let i = 0; i < combos.length; i++) {
+    const { termObj, outcome, query } = combos[i];
     try {
       const r = await countStudiesLight(query, key, del, onStep);
-      r.score        = gapScore(r);
-      r.termLabel    = termObj.term;
-      r.outcomeLabel = outcome;
+      r.score = gapScore(r); r.termLabel = termObj.term; r.outcomeLabel = outcome;
       isResults.push(r);
-      isAppendRow(r, isResults.length - 1);
-    } catch {
-      doneSteps += IS_STEPS_PER_COMBO;
-    }
+      const tr = document.createElement("tr");
+      tr.style.animationDelay = `${Math.min(isResults.length - 1, 10) * 30}ms`;
+      tr.innerHTML = isRowHtml(r);
+      tableBody.appendChild(tr);
+    } catch { doneSteps += IS_STEPS; }
   }
 
   isResults.sort((a, b) => b.score - a.score);
   isRerenderTable(isResults);
 
-  fillEl.classList.remove("running");
-  fillEl.style.width  = "100%";
+  fillEl.classList.remove("running"); fillEl.style.width = "100%";
   labelEl.textContent = `Scan complete — ${isResults.length} combinations analysed.`;
 
   if (isResults.length > 0) {
-    isRenderSummary(isResults);
-    exportBtn.disabled = false;
+    isRenderSummary(isResults); exportBtn.disabled = false;
   } else {
-    tableWrap.style.display = "none";
-    emptyEl.classList.add("visible");
+    tableWrap.style.display = "none"; emptyEl.classList.add("visible");
   }
-
   scanBtn.disabled = false;
-}
-
-function isAppendRow(r, index) {
-  const tbody = document.getElementById("isTableBody");
-  const tr    = document.createElement("tr");
-  tr.style.animationDelay = `${Math.min(index, 10) * 30}ms`;
-  tr.dataset.score = r.score;
-  tr.innerHTML = isRowHtml(r);
-  tbody.appendChild(tr);
 }
 
 function isRerenderTable(results) {
@@ -2012,31 +1318,30 @@ function isRenderSummary(results) {
   const strong  = results.filter(hasGap).length;
   const weak    = results.filter(r => !hasGap(r) && hasWeakGap(r)).length;
   const covered = results.length - strong - weak;
-  const el      = document.getElementById("isSummaryBar");
+  const el = document.getElementById("isSummaryBar");
   el.innerHTML = `
-    <div class="summary-stat s-strong"><strong>${strong}</strong> strong gap${strong !== 1 ? "s" : ""}</div>
+    <div class="summary-stat s-strong"><strong>${strong}</strong> gap${strong !== 1 ? "s" : ""}</div>
     <div class="summary-divider"></div>
     <div class="summary-stat s-weak"><strong>${weak}</strong> weak gap${weak !== 1 ? "s" : ""}</div>
     <div class="summary-divider"></div>
     <div class="summary-stat s-covered"><strong>${covered}</strong> covered</div>
     <div class="summary-divider"></div>
-    <div class="summary-stat s-total"><strong>${results.length}</strong> combination${results.length !== 1 ? "s" : ""} scanned</div>`;
+    <div class="summary-stat s-total"><strong>${results.length}</strong> combinations</div>`;
   el.style.display = "flex";
 }
 
 function isExportCsv() {
   if (!isResults.length) return;
   downloadCsv(
-    `litgap-intervention-${new Date().toISOString().slice(0, 10)}.csv`,
+    `litgap-intervention-${new Date().toISOString().slice(0,10)}.csv`,
     ["Intervention Term","Outcome","Full Query","Gap Status","Gap Score",
      "Total","RCTs","Cohort","Systematic Reviews","Meta-Analyses",
      "Scoping Reviews","Narrative Reviews","PROSPERO URL","PubMed URL"],
     isResults.map(r => [
       r.termLabel, r.outcomeLabel, r.topic,
-      hasGap(r) ? "Strong Gap" : hasWeakGap(r) ? "Weak Gap" : "Covered",
-      r.score.toFixed(1),
-      r.total, r.rct, r.cohort, r.systematic_review, r.meta_analysis,
-      r.scoping_review, r.narrative_review,
+      hasGap(r) ? "Gap" : hasWeakGap(r) ? "Weak Gap" : "Covered",
+      r.score.toFixed(1), r.total, r.rct, r.cohort,
+      r.systematic_review, r.meta_analysis, r.scoping_review, r.narrative_review,
       prosperoUrl(r.topic), pubmedUrl(r.topic),
     ])
   );
