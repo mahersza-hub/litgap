@@ -222,10 +222,18 @@
     .angles-section { border-top: 1px solid var(--border); margin-top: 0.85rem; padding-top: 0.85rem; display: none; }
     .angles-section.visible { display: block; }
     .algo-disclaimer { font-size: 0.7rem; color: var(--text-3); margin-bottom: 0.75rem; padding: 0.4rem 0.7rem; background: var(--surface-2); border: 1px solid var(--border-2); border-radius: var(--radius-sm); }
+    .angle-loading { display: flex; align-items: center; gap: 0.6rem; font-size: 0.78rem; color: var(--text-2); padding: 0.35rem 0; }
+    .angle-spinner { width: 13px; height: 13px; border: 2px solid var(--border-2); border-top-color: var(--accent); border-radius: 50%; flex-shrink: 0; animation: spin 0.7s linear infinite; }
+    @keyframes spin { to { transform: rotate(360deg); } }
     .angles-list { display: flex; flex-direction: column; gap: 0.55rem; }
     .angle-item { background: var(--surface-2); border: 1px solid var(--border); border-radius: var(--radius-md); padding: 0.85rem 1rem; opacity: 0; animation: fadeSlideUp 0.28s ease forwards; }
-    .angle-type { font-size: 0.65rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--algo); margin-bottom: 0.35rem; }
-    .angle-title { font-size: 0.83rem; font-weight: 600; color: var(--text); line-height: 1.4; margin-bottom: 0.45rem; }
+    .angle-meta-row { display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.4rem; flex-wrap: wrap; }
+    .angle-study-badge { font-size: 0.63rem; font-weight: 700; letter-spacing: 0.07em; text-transform: uppercase; padding: 0.18rem 0.5rem; border-radius: var(--radius-sm); border: 1px solid transparent; white-space: nowrap; }
+    .angle-badge-ma      { background: var(--accent-muted);  border-color: rgba(79,125,248,0.3); color: var(--accent); }
+    .angle-badge-sr      { background: var(--covered-bg);    border-color: var(--covered-border); color: var(--covered); }
+    .angle-badge-scoping { background: var(--weak-bg);       border-color: var(--weak-border);    color: var(--weak); }
+    .angle-estimate { font-size: 0.72rem; color: var(--text-3); }
+    .angle-title { font-size: 0.83rem; font-weight: 600; color: var(--text); line-height: 1.4; margin-bottom: 0.4rem; }
     .angle-rationale { font-size: 0.74rem; color: var(--text-2); line-height: 1.6; }
 
     /* ── Terms preview ────────────────────────────────────── */
@@ -1003,98 +1011,235 @@ function cleanTopicLabel(topic) {
     .replace(/^(.{70}).*$/, "$1…");
 }
 
-function generateAngles(r) {
-  const angles = [];
+// ── Fetch up to 10 recent primary study titles from PubMed ──────
+async function fetchSampleTitles(topic, key, del) {
+  const sp = new URLSearchParams({
+    db: "pubmed",
+    term: `(${topic}) AND (Randomized Controlled Trial[pt] OR Observational Study[pt] OR Case Reports[pt])`,
+    retmax: 10,
+    sort: "date",
+    retmode: "json",
+  });
+  if (key) sp.set("api_key", key);
+  const sr = await fetch(`${PUBMED_BASE}/esearch.fcgi?${sp}`);
+  if (!sr.ok) return [];
+  const ids = (await sr.json()).esearchresult.idlist ?? [];
+  if (!ids.length) return [];
+  await sleep(del);
+  const ep = new URLSearchParams({ db: "pubmed", id: ids.join(","), retmode: "json" });
+  if (key) ep.set("api_key", key);
+  const er = await fetch(`${PUBMED_BASE}/esummary.fcgi?${ep}`);
+  if (!er.ok) return [];
+  const data = await er.json();
+  return ids.map(id => data.result?.[id]?.title ?? "").filter(Boolean);
+}
+
+// ── LMIC country / context keywords ─────────────────────────────
+const LMIC_KEYWORDS = [
+  "nigeria","india","pakistan","bangladesh","ethiopia","kenya","tanzania",
+  "uganda","ghana","mozambique","zambia","zimbabwe","malawi","rwanda","nepal",
+  "myanmar","cambodia","indonesia","vietnam","philippines","egypt","morocco",
+  "south africa","brazil","mexico","colombia","peru","bolivia","ecuador",
+  "honduras","guatemala","haiti","sudan","chad","niger","mali","guinea",
+  "sierra leone","liberia","democratic republic","lmic","low-income",
+  "middle-income","developing countr","low and middle","sub-saharan",
+];
+
+function generateAngles(r, titles) {
+  titles = titles ?? [];
+  const angles  = [];
   const primary = r.rct + r.cohort;
   const recent  = (r.recent_rct ?? 0) + (r.recent_cohort ?? 0);
   const label   = cleanTopicLabel(r.topic);
+  const tLow    = titles.map(t => t.toLowerCase()).join(" \n ");
 
-  // 1. Meta-analysis: RCTs exist, no meta-analysis
+  const push = a => { if (angles.length < 5) angles.push(a); };
+
+  // ── 1. Study-type rules ──────────────────────────────────────
+
+  // RCTs >= 3, no meta-analysis
   if (r.rct >= 3 && r.meta_analysis === 0) {
-    angles.push({
-      type: "Meta-analysis",
-      title: `Meta-analysis of randomised controlled trials: ${label}`,
-      rationale: `${r.rct} RCT${r.rct !== 1 ? "s" : ""} identified with no published meta-analysis — sufficient evidence base for quantitative synthesis.`,
+    push({
+      studyType: "MA",
+      title: `Meta-analysis of RCTs on ${label}`,
+      estimate: r.rct,
+      rationale: `${r.rct} RCT${r.rct !== 1 ? "s" : ""} identified with no published meta-analysis — sufficient for quantitative synthesis.`,
     });
   }
 
-  // 2. Updated review: high proportion of recent studies
-  if (recent >= 3 && primary > 0 && recent / primary >= 0.35) {
-    angles.push({
-      type: "Updated SR",
-      title: `Updated systematic review of recent evidence (2022–present): ${label}`,
-      rationale: `${recent} of ${primary} primary studies are from the last 3 years — an update would capture rapidly evolving evidence not covered by existing reviews.`,
+  // Cohort >= 5, no meta-analysis (and no RCT-based MA already pushed)
+  if (r.cohort >= 5 && r.meta_analysis === 0 && !angles.find(a => a.studyType === "MA")) {
+    push({
+      studyType: "MA",
+      title: `Meta-analysis of observational studies on ${label}`,
+      estimate: r.cohort,
+      rationale: `${r.cohort} cohort studies with no meta-analysis — pooled observational evidence would quantify real-world effect sizes.`,
     });
   }
 
-  // 3. Scoping review: meaningful evidence base, no scoping review
-  if (primary >= 5 && r.scoping_review === 0) {
-    angles.push({
-      type: "Scoping review",
-      title: `Scoping review mapping the evidence landscape: ${label}`,
-      rationale: `No scoping review exists despite ${primary} primary studies — mapping heterogeneity and identifying sub-questions would support future targeted reviews.`,
+  // Case reports >= 10, no scoping review
+  if (r.case_series >= 10 && r.scoping_review === 0) {
+    push({
+      studyType: "Scoping",
+      title: `Scoping review of ${label}`,
+      estimate: r.case_series + r.rct + r.cohort,
+      rationale: `${r.case_series} case reports with no scoping review — a map of the evidence base would define scope for future synthesis.`,
     });
   }
 
-  // 4. Case report synthesis: case evidence dominates
-  if (r.case_series >= 5 && r.rct <= 1) {
-    angles.push({
-      type: "Case synthesis",
-      title: `Systematic synthesis of case series and case reports: ${label}`,
-      rationale: `${r.case_series} case reports with limited RCT evidence — synthesis can establish feasibility, safety signals, and design parameters for future trials.`,
+  // Total >= 20 + only 1 old SR (likely outdated)
+  if (r.total >= 20 && r.systematic_review === 1) {
+    push({
+      studyType: "SR",
+      title: `Updated systematic review of ${label}`,
+      estimate: primary,
+      rationale: `Only 1 existing SR in a field with ${r.total} total publications — an update would incorporate studies published after that search date.`,
     });
   }
 
-  // 5. Network meta-analysis: multiple interventions likely
-  if (r.rct >= 5 && r.systematic_review <= 1) {
-    angles.push({
-      type: "Network MA",
-      title: `Network meta-analysis ranking competing interventions: ${label}`,
-      rationale: `${r.rct} RCTs available — a network analysis would enable indirect comparisons and intervention ranking across heterogeneous trial designs.`,
+  // ── 2. Population rules (title parsing) ──────────────────────
+
+  // Paediatric AND adult populations both present
+  if (/(pediatric|paediatric|child|children|infant|neonatal|juvenile)/.test(tLow) &&
+      /(adult|middle.aged|elderly|geriatric|older patient)/.test(tLow)) {
+    push({
+      studyType: "SR",
+      title: `Paediatric vs adult outcomes in ${label}`,
+      estimate: primary,
+      rationale: "Both paediatric and adult populations appear across titles — age-stratified synthesis would reveal clinically meaningful outcome differences.",
     });
   }
 
-  // 6. Observational synthesis: cohort evidence without reviews
-  if (r.cohort >= 5 && r.rct <= 2 && r.systematic_review === 0) {
-    angles.push({
-      type: "Observational SR",
-      title: `Systematic review of real-world observational evidence: ${label}`,
-      rationale: `${r.cohort} cohort studies with minimal trial evidence — observational synthesis captures real-world effectiveness and long-term outcomes.`,
+  // Elderly / geriatric population
+  if (/(elderly|geriatric|older adult|older patient|\baged\b|ageing|aging)/.test(tLow) &&
+      !angles.find(a => /paediatric vs adult/i.test(a.title))) {
+    push({
+      studyType: "SR",
+      title: `${label} in older adults: a systematic review`,
+      estimate: primary,
+      rationale: "Geriatric populations identified in titles — outcomes may differ substantially from younger cohorts and warrant dedicated synthesis.",
     });
   }
 
-  // Pad to at least 3 with generic angles
+  // LMIC / low-resource settings
+  if (LMIC_KEYWORDS.some(k => tLow.includes(k))) {
+    push({
+      studyType: "SR",
+      title: `${label} in low- and middle-income countries`,
+      estimate: primary,
+      rationale: "LMIC settings identified in sample titles — resource-context outcomes are rarely synthesised and have strong guideline relevance.",
+    });
+  }
+
+  // ── 3. Outcome rules (title parsing) ─────────────────────────
+
+  // Complications / adverse events
+  if (/(complication|adverse event|adverse effect|morbidity|side effect)/.test(tLow)) {
+    push({
+      studyType: "SR",
+      title: `Complications and safety profile of ${label}`,
+      estimate: primary,
+      rationale: "Complication or adverse-event data present in titles — a safety-focused synthesis would complement existing efficacy reviews.",
+    });
+  }
+
+  // Cost-effectiveness
+  if (/(cost|economic|cost.effectiv|health technology|budget impact)/.test(tLow)) {
+    push({
+      studyType: "SR",
+      title: `Cost-effectiveness of ${label}`,
+      estimate: primary,
+      rationale: "Economic data present in titles — a cost-effectiveness synthesis would inform commissioning and resource-allocation decisions.",
+    });
+  }
+
+  // Patient-reported outcomes / quality of life
+  if (/(quality of life|patient.reported|patient satisfaction|proms|hrqol|wellbeing|well.being)/.test(tLow)) {
+    push({
+      studyType: "SR",
+      title: `Patient-reported outcomes in ${label}`,
+      estimate: primary,
+      rationale: "Quality-of-life or satisfaction data appear in titles — a PRO-focused synthesis would provide patient-centred evidence for guidelines.",
+    });
+  }
+
+  // Learning curve / training
+  if (/(learning curve|surgical training|competency|proficiency|skill acquisition)/.test(tLow)) {
+    push({
+      studyType: "SR",
+      title: `Learning curve and training considerations in ${label}`,
+      estimate: primary,
+      rationale: "Training and competency themes identified — a synthesis of learning-curve data would inform credentialing and programme design.",
+    });
+  }
+
+  // ── 4. Recency rule ──────────────────────────────────────────
+
+  if (recent > 0 && primary > 0 && recent / primary > 0.5) {
+    push({
+      studyType: "SR",
+      title: `Recent advances in ${label}: systematic review of evidence from 2023–2026`,
+      estimate: recent,
+      rationale: `${recent} of ${primary} primary studies (${Math.round(recent / primary * 100)}%) are from the last 3 years — recent evidence unlikely covered by any existing review.`,
+    });
+  }
+
+  // ── 5. Fallbacks to reach minimum 3 ─────────────────────────
+
   const fallbacks = [
     {
-      type: "Safety SR",
+      studyType: "SR",
       title: `Systematic review of safety and adverse events: ${label}`,
-      rationale: "Dedicated safety reviews are often absent even when efficacy data exist — a focused synthesis would characterise complication profiles.",
+      estimate: primary,
+      rationale: "Safety-focused synthesis is often absent even when efficacy data exist — a dedicated review would characterise the complication profile.",
     },
     {
-      type: "PRO review",
-      title: `Systematic review of patient-reported outcomes: ${label}`,
-      rationale: "Patient-reported outcomes are underrepresented in primary literature — a synthesis would provide patient-centred evidence for clinical guidelines.",
+      studyType: "MA",
+      title: `Meta-analysis of primary outcomes: ${label}`,
+      estimate: primary,
+      rationale: "The primary evidence base may be sufficient for pooled analysis of the main outcome measure.",
     },
     {
-      type: "Subgroup SR",
-      title: `Systematic review in specific subpopulations: ${label}`,
-      rationale: "Subgroup evidence (e.g. paediatric, elderly, or comorbid populations) is rarely synthesised separately despite clinically meaningful differences.",
+      studyType: "Scoping",
+      title: `Scoping review to map the evidence: ${label}`,
+      estimate: r.total,
+      rationale: "A scoping review would clarify the breadth of evidence before a focused systematic review is commissioned.",
     },
   ];
 
   for (const fb of fallbacks) {
     if (angles.length >= 3) break;
-    if (!angles.find(a => a.type === fb.type)) angles.push(fb);
+    if (!angles.find(a => a.title === fb.title)) angles.push(fb);
   }
 
   return angles.slice(0, 5);
 }
 
-function toggleAngles(r, card) {
+// ── Render angles into the section element ───────────────────────
+function renderAngles(section, angles) {
+  const TYPE_LABELS = { MA: "Meta-analysis", SR: "Systematic Review", Scoping: "Scoping Review" };
+  section.innerHTML = `
+    <div class="algo-disclaimer">Angles algorithmically generated — verify feasibility before proceeding.</div>
+    <div class="angles-list">${
+      angles.map((a, i) => `
+        <div class="angle-item" style="animation-delay:${i * 55}ms">
+          <div class="angle-meta-row">
+            <span class="angle-study-badge angle-badge-${escHtml(a.studyType.toLowerCase())}">${escHtml(TYPE_LABELS[a.studyType] ?? a.studyType)}</span>
+            <span class="angle-estimate">~${a.estimate} includable studies</span>
+          </div>
+          <div class="angle-title">${escHtml(a.title)}</div>
+          <div class="angle-rationale">${escHtml(a.rationale)}</div>
+        </div>`).join("")
+    }</div>`;
+}
+
+// ── Handle "Suggest angles" button click ─────────────────────────
+async function toggleAngles(r, card) {
   const section = card.querySelector(".angles-section");
   const btn     = card.querySelector(".angles-btn");
 
-  if (r.anglesLoaded) {
+  // Toggle visibility if already loaded
+  if (r.anglesState === "loaded") {
     const nowVisible = !section.classList.contains("visible");
     section.classList.toggle("visible", nowVisible);
     btn.classList.toggle("active", nowVisible);
@@ -1102,23 +1247,27 @@ function toggleAngles(r, card) {
     return;
   }
 
-  r.anglesLoaded = true;
-  const angles = generateAngles(r);
+  if (r.anglesState === "loading") return; // debounce double-click
 
-  section.innerHTML = `
-    <div class="algo-disclaimer">Suggestions are algorithmically generated based on study counts — not AI-powered. Review critically before use.</div>
-    <div class="angles-list">${
-      angles.map((a, i) => `
-        <div class="angle-item" style="animation-delay:${i * 55}ms">
-          <div class="angle-type">${escHtml(a.type)}</div>
-          <div class="angle-title">${escHtml(a.title)}</div>
-          <div class="angle-rationale">${escHtml(a.rationale)}</div>
-        </div>`).join("")
-    }</div>`;
-
+  r.anglesState = "loading";
+  btn.disabled  = true;
   section.classList.add("visible");
+  section.innerHTML = `<div class="angle-loading"><div class="angle-spinner"></div>Fetching sample titles…</div>`;
+
+  try {
+    if (!r.sampleTitles) {
+      r.sampleTitles = await fetchSampleTitles(r.topic, apiKey(), delay());
+    }
+  } catch {
+    r.sampleTitles = []; // fall back to count-only analysis
+  }
+
+  const angles = generateAngles(r, r.sampleTitles);
+  r.anglesState = "loaded";
+  btn.disabled  = false;
   btn.classList.add("active");
   btn.textContent = "Hide suggestions";
+  renderAngles(section, angles);
 }
 
 
